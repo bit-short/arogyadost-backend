@@ -1,0 +1,54 @@
+name: Deploy to AWS Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - main      # Triggers prod deployment
+      - dev       # Triggers dev deployment
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install EB CLI
+      run: |
+        python -m pip install --upgrade pip
+        pip install awsebcli
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-south-1
+    
+    - name: Deploy to Dev Environment
+      if: github.ref == 'refs/heads/dev'
+      run: |
+        eb init aarogyadost-backend --region ap-south-1 --platform "Python 3.11"
+        eb use aarogyadost-dev
+        eb deploy --timeout 20
+    
+    - name: Deploy to Prod Environment
+      if: github.ref == 'refs/heads/main'
+      run: |
+        eb init aarogyadost-backend --region ap-south-1 --platform "Python 3.11"
+        eb use aarogyadost-prod
+        eb deploy --timeout 20
+    
+    - name: Deployment Status
+      run: |
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          echo "🚀 Deployed to PRODUCTION: aarogyadost-prod"
+        else
+          echo "🚀 Deployed to DEVELOPMENT: aarogyadost-dev"
+        fi
