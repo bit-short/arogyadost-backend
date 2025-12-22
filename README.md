@@ -5,14 +5,21 @@ FastAPI backend for the Aarogyadost healthcare application.
 ## Live Deployments
 
 ### Development Environment
-- **URL**: http://aarogyadost-dev.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com
-- **API Docs**: http://aarogyadost-dev.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com/docs
-- **ReDoc**: http://aarogyadost-dev.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com/redoc
+- **Custom Domain**: https://api-dev.arogyadost.in
+- **API Docs**: https://api-dev.arogyadost.in/docs
+- **ReDoc**: https://api-dev.arogyadost.in/redoc
+- **Elastic Beanstalk URL**: http://aarogyadost-dev.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com
 
 ### Production Environment
-- **URL**: http://aarogyadost-prod.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com
-- **API Docs**: http://aarogyadost-prod.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com/docs
-- **ReDoc**: http://aarogyadost-prod.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com/redoc
+- **Custom Domain**: https://api.arogyadost.in
+- **API Docs**: https://api.arogyadost.in/docs
+- **ReDoc**: https://api.arogyadost.in/redoc
+- **Elastic Beanstalk URL**: http://aarogyadost-prod.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com
+
+### SSL & Security
+- **HTTPS Enabled**: Full SSL encryption with custom domains
+- **SSL Certificate**: Wildcard certificate for *.arogyadost.in
+- **Mixed Content Resolved**: Web apps can securely access HTTPS APIs
 
 ## Local Development
 
