@@ -73,7 +73,7 @@ async def simulate_delay(ms: int = 200):
 
 @app.get("/")
 def read_root():
-    return {"message": "Aarogyadost Backend API", "version": "1.2.0", "focus": "longevity", "deployment_test": "credentials_fixed"}
+    return {"message": "Aarogyadost Backend API", "version": "1.3.0", "focus": "longevity", "deployment_test": "s3_permissions_fixed"}
 
 @app.get("/health")
 def health_check():
