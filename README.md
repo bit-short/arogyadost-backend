@@ -2,23 +2,33 @@
 
 FastAPI backend for the Aarogyadost healthcare application.
 
-## Setup
+## Live Deployments
 
+### Development Environment
+- **URL**: http://aarogyadost-dev.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com
+- **API Docs**: http://aarogyadost-dev.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com/docs
+- **ReDoc**: http://aarogyadost-dev.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com/redoc
+
+### Production Environment
+- **URL**: http://aarogyadost-prod.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com
+- **API Docs**: http://aarogyadost-prod.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com/docs
+- **ReDoc**: http://aarogyadost-prod.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com/redoc
+
+## Local Development
+
+### Setup
 ```bash
 pip install -r requirements.txt
 ```
 
-## Run
-
+### Run
 ```bash
 uvicorn main:app --reload
 ```
 
 API will be available at http://localhost:8000
 
-## API Documentation
-
-Once running, visit:
+### Local API Documentation
 - Swagger UI: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
 
@@ -26,7 +36,7 @@ Once running, visit:
 
 ### Health Data
 - `GET /api/health/biomarkers` - Get health categories and scores
-- `GET /api/health/recommendations` - Get recommended actions
+- `GET /api/health/recommendations` - Get recommended actions  
 - `GET /api/health/metrics` - Get health metrics
 - `GET /api/health/status` - Get overall health status
 - `GET /api/biomarkers/{id}` - Get detailed biomarker data
@@ -40,3 +50,23 @@ Once running, visit:
 ### Chat
 - `GET /api/chat/threads` - Get chat threads
 - `POST /api/chat/message` - Send chat message
+
+## Deployment
+
+### Automatic Deployment (CI/CD)
+- **Push to `dev` branch** → Auto-deploys to development environment
+- **Push to `main` branch** → Auto-deploys to production environment
+
+### Manual Deployment
+See `DEPLOYMENT.md` for detailed deployment instructions.
+
+### CI/CD Setup
+See `CI-CD-SETUP.md` for GitHub Actions configuration.
+
+## Architecture
+
+- **Platform**: AWS Elastic Beanstalk
+- **Runtime**: Python 3.11 on Amazon Linux 2023
+- **Region**: ap-south-1 (Mumbai)
+- **Instance**: t3.micro (Free Tier eligible)
+- **Database**: Mock data (no external database required)
