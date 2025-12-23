@@ -15,6 +15,8 @@ app.add_middleware(
         "http://localhost:8080",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:8080",
+        "http://localhost:5173",  # Vite dev server
+        "http://127.0.0.1:5173",  # Vite dev server
         
         # Development environment
         "https://dev.dpkvrxcu2ycyl.amplifyapp.com",
@@ -28,13 +30,38 @@ app.add_middleware(
         "https://api-dev.arogyadost.in",
         "https://api.arogyadost.in",
         
-        # Legacy Elastic Beanstalk URLs (if needed)
+        # Elastic Beanstalk URLs (HTTP and HTTPS)
         "http://aarogyadost-dev.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com",
+        "https://aarogyadost-dev.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com",
         "http://aarogyadost-prod.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com",
+        "https://aarogyadost-prod.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com",
+        
+        # Additional common development ports
+        "http://localhost:3001",
+        "http://localhost:4000",
+        "http://localhost:5000",
+        "http://localhost:8081",
+        
+        # For local file testing
+        "null",  # For file:// protocol requests
     ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"],
+    allow_headers=[
+        "Accept",
+        "Accept-Language", 
+        "Content-Language",
+        "Content-Type",
+        "Authorization",
+        "X-Requested-With",
+        "Origin",
+        "Access-Control-Request-Method",
+        "Access-Control-Request-Headers",
+        "Cache-Control",
+        "Pragma",
+        "*"
+    ],
+    expose_headers=["*"],
 )
 
 # Mock data - in production, this would come from a database
@@ -311,6 +338,20 @@ def read_root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
+
+# CORS preflight handler for all routes
+@app.options("/{full_path:path}")
+async def options_handler(full_path: str):
+    return {"message": "OK"}
+
+@app.options("/health")
+def health_check_options():
+    return {"message": "OK"}
+
+# Add OPTIONS handlers for main API endpoints
+@app.options("/api/{path:path}")
+def api_options(path: str):
+    return {"message": "OK"}
 
 # Health endpoints
 @app.get("/api/health/biomarkers")
