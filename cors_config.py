@@ -49,6 +49,7 @@ ALLOWED_ORIGINS = [
 # Wildcard domain patterns
 WILDCARD_ORIGINS = [
     r"https://.*\.lovable\.app",  # Any subdomain of lovable.app
+    r"https://.*\.lovableproject\.com",  # Any subdomain of lovableproject.com
 ]
 
 # Allowed methods
@@ -255,8 +256,11 @@ ORIGIN_GROUPS = {
         "http://aarogyadost-prod.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com",
     ],
     "lovable": [
-        # Now handled by wildcard pattern: r"https://.*\.lovable\.app"
+        # Now handled by wildcard patterns: 
+        # r"https://.*\.lovable\.app"
+        # r"https://.*\.lovableproject\.com"
         "https://id-preview--a7c71287-89db-4b36-9f19-46fd1ab30599.lovable.app",  # Keep specific one for reference
+        "https://a7c71287-89db-4b36-9f19-46fd1ab30599.lovableproject.com",  # Keep specific one for reference
     ],
     "special": [
         "null",  # For file:// protocol
