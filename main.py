@@ -9,7 +9,29 @@ app = FastAPI(title="Aarogyadost API")
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        # Local development
+        "http://localhost:3000",
+        "http://localhost:8080",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8080",
+        
+        # Development environment
+        "https://dev.dpkvrxcu2ycyl.amplifyapp.com",
+        "https://m2.arogyadost.in",
+        
+        # Production environment
+        "https://main.dpkvrxcu2ycyl.amplifyapp.com",
+        "https://m.arogyadost.in",
+        
+        # API documentation access
+        "https://api-dev.arogyadost.in",
+        "https://api.arogyadost.in",
+        
+        # Legacy Elastic Beanstalk URLs (if needed)
+        "http://aarogyadost-dev.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com",
+        "http://aarogyadost-prod.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
