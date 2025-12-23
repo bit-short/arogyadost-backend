@@ -1,69 +1,14 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 import json
 import asyncio
 from pathlib import Path
+from cors_config import setup_cors, create_cors_preflight_handler
 
 app = FastAPI(title="Aarogyadost API")
 
-# CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        # Local development
-        "http://localhost:3000",
-        "http://localhost:8080",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:8080",
-        "http://localhost:5173",  # Vite dev server
-        "http://127.0.0.1:5173",  # Vite dev server
-        
-        # Development environment
-        "https://dev.dpkvrxcu2ycyl.amplifyapp.com",
-        "https://m2.arogyadost.in",
-        
-        # Production environment
-        "https://main.dpkvrxcu2ycyl.amplifyapp.com",
-        "https://m.arogyadost.in",
-        
-        # API documentation access
-        "https://api-dev.arogyadost.in",
-        "https://api.arogyadost.in",
-        
-        # Elastic Beanstalk URLs (HTTP and HTTPS)
-        "http://aarogyadost-dev.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com",
-        "https://aarogyadost-dev.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com",
-        "http://aarogyadost-prod.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com",
-        "https://aarogyadost-prod.eba-uxpnifkq.ap-south-1.elasticbeanstalk.com",
-        
-        # Additional common development ports
-        "http://localhost:3001",
-        "http://localhost:4000",
-        "http://localhost:5000",
-        "http://localhost:8081",
-        
-        # For local file testing
-        "null",  # For file:// protocol requests
-    ],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"],
-    allow_headers=[
-        "Accept",
-        "Accept-Language", 
-        "Content-Language",
-        "Content-Type",
-        "Authorization",
-        "X-Requested-With",
-        "Origin",
-        "Access-Control-Request-Method",
-        "Access-Control-Request-Headers",
-        "Cache-Control",
-        "Pragma",
-        "*"
-    ],
-    expose_headers=["*"],
-    max_age=86400,  # Cache preflight for 24 hours
-)
+# Setup CORS using centralized configuration
+setup_cors(app)
+create_cors_preflight_handler(app)
 
 # Mock data - in production, this would come from a database
 mock_data = {
@@ -340,14 +285,11 @@ def read_root():
 def health_check():
     return {"status": "healthy"}
 
-# CORS preflight handler for all routes
-@app.options("/{full_path:path}")
-async def options_handler(full_path: str):
-    from fastapi import Response
-    response = Response(content='{"message": "OK"}', media_type="application/json")
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, HEAD, PATCH"
-    response.headers["Access-Control-Allow-Headers"] = "Accept, Accept-Language, Content-Language, Content-Type, Authorization, X-Requested-With, Origin, Access-Control-Request-Method, Access-Control-Request-Headers, Cache-Control, Pragma"
-    return response
+@app.get("/cors-info")
+def cors_info():
+    """Debug endpoint to check CORS configuration"""
+    from cors_config import get_cors_info
+    return get_cors_info()
 
 @app.options("/health")
 def health_check_options():
