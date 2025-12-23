@@ -25,6 +25,217 @@ mock_data = {
         {"id": "liver", "name": "Liver Function", "status": "good", "score": 85},
         {"id": "kidney", "name": "Kidney Function", "status": "excellent", "score": 95}
     ],
+    "medical_files": [
+        # Cardiology Reports
+        {
+            "id": "card_001",
+            "filename": "ECG_Report_2024_03_15.pdf",
+            "specialty": "Cardiology",
+            "category": "Diagnostic Test",
+            "hospital": "Apollo Hospital Delhi",
+            "doctor": "Dr. Rajesh Sharma",
+            "date": "2024-03-15",
+            "file_type": "pdf",
+            "file_size": "2.3 MB",
+            "summary": "ECG shows normal sinus rhythm, no signs of arrhythmia",
+            "key_findings": ["Normal sinus rhythm", "Heart rate: 68 bpm", "No ST elevation"],
+            "tags": ["heart", "ecg", "cardiology", "routine"],
+            "upload_date": "2024-03-16T10:30:00Z"
+        },
+        {
+            "id": "card_002", 
+            "filename": "Echocardiogram_Report_2024_02_28.pdf",
+            "specialty": "Cardiology",
+            "category": "Imaging",
+            "hospital": "Max Hospital Gurgaon",
+            "doctor": "Dr. Priya Nair",
+            "date": "2024-02-28",
+            "file_type": "pdf",
+            "file_size": "4.1 MB",
+            "summary": "2D Echo shows good left ventricular function, EF 65%",
+            "key_findings": ["EF: 65%", "Normal wall motion", "Mild mitral regurgitation"],
+            "tags": ["heart", "echo", "imaging", "function"],
+            "upload_date": "2024-03-01T14:20:00Z"
+        },
+        {
+            "id": "card_003",
+            "filename": "Stress_Test_Report_2024_01_20.pdf", 
+            "specialty": "Cardiology",
+            "category": "Stress Test",
+            "hospital": "Fortis Hospital Mumbai",
+            "doctor": "Dr. Amit Gupta",
+            "date": "2024-01-20",
+            "file_type": "pdf",
+            "file_size": "1.8 MB",
+            "summary": "TMT negative for inducible ischemia, good exercise tolerance",
+            "key_findings": ["Exercise duration: 12 minutes", "Peak HR: 165 bpm", "No chest pain"],
+            "tags": ["stress test", "exercise", "ischemia", "fitness"],
+            "upload_date": "2024-01-22T09:15:00Z"
+        },
+        
+        # Orthopedic Reports
+        {
+            "id": "ortho_001",
+            "filename": "Knee_MRI_Report_2024_03_10.pdf",
+            "specialty": "Orthopedics", 
+            "category": "Imaging",
+            "hospital": "AIIMS Delhi",
+            "doctor": "Dr. Vikram Singh",
+            "date": "2024-03-10",
+            "file_type": "pdf",
+            "file_size": "6.2 MB",
+            "summary": "MRI shows mild degenerative changes in medial meniscus",
+            "key_findings": ["Grade 1 meniscal tear", "No ACL injury", "Mild joint effusion"],
+            "tags": ["knee", "mri", "meniscus", "sports injury"],
+            "upload_date": "2024-03-12T16:45:00Z"
+        },
+        {
+            "id": "ortho_002",
+            "filename": "Spine_X_Ray_2024_02_15.pdf",
+            "specialty": "Orthopedics",
+            "category": "X-Ray",
+            "hospital": "Manipal Hospital Bangalore",
+            "doctor": "Dr. Sunita Reddy",
+            "date": "2024-02-15", 
+            "file_type": "pdf",
+            "file_size": "3.4 MB",
+            "summary": "Lumbar spine X-ray shows mild disc space narrowing at L4-L5",
+            "key_findings": ["L4-L5 disc narrowing", "No fractures", "Normal alignment"],
+            "tags": ["spine", "back pain", "disc", "lumbar"],
+            "upload_date": "2024-02-16T11:30:00Z"
+        },
+        
+        # Neurology Reports
+        {
+            "id": "neuro_001",
+            "filename": "Brain_MRI_Report_2024_03_05.pdf",
+            "specialty": "Neurology",
+            "category": "Imaging", 
+            "hospital": "Medanta Hospital Gurgaon",
+            "doctor": "Dr. Ravi Kumar",
+            "date": "2024-03-05",
+            "file_type": "pdf",
+            "file_size": "8.1 MB",
+            "summary": "Brain MRI shows no acute abnormalities, age-appropriate changes",
+            "key_findings": ["No acute lesions", "Normal ventricles", "Mild white matter changes"],
+            "tags": ["brain", "mri", "headache", "neurology"],
+            "upload_date": "2024-03-07T13:20:00Z"
+        },
+        {
+            "id": "neuro_002",
+            "filename": "EEG_Report_2024_01_30.pdf",
+            "specialty": "Neurology",
+            "category": "Diagnostic Test",
+            "hospital": "Kokilaben Hospital Mumbai", 
+            "doctor": "Dr. Meera Sharma",
+            "date": "2024-01-30",
+            "file_type": "pdf",
+            "file_size": "2.7 MB",
+            "summary": "EEG shows normal background activity, no epileptiform discharges",
+            "key_findings": ["Normal alpha rhythm", "No seizure activity", "Good sleep patterns"],
+            "tags": ["eeg", "seizure", "brain waves", "sleep"],
+            "upload_date": "2024-02-01T10:15:00Z"
+        },
+        
+        # Endocrinology Reports
+        {
+            "id": "endo_001",
+            "filename": "Thyroid_Function_Test_2024_03_20.pdf",
+            "specialty": "Endocrinology",
+            "category": "Lab Report",
+            "hospital": "SRL Diagnostics",
+            "doctor": "Dr. Anjali Gupta",
+            "date": "2024-03-20",
+            "file_type": "pdf", 
+            "file_size": "1.2 MB",
+            "summary": "Thyroid function tests within normal limits",
+            "key_findings": ["TSH: 2.1 mIU/L", "T3: 1.2 ng/mL", "T4: 8.5 μg/dL"],
+            "tags": ["thyroid", "hormone", "metabolism", "lab"],
+            "upload_date": "2024-03-21T08:45:00Z"
+        },
+        {
+            "id": "endo_002",
+            "filename": "HbA1c_Diabetes_Panel_2024_02_25.pdf",
+            "specialty": "Endocrinology",
+            "category": "Lab Report",
+            "hospital": "Dr Lal PathLabs",
+            "doctor": "Dr. Suresh Patel",
+            "date": "2024-02-25",
+            "file_type": "pdf",
+            "file_size": "0.9 MB", 
+            "summary": "HbA1c slightly elevated, suggests pre-diabetes",
+            "key_findings": ["HbA1c: 5.8%", "Fasting glucose: 105 mg/dL", "PPBS: 145 mg/dL"],
+            "tags": ["diabetes", "glucose", "hba1c", "prediabetes"],
+            "upload_date": "2024-02-26T15:30:00Z"
+        },
+        
+        # Gastroenterology Reports
+        {
+            "id": "gastro_001",
+            "filename": "Colonoscopy_Report_2024_01_15.pdf",
+            "specialty": "Gastroenterology",
+            "category": "Procedure Report",
+            "hospital": "Asian Institute of Gastroenterology",
+            "doctor": "Dr. Ramesh Babu",
+            "date": "2024-01-15",
+            "file_type": "pdf",
+            "file_size": "3.8 MB",
+            "summary": "Colonoscopy shows normal mucosa, no polyps detected",
+            "key_findings": ["Normal colonic mucosa", "No polyps", "Good bowel prep"],
+            "tags": ["colonoscopy", "colon", "screening", "polyps"],
+            "upload_date": "2024-01-16T12:00:00Z"
+        },
+        
+        # Pulmonology Reports  
+        {
+            "id": "pulmo_001",
+            "filename": "Chest_CT_Report_2024_02_10.pdf",
+            "specialty": "Pulmonology",
+            "category": "Imaging",
+            "hospital": "Chest Research Foundation Pune",
+            "doctor": "Dr. Zarir Udwadia",
+            "date": "2024-02-10",
+            "file_type": "pdf",
+            "file_size": "5.6 MB",
+            "summary": "HRCT chest shows no active pulmonary disease",
+            "key_findings": ["Clear lung fields", "No nodules", "Normal mediastinum"],
+            "tags": ["chest", "lungs", "ct scan", "respiratory"],
+            "upload_date": "2024-02-12T14:25:00Z"
+        },
+        {
+            "id": "pulmo_002",
+            "filename": "Pulmonary_Function_Test_2024_03_01.pdf",
+            "specialty": "Pulmonology", 
+            "category": "Diagnostic Test",
+            "hospital": "Narayana Health Bangalore",
+            "doctor": "Dr. Sheetu Singh",
+            "date": "2024-03-01",
+            "file_type": "pdf",
+            "file_size": "2.1 MB",
+            "summary": "PFT shows normal lung function, no obstruction",
+            "key_findings": ["FEV1: 95% predicted", "FVC: 98% predicted", "Normal flow rates"],
+            "tags": ["pft", "lung function", "breathing", "spirometry"],
+            "upload_date": "2024-03-03T09:40:00Z"
+        }
+    ],
+    "file_categories": [
+        {"id": "lab_reports", "name": "Lab Reports", "count": 15, "icon": "🧪"},
+        {"id": "imaging", "name": "Medical Imaging", "count": 8, "icon": "🏥"},
+        {"id": "diagnostic_tests", "name": "Diagnostic Tests", "count": 6, "icon": "📊"},
+        {"id": "procedure_reports", "name": "Procedure Reports", "count": 4, "icon": "⚕️"},
+        {"id": "prescriptions", "name": "Prescriptions", "count": 12, "icon": "💊"},
+        {"id": "discharge_summaries", "name": "Discharge Summaries", "count": 3, "icon": "📋"}
+    ],
+    "specialties": [
+        {"id": "cardiology", "name": "Cardiology", "count": 8, "color": "#ef4444"},
+        {"id": "orthopedics", "name": "Orthopedics", "count": 6, "color": "#f97316"},
+        {"id": "neurology", "name": "Neurology", "count": 4, "color": "#8b5cf6"},
+        {"id": "endocrinology", "name": "Endocrinology", "count": 5, "color": "#06b6d4"},
+        {"id": "gastroenterology", "name": "Gastroenterology", "count": 3, "color": "#10b981"},
+        {"id": "pulmonology", "name": "Pulmonology", "count": 4, "color": "#f59e0b"},
+        {"id": "dermatology", "name": "Dermatology", "count": 2, "color": "#ec4899"},
+        {"id": "ophthalmology", "name": "Ophthalmology", "count": 2, "color": "#84cc16"}
+    ],
     "recommended_actions": [
         {"id": 1, "title": "Start Zone 2 cardio training", "category": "fitness", "priority": "high", "reason": "Improve mitochondrial function and VO2 max for longevity"},
         {"id": 2, "title": "Optimize sleep to 7-8 hours", "category": "lifestyle", "priority": "high", "reason": "Critical for growth hormone release and cellular repair"},
@@ -251,21 +462,71 @@ async def send_chat_message(message: dict):
         "timestamp": "2024-12-22T12:00:00Z"
     }
 
-# Lab report upload endpoint
-@app.post("/api/lab-reports/upload")
-async def upload_lab_report(report: dict):
+# Medical Files endpoints
+@app.get("/api/medical-files/categories")
+async def get_file_categories():
+    await simulate_delay(150)
+    return mock_data["file_categories"]
+
+@app.get("/api/medical-files/specialties")
+async def get_specialties():
+    await simulate_delay(150)
+    return mock_data["specialties"]
+
+@app.get("/api/medical-files/by-specialty/{specialty}")
+async def get_files_by_specialty(specialty: str):
+    await simulate_delay(250)
+    files = [f for f in mock_data["medical_files"] if f["specialty"].lower() == specialty.lower()]
+    files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
+    return files
+
+@app.get("/api/medical-files/by-category/{category}")
+async def get_files_by_category(category: str):
+    await simulate_delay(250)
+    files = [f for f in mock_data["medical_files"] if f["category"].lower().replace(" ", "_") == category.lower()]
+    files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
+    return files
+
+@app.get("/api/medical-files")
+async def get_medical_files(specialty: str = None, category: str = None, limit: int = 20):
+    await simulate_delay(300)
+    files = mock_data["medical_files"]
+    
+    # Filter by specialty if provided
+    if specialty:
+        files = [f for f in files if f["specialty"].lower() == specialty.lower()]
+    
+    # Filter by category if provided  
+    if category:
+        files = [f for f in files if f["category"].lower() == category.lower()]
+    
+    # Sort by upload date (newest first)
+    files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
+    
+    return files[:limit]
+
+@app.get("/api/medical-files/{file_id}")
+async def get_medical_file_details(file_id: str):
+    await simulate_delay(200)
+    file_detail = next((f for f in mock_data["medical_files"] if f["id"] == file_id), None)
+    if not file_detail:
+        raise HTTPException(status_code=404, detail="Medical file not found")
+    return file_detail
+
+@app.post("/api/medical-files/upload")
+async def upload_medical_file(file_data: dict):
     await simulate_delay(1000)
+    # Simulate file upload processing
     return {
-        "id": 456,
-        "status": "processed",
-        "insights": [
-            "Biological age 3 years younger - excellent longevity trajectory",
-            "VO2 Max in top 25% for age group - maintain cardio fitness", 
-            "Vitamin D deficiency detected - critical for immune function and longevity",
-            "HDL cholesterol suboptimal - Zone 2 training recommended",
-            "Excellent muscle mass and bone density for aging resilience",
-            "Low inflammation markers - continue anti-inflammatory lifestyle"
-        ],
-        "recommendations": mock_data["recommended_actions"][:3],
+        "id": f"upload_{len(mock_data['medical_files']) + 1}",
+        "status": "uploaded",
+        "filename": file_data.get("filename", "unknown.pdf"),
+        "message": "File uploaded and processed successfully",
+        "processing_status": "completed",
+        "extracted_data": {
+            "specialty": "Auto-detected from content",
+            "key_findings": ["Extracted from OCR/AI analysis"],
+            "summary": "AI-generated summary of the medical report"
+        },
         "timestamp": "2024-12-22T12:00:00Z"
     }
