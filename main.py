@@ -62,6 +62,7 @@ app.add_middleware(
         "*"
     ],
     expose_headers=["*"],
+    max_age=86400,  # Cache preflight for 24 hours
 )
 
 # Mock data - in production, this would come from a database
@@ -342,7 +343,11 @@ def health_check():
 # CORS preflight handler for all routes
 @app.options("/{full_path:path}")
 async def options_handler(full_path: str):
-    return {"message": "OK"}
+    from fastapi import Response
+    response = Response(content='{"message": "OK"}', media_type="application/json")
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, HEAD, PATCH"
+    response.headers["Access-Control-Allow-Headers"] = "Accept, Accept-Language, Content-Language, Content-Type, Authorization, X-Requested-With, Origin, Access-Control-Request-Method, Access-Control-Request-Headers, Cache-Control, Pragma"
+    return response
 
 @app.options("/health")
 def health_check_options():
