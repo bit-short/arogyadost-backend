@@ -436,24 +436,67 @@ async def get_chat_threads():
 async def send_chat_message(message: dict):
     await simulate_delay(500)
     user_message = message.get("text", "").lower()
+    file_id = message.get("fileId")  # Optional file context
     
-    # Simple response logic based on keywords
-    if "vitamin d" in user_message:
-        response = "Your Vitamin D level at 28 ng/mL is deficient. For longevity optimization, I recommend 2000-4000 IU daily with K2, plus 15-20 minutes morning sunlight exposure."
-    elif "hba1c" in user_message or "diabetes" in user_message:
-        response = "Your HbA1c of 5.8% is in the pre-diabetic range. For longevity, implement 16:8 intermittent fasting, post-meal walks, and consider berberine supplementation."
-    elif "cholesterol" in user_message or "hdl" in user_message:
-        response = "Your HDL at 42 mg/dL needs improvement for cardiovascular longevity. Add Zone 2 cardio 3x/week, omega-3 supplements, and increase NEAT activities."
-    elif "exercise" in user_message or "vo2" in user_message:
-        response = "Your VO2 Max of 42 mL/kg/min is good but can improve. Focus on Zone 2 cardio (180-age formula) for 45min, 3x/week for longevity benefits."
-    elif "testosterone" in user_message or "hormone" in user_message:
-        response = "Your testosterone at 485 ng/dL is healthy. Maintain with 7-8 hours sleep, zinc/magnesium supplementation, and regular strength training."
-    elif "longevity" in user_message or "aging" in user_message:
-        response = "Your biological age is 3 years younger than chronological age! Focus on: Zone 2 cardio, strength training, sleep optimization, and stress management."
-    elif "supplement" in user_message:
-        response = "Based on your labs, prioritize: Vitamin D3 (2000 IU), Omega-3 (2g EPA/DHA), Magnesium Glycinate (400mg), and consider NMN for longevity."
+    # Get file context if provided
+    file_context = None
+    if file_id:
+        file_context = next((f for f in mock_data["medical_files"] if f["id"] == file_id), None)
+    
+    # Enhanced response logic with file context
+    if file_context:
+        # File-specific responses
+        specialty = file_context["specialty"].lower()
+        category = file_context["category"].lower()
+        
+        if "explain" in user_message or "what does" in user_message:
+            if specialty == "cardiology":
+                response = f"Based on your {file_context['category']} from {file_context['hospital']}, let me explain the key findings: {', '.join(file_context['key_findings'][:2])}. This indicates your cardiovascular health status and any areas that need attention."
+            elif specialty == "endocrinology":
+                response = f"Your {file_context['category']} shows important metabolic markers. The key findings: {', '.join(file_context['key_findings'][:2])}. These values help assess your hormonal balance and metabolic health for longevity optimization."
+            elif specialty == "orthopedics":
+                response = f"This {file_context['category']} from {file_context['hospital']} reveals: {', '.join(file_context['key_findings'][:2])}. For longevity, maintaining bone and joint health is crucial for mobility and quality of life as you age."
+            else:
+                response = f"Your {file_context['category']} from {file_context['date']} shows: {file_context['summary']}. Key findings include: {', '.join(file_context['key_findings'][:2])}. This is important for your overall health assessment."
+        
+        elif "recommend" in user_message or "what should" in user_message:
+            if specialty == "cardiology":
+                response = f"Based on your cardiac assessment, I recommend: 1) Zone 2 cardio training 3x/week to improve VO2 max, 2) Omega-3 supplementation (2g EPA/DHA daily), 3) Monitor HRV for recovery tracking, 4) Consider CoQ10 for heart health."
+            elif specialty == "endocrinology":
+                response = f"For optimal metabolic health based on your results: 1) Implement 16:8 intermittent fasting, 2) Add post-meal walks to improve glucose response, 3) Consider berberine or metformin, 4) Prioritize 7-8 hours of quality sleep for hormone optimization."
+            elif specialty == "orthopedics":
+                response = f"To support your musculoskeletal health: 1) Resistance training 3x/week to maintain bone density, 2) Adequate protein intake (1.6g/kg body weight), 3) Vitamin D3 + K2 supplementation, 4) Consider collagen peptides for joint health."
+            else:
+                response = f"Based on your {specialty} report, focus on: 1) Regular monitoring of the identified markers, 2) Lifestyle interventions specific to your condition, 3) Follow-up with your specialist as recommended, 4) Maintain a longevity-focused lifestyle."
+        
+        elif "concern" in user_message or "worried" in user_message:
+            response = f"I understand your concerns about the {file_context['category']} results. The findings '{', '.join(file_context['key_findings'][:1])}' are manageable with proper intervention. Your doctor {file_context['doctor']} at {file_context['hospital']} is the best person to discuss treatment options and next steps."
+        
+        elif "normal" in user_message or "good" in user_message:
+            response = f"Yes, many aspects of your {file_context['category']} appear within normal ranges. The summary states: {file_context['summary']}. This is positive for your longevity goals. Continue your current health optimization strategies and regular monitoring."
+        
+        else:
+            # Default file-specific response
+            response = f"I'm analyzing your {file_context['category']} from {file_context['hospital']} dated {file_context['date']}. The report shows: {file_context['summary']}. Key findings include: {', '.join(file_context['key_findings'][:2])}. What specific aspect would you like me to explain or provide recommendations for?"
+    
     else:
-        response = "Your longevity profile shows excellent potential. Key focus areas: fix vitamin D deficiency, improve HDL with cardio, maintain muscle mass, and optimize sleep quality."
+        # General health responses (existing logic)
+        if "vitamin d" in user_message:
+            response = "Your Vitamin D level at 28 ng/mL is deficient. For longevity optimization, I recommend 2000-4000 IU daily with K2, plus 15-20 minutes morning sunlight exposure."
+        elif "hba1c" in user_message or "diabetes" in user_message:
+            response = "Your HbA1c of 5.8% is in the pre-diabetic range. For longevity, implement 16:8 intermittent fasting, post-meal walks, and consider berberine supplementation."
+        elif "cholesterol" in user_message or "hdl" in user_message:
+            response = "Your HDL at 42 mg/dL needs improvement for cardiovascular longevity. Add Zone 2 cardio 3x/week, omega-3 supplements, and increase NEAT activities."
+        elif "exercise" in user_message or "vo2" in user_message:
+            response = "Your VO2 Max of 42 mL/kg/min is good but can improve. Focus on Zone 2 cardio (180-age formula) for 45min, 3x/week for longevity benefits."
+        elif "testosterone" in user_message or "hormone" in user_message:
+            response = "Your testosterone at 485 ng/dL is healthy. Maintain with 7-8 hours sleep, zinc/magnesium supplementation, and regular strength training."
+        elif "longevity" in user_message or "aging" in user_message:
+            response = "Your biological age is 3 years younger than chronological age! Focus on: Zone 2 cardio, strength training, sleep optimization, and stress management."
+        elif "supplement" in user_message:
+            response = "Based on your labs, prioritize: Vitamin D3 (2000 IU), Omega-3 (2g EPA/DHA), Magnesium Glycinate (400mg), and consider NMN for longevity."
+        else:
+            response = "Your longevity profile shows excellent potential. Key focus areas: fix vitamin D deficiency, improve HDL with cardio, maintain muscle mass, and optimize sleep quality."
     
     return {
         "id": 123,
