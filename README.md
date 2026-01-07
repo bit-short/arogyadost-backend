@@ -58,6 +58,14 @@ API will be available at http://localhost:8000
 - `GET /api/chat/threads` - Get chat threads
 - `POST /api/chat/message` - Send chat message
 
+## Documentation
+
+All documentation is in the `docs/` folder:
+- `docs/API_DOCUMENTATION.md` - Complete API reference
+- `docs/API_ARCHITECTURE.md` - System architecture overview
+- `docs/DEPLOYMENT.md` - Deployment guide
+- `docs/CI-CD-SETUP.md` - GitHub Actions CI/CD setup
+
 ## Deployment
 
 ### Automatic Deployment (CI/CD)
@@ -65,10 +73,10 @@ API will be available at http://localhost:8000
 - **Push to `main` branch** → Auto-deploys to production environment
 
 ### Manual Deployment
-See `DEPLOYMENT.md` for detailed deployment instructions.
+See `docs/DEPLOYMENT.md` for detailed deployment instructions.
 
 ### CI/CD Setup
-See `CI-CD-SETUP.md` for GitHub Actions configuration.
+See `docs/CI-CD-SETUP.md` for GitHub Actions configuration.
 
 ## Architecture
 

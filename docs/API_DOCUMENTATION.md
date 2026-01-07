@@ -247,6 +247,35 @@ POST /api/chat/message
 
 ---
 
+## Medical Files
+
+### Get File Categories
+```
+GET /api/medical-files/categories
+```
+
+### Get Specialties
+```
+GET /api/medical-files/specialties
+```
+
+### Get Files by Specialty
+```
+GET /api/medical-files/by-specialty/{specialty}
+```
+
+### Get Files by Category
+```
+GET /api/medical-files/by-category/{category}
+```
+
+### Get All Medical Files
+```
+GET /api/medical-files?specialty=Cardiology&category=Imaging&limit=20
+```
+
+---
+
 ## Lab Reports
 
 ### Upload Lab Report
