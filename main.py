@@ -3,12 +3,16 @@ import json
 import asyncio
 from pathlib import Path
 from cors_config import setup_cors, create_cors_preflight_handler
+from app.routers.digital_twin import router as digital_twin_router
 
 app = FastAPI(title="Aarogyadost API")
 
 # Setup CORS using centralized configuration
 setup_cors(app)
 create_cors_preflight_handler(app)
+
+# Include routers
+app.include_router(digital_twin_router)
 
 # Mock data - in production, this would come from a database
 mock_data = {
