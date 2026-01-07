@@ -13,3 +13,6 @@ venv/
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+# Kiro settings (may contain secrets)
+.kiro/settings/
