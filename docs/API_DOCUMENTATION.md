@@ -2,13 +2,16 @@
 
 ## Base URLs
 ```
-Development: http://localhost:8000
+Local Development: http://localhost:8000
+Development: https://api-dev.arogyadost.in
 Production: https://api.arogyadost.in
 ```
 
 ## Interactive Documentation
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
+- **Swagger UI (Local)**: http://localhost:8000/docs
+- **Swagger UI (Dev)**: https://api-dev.arogyadost.in/docs
+- **ReDoc (Local)**: http://localhost:8000/redoc
+- **ReDoc (Dev)**: https://api-dev.arogyadost.in/redoc
 
 ---
 
@@ -239,24 +242,42 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 ### 2. Create a Digital Twin
 ```bash
+# Local
 curl -X POST "http://localhost:8000/api/digital-twin/users/user_123/create"
+
+# Dev Environment
+curl -X POST "https://api-dev.arogyadost.in/api/digital-twin/users/user_123/create"
 ```
 
 ### 3. Add Health Data
 ```bash
+# Local
 curl -X POST "http://localhost:8000/api/digital-twin/users/user_123/data" \
+  -H "Content-Type: application/json" \
+  -d '{"domain": "biomarkers", "field": "cholesterol", "value": 220, "unit": "mg/dL"}'
+
+# Dev Environment  
+curl -X POST "https://api-dev.arogyadost.in/api/digital-twin/users/user_123/data" \
   -H "Content-Type: application/json" \
   -d '{"domain": "biomarkers", "field": "cholesterol", "value": 220, "unit": "mg/dL"}'
 ```
 
 ### 4. Get Recommendations
 ```bash
+# Local
 curl "http://localhost:8000/api/recommendations/user_123"
+
+# Dev Environment
+curl "https://api-dev.arogyadost.in/api/recommendations/user_123"
 ```
 
 ### 5. Start Chat Session
 ```bash
+# Local
 curl -X POST "http://localhost:8000/api/chat/sessions?user_id=user_123&title=Health Chat"
+
+# Dev Environment
+curl -X POST "https://api-dev.arogyadost.in/api/chat/sessions?user_id=user_123&title=Health Chat"
 ```
 
 ---
