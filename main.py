@@ -6,6 +6,7 @@ from cors_config import setup_cors, create_cors_preflight_handler
 from app.routers.digital_twin import router as digital_twin_router
 from app.routers.biological_age import router as biological_age_router
 from app.routers.recommendations import router as recommendations_router
+from app.routers.chat import router as chat_router
 
 app = FastAPI(title="Aarogyadost API")
 
@@ -17,6 +18,7 @@ create_cors_preflight_handler(app)
 app.include_router(digital_twin_router)
 app.include_router(biological_age_router)
 app.include_router(recommendations_router)
+app.include_router(chat_router)
 
 # Mock data - in production, this would come from a database
 mock_data = {
