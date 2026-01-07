@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aarogyadost - User Selection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .current-user {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: white;
+            text-align: center;
+        }
+        
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .user-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            position: relative;
+        }
+        
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .user-card.active {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+        
+        .user-card.hardcoded {
+            border-color: #FF9800;
+            background: rgba(255, 152, 0, 0.1);
+        }
+        
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .user-id {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #333;
+        }
+        
+        .user-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .badge-hardcoded {
+            background: #FF9800;
+            color: white;
+        }
+        
+        .badge-dataset {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .badge-active {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .user-info {
+            margin-bottom: 15px;
+        }
+        
+        .user-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .data-indicators {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        
+        .indicator {
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .indicator.available {
+            background: #E8F5E8;
+            color: #4CAF50;
+        }
+        
+        .indicator.unavailable {
+            background: #FFEBEE;
+            color: #F44336;
+        }
+        
+        .completeness-bar {
+            width: 100%;
+            height: 8px;
+            background: #E0E0E0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .completeness-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.3s ease;
+        }
+        
+        .completeness-text {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            margin: 50px 0;
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid #F44336;
+            color: #F44336;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .success {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid #4CAF50;
+            color: #4CAF50;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 40px;
+        }
+        
+        .api-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .api-link {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+        
+        .api-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Aarogyadost User Selection</h1>
+            <p>Select a test user to switch context for development and testing</p>
+        </div>
+        
+        <div class="current-user" id="currentUser">
+            <div class="loading">Loading current user...</div>
+        </div>
+        
+        <div id="message"></div>
+        
+        <div class="users-grid" id="usersGrid">
+            <div class="loading">Loading available users...</div>
+        </div>
+        
+        <div class="footer">
+            <p>Development Tool - Switch between test users for comprehensive testing</p>
+            <div class="api-links">
+                <a href="/docs" class="api-link" target="_blank">📚 API Docs</a>
+                <a href="/redoc" class="api-link" target="_blank">📖 ReDoc</a>
+                <a href="#" class="api-link" onclick="refreshUsers()">🔄 Refresh</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let currentUserId = null;
+        
+        async function loadCurrentUser() {
+            try {
+                const response = await fetch(`${API_BASE}/api/users/current`);
+                const data = await response.json();
+                
+                currentUserId = data.active_user.user_id;
+                
+                const currentUserDiv = document.getElementById('currentUser');
+                currentUserDiv.innerHTML = `
+                    <h3>Current Active User</h3>
+                    <p><strong>${data.active_user.display_name}</strong></p>
+                    <p>Age: ${data.active_user.demographics.age} | Gender: ${data.active_user.demographics.gender}</p>
+                    ${data.is_default ? '<p style="color: #FFD700;">⚠️ Using hardcoded default data</p>' : ''}
+                `;
+            } catch (error) {
+                console.error('Error loading current user:', error);
+                document.getElementById('currentUser').innerHTML = `
+                    <div class="error">Failed to load current user</div>
+                `;
+            }
+        }
+        
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_BASE}/api/users/available`);
+                const data = await response.json();
+                
+                const usersGrid = document.getElementById('usersGrid');
+                usersGrid.innerHTML = '';
+                
+                data.users.forEach(user => {
+                    const userCard = createUserCard(user);
+                    usersGrid.appendChild(userCard);
+                });
+                
+            } catch (error) {
+                console.error('Error loading users:', error);
+                document.getElementById('usersGrid').innerHTML = `
+                    <div class="error">Failed to load users: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function createUserCard(user) {
+            const card = document.createElement('div');
+            card.className = `user-card ${user.is_hardcoded ? 'hardcoded' : ''} ${user.user_id === currentUserId ? 'active' : ''}`;
+            card.onclick = () => selectUser(user.user_id);
+            
+            const dataIndicators = [
+                { key: 'biomarkers', label: 'Biomarkers', available: user.data_availability.biomarkers },
+                { key: 'medical_history', label: 'Medical History', available: user.data_availability.medical_history },
+                { key: 'lifestyle', label: 'Lifestyle', available: user.data_availability.lifestyle },
+                { key: 'ai_interactions', label: 'AI Chat', available: user.data_availability.ai_interactions },
+                { key: 'interventions', label: 'Interventions', available: user.data_availability.interventions }
+            ];
+            
+            card.innerHTML = `
+                <div class="user-header">
+                    <div class="user-id">${user.display_name}</div>
+                    <div class="user-badge ${user.is_hardcoded ? 'badge-hardcoded' : 'badge-dataset'}">
+                        ${user.is_hardcoded ? 'HARDCODED' : 'DATASET'}
+                    </div>
+                    ${user.user_id === currentUserId ? '<div class="user-badge badge-active">ACTIVE</div>' : ''}
+                </div>
+                
+                <div class="user-info">
+                    <p><strong>Age:</strong> ${user.demographics.age} years</p>
+                    <p><strong>Gender:</strong> ${user.demographics.gender}</p>
+                    ${user.demographics.location ? `<p><strong>Location:</strong> ${user.demographics.location.city || 'Unknown'}</p>` : ''}
+                    ${user.health_profile?.bmi ? `<p><strong>BMI:</strong> ${user.health_profile.bmi}</p>` : ''}
+                    ${user.health_profile?.biological_age ? `<p><strong>Bio Age:</strong> ${user.health_profile.biological_age}</p>` : ''}
+                </div>
+                
+                <div class="data-indicators">
+                    ${dataIndicators.map(indicator => `
+                        <span class="indicator ${indicator.available ? 'available' : 'unavailable'}">
+                            ${indicator.label}
+                        </span>
+                    `).join('')}
+                </div>
+                
+                <div class="completeness-bar">
+                    <div class="completeness-fill" style="width: ${user.data_availability.completeness_score}%"></div>
+                </div>
+                <div class="completeness-text">
+                    Data Completeness: ${user.data_availability.completeness_score.toFixed(1)}%
+                </div>
+                
+                ${user.goals.length > 0 ? `
+                    <div style="margin-top: 10px;">
+                        <strong>Goals:</strong> ${user.goals.length} active
+                    </div>
+                ` : ''}
+            `;
+            
+            return card;
+        }
+        
+        async function selectUser(userId) {
+            try {
+                showMessage('Selecting user...', 'info');
+                
+                const response = await fetch(`${API_BASE}/api/users/select`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage(`Successfully selected: ${data.selected_user.display_name}`, 'success');
+                    currentUserId = userId;
+                    await loadCurrentUser();
+                    await loadUsers(); // Refresh to update active indicators
+                } else {
+                    showMessage(`Error: ${data.detail}`, 'error');
+                }
+                
+            } catch (error) {
+                console.error('Error selecting user:', error);
+                showMessage(`Failed to select user: ${error.message}`, 'error');
+            }
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="${type}">${text}</div>`;
+            
+            // Auto-hide success messages
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageDiv.innerHTML = '';
+                }, 3000);
+            }
+        }
+        
+        async function refreshUsers() {
+            showMessage('Refreshing users...', 'info');
+            await loadCurrentUser();
+            await loadUsers();
+            showMessage('Users refreshed!', 'success');
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadCurrentUser();
+            await loadUsers();
+        });
+    </script>
+</body>
+</html>
