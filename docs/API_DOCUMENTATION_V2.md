@@ -70,6 +70,11 @@ GET /api/digital-twin/users/{user_id}/profile
 }
 ```
 
+### Get Data Completeness
+```http
+GET /api/digital-twin/users/{user_id}/completeness
+```
+
 ---
 
 ## 🧠 Biological Age API
@@ -97,6 +102,11 @@ POST /api/biological-age/users/{user_id}/predict
     "Excellent metabolic health contributing to younger biological age"
   ]
 }
+```
+
+### Get Age Insights
+```http
+POST /api/biological-age/users/{user_id}/insights
 ```
 
 ---
@@ -141,6 +151,11 @@ GET /api/recommendations/{user_id}
 }
 ```
 
+### Get Recommendations Summary
+```http
+GET /api/recommendations/{user_id}/summary
+```
+
 ---
 
 ## 💬 Health Chat Assistant API
@@ -148,6 +163,35 @@ GET /api/recommendations/{user_id}
 ### Create Chat Session
 ```http
 POST /api/chat/sessions?user_id={user_id}&title=Health Discussion
+```
+
+**Response:**
+```json
+{
+  "session_id": "session_abc123",
+  "user_id": "user_123",
+  "title": "Health Discussion",
+  "created_at": "2024-01-08T03:30:00Z",
+  "message_count": 0
+}
+```
+
+### List Chat Sessions
+```http
+GET /api/chat/sessions?user_id={user_id}&limit=50
+```
+
+**Response:**
+```json
+[
+  {
+    "session_id": "session_abc123",
+    "title": "Health Discussion",
+    "last_message_preview": "What can you tell me about my cholesterol...",
+    "last_activity": "2024-01-08T03:30:00Z",
+    "message_count": 5
+  }
+]
 ```
 
 ### Send Message with Streaming
@@ -166,11 +210,28 @@ POST /api/chat/sessions/{session_id}/messages?user_id={user_id}
 **Response (Server-Sent Events):**
 ```
 data: {"type": "session_info", "data": {"session_id": "session_abc123"}}
+
 data: {"type": "thinking", "data": "Analyzing your health data..."}
+
 data: {"type": "token", "data": "Based "}
+
 data: {"type": "token", "data": "on "}
-data: {"type": "complete", "data": "Based on your recent test results..."}
+
+data: {"type": "token", "data": "your "}
+
+data: {"type": "complete", "data": "Based on your recent test results, your cholesterol level is 220 mg/dL, which is high..."}
+
 data: {"type": "stream_end"}
+```
+
+### Get Session Messages
+```http
+GET /api/chat/sessions/{session_id}/messages?user_id={user_id}&limit=50&offset=0
+```
+
+### Delete Chat Session
+```http
+DELETE /api/chat/sessions/{session_id}?user_id={user_id}
 ```
 
 ### Send Simple Message (Non-Streaming)
@@ -204,6 +265,17 @@ POST /api/chat/message?user_id={user_id}
 GET /api/admin/llm/config
 ```
 
+**Response:**
+```json
+{
+  "provider": "aws_bedrock",
+  "model_id": "amazon.titan-text-lite-v1",
+  "region": "us-east-1",
+  "max_tokens": 1000,
+  "temperature": 0.7
+}
+```
+
 ### Update LLM Configuration
 ```http
 PUT /api/admin/llm/config
@@ -223,9 +295,172 @@ PUT /api/admin/llm/config
 GET /api/admin/llm/models
 ```
 
+**Response:**
+```json
+{
+  "cheap_models": [
+    {
+      "model_id": "amazon.titan-text-lite-v1",
+      "name": "Amazon Titan Text Lite",
+      "cost": "Very Low",
+      "description": "Lightweight model for basic text generation"
+    }
+  ],
+  "premium_models": [
+    {
+      "model_id": "anthropic.claude-3-haiku-20240307-v1:0",
+      "name": "Claude 3 Haiku",
+      "cost": "Medium",
+      "description": "Fast, accurate responses"
+    }
+  ]
+}
+```
+
 ### Test LLM Connection
 ```http
 POST /api/admin/llm/test?test_prompt=Hello, how are you?
+```
+
+---
+
+## 📊 Legacy Health Endpoints (Mock Data)
+
+### Get Health Categories
+```http
+GET /api/health/biomarkers
+```
+
+### Get Health Recommendations
+```http
+GET /api/health/recommendations
+```
+
+### Get Health Metrics
+```http
+GET /api/health/metrics
+```
+
+### Get Health Status
+```http
+GET /api/health/status
+```
+
+### Get Biomarker Details
+```http
+GET /api/biomarkers/{id}
+```
+
+---
+
+## 👨‍⚕️ Doctors & Labs (Mock Data)
+
+### Get Doctors
+```http
+GET /api/doctors
+```
+
+### Get Doctor Details
+```http
+GET /api/doctors/{id}
+```
+
+### Get Labs
+```http
+GET /api/labs
+```
+
+### Get Lab Details
+```http
+GET /api/labs/{id}
+```
+
+---
+
+## 📁 Medical Files (Mock Data)
+
+### Get File Categories
+```http
+GET /api/medical-files/categories
+```
+
+### Get Medical Specialties
+```http
+GET /api/medical-files/specialties
+```
+
+### Get Files by Specialty
+```http
+GET /api/medical-files/by-specialty/{specialty}
+```
+
+### Get Files by Category
+```http
+GET /api/medical-files/by-category/{category}
+```
+
+### Get All Files
+```http
+GET /api/medical-files?specialty=Cardiology&category=Imaging&limit=20
+```
+
+### Get File Details
+```http
+GET /api/medical-files/{file_id}
+```
+
+### Upload Medical File
+```http
+POST /api/medical-files/upload
+```
+
+---
+
+## 🔐 Authentication & Security
+
+**Current Status:** No authentication required (development mode)
+
+**Coming Soon:**
+- JWT token authentication
+- User session management
+- Role-based access control
+
+---
+
+## 📝 Request/Response Format
+
+### Content Types
+- **Request**: `application/json`
+- **Response**: `application/json`
+- **Streaming**: `text/event-stream`
+
+### Common Headers
+```http
+Content-Type: application/json
+Accept: application/json
+```
+
+### Error Responses
+
+**400 Bad Request:**
+```json
+{
+  "detail": "Invalid request parameters"
+}
+```
+
+**404 Not Found:**
+```json
+{
+  "detail": "Resource not found"
+}
+```
+
+**500 Internal Server Error:**
+```json
+{
+  "detail": "Internal server error"
+}
 ```
 
 ---
@@ -264,9 +499,14 @@ curl -X POST "http://localhost:8000/api/chat/sessions?user_id=user_123&title=Hea
 ## 💰 AWS Bedrock Costs
 
 ### Model Pricing (per 1K tokens)
-- **Titan Text Lite**: $0.0003 input / $0.0004 output (~$0.81/month for 100 conversations/day)
-- **Titan Text Express**: $0.0008 input / $0.0016 output
+- **Titan Text Lite**: $0.0003 input / $0.0004 output
+- **Titan Text Express**: $0.0008 input / $0.0016 output  
 - **Claude 3 Haiku**: $0.00025 input / $0.00125 output
+
+### Estimated Monthly Costs
+- **100 conversations/day**: ~$0.81/month (Titan Lite)
+- **500 conversations/day**: ~$4.05/month (Titan Lite)
+- **1000 conversations/day**: ~$8.10/month (Titan Lite)
 
 ---
 
@@ -281,4 +521,15 @@ curl -X POST "http://localhost:8000/api/chat/sessions?user_id=user_123&title=Hea
 
 ---
 
-**Last Updated:** January 8, 2024 | **API Version:** 2.0 | **Status:** ✅ Complete
+## 📞 Support
+
+For API questions or issues:
+- Check interactive docs: http://localhost:8000/docs
+- Review this documentation
+- Contact the development team
+
+---
+
+**Last Updated:** January 8, 2024  
+**API Version:** 2.0  
+**Documentation Status:** ✅ Complete
