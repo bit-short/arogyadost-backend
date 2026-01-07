@@ -2,11 +2,9 @@ from fastapi import APIRouter, HTTPException
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 from app.models.digital_twin import DigitalTwin, FieldState
+from app.storage.digital_twins import digital_twins
 
 router = APIRouter(prefix="/api/digital-twin", tags=["digital-twin"])
-
-# In-memory storage for demo (replace with database in production)
-digital_twins: Dict[str, DigitalTwin] = {}
 
 
 @router.post("/users/{user_id}/create")
