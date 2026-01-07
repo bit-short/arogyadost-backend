@@ -23,11 +23,11 @@ This document specifies the requirements for an AI-powered health insights syste
 
 #### Acceptance Criteria
 
-1. WHEN a user has sufficient biomarker data THEN THE Health_Insights_System SHALL calculate a biological age estimate
-2. WHEN calculating biological age THEN THE Health_Insights_System SHALL use validated biomarker correlations with aging
-3. WHEN displaying biological age THEN THE Health_Insights_System SHALL show the chronological age for comparison
-4. WHEN biomarker data is insufficient THEN THE Health_Insights_System SHALL indicate which additional biomarkers are needed
-5. WHEN biological age is calculated THEN THE Health_Insights_System SHALL provide a confidence score for the prediction
+1. WHEN a User has at least 5 Biomarker values, THE Health_Insights_System SHALL calculate a Biological_Age estimate
+2. WHEN calculating Biological_Age, THE Health_Insights_System SHALL use validated Biomarker correlations with aging
+3. WHEN displaying Biological_Age, THE Health_Insights_System SHALL show the chronological age for comparison
+4. IF Biomarker data contains fewer than 5 values, THEN THE Health_Insights_System SHALL indicate which additional Biomarkers are needed
+5. WHEN Biological_Age is calculated, THE Health_Insights_System SHALL provide a confidence score between 0 and 1
 
 ### Requirement 2: Blood Report Analysis
 
@@ -35,11 +35,11 @@ This document specifies the requirements for an AI-powered health insights syste
 
 #### Acceptance Criteria
 
-1. WHEN a blood report is uploaded THEN THE Health_Insights_System SHALL extract all biomarker values
-2. WHEN biomarker values are extracted THEN THE Health_Insights_System SHALL compare them against reference ranges
-3. WHEN a biomarker is outside the reference range THEN THE Health_Insights_System SHALL flag it as abnormal
-4. WHEN multiple biomarkers are abnormal THEN THE Health_Insights_System SHALL identify potential patterns or correlations
-5. WHEN analysis is complete THEN THE Health_Insights_System SHALL generate a summary of key findings
+1. WHEN a Blood_Report is uploaded, THE Health_Insights_System SHALL extract all Biomarker values
+2. WHEN Biomarker values are extracted, THE Health_Insights_System SHALL compare them against Reference_Range values
+3. WHEN a Biomarker is outside the Reference_Range, THE Health_Insights_System SHALL flag it as abnormal
+4. WHEN 2 or more Biomarkers are abnormal, THE Health_Insights_System SHALL identify potential patterns or correlations
+5. WHEN analysis is complete, THE Health_Insights_System SHALL generate a summary of key findings
 
 ### Requirement 3: Personalized Action Recommendations
 
@@ -47,11 +47,11 @@ This document specifies the requirements for an AI-powered health insights syste
 
 #### Acceptance Criteria
 
-1. WHEN abnormal biomarkers are identified THEN THE Health_Insights_System SHALL generate targeted recommendations
-2. WHEN generating recommendations THEN THE Health_Insights_System SHALL prioritize actions by potential health impact
-3. WHEN a recommendation is provided THEN THE Health_Insights_System SHALL include the rationale based on the user's data
-4. WHEN multiple recommendations exist THEN THE Health_Insights_System SHALL limit the list to the top 5 most impactful actions
-5. WHEN recommendations are generated THEN THE Health_Insights_System SHALL categorize them by type (diet, exercise, lifestyle, medical consultation)
+1. WHEN abnormal Biomarkers are identified, THE Health_Insights_System SHALL generate targeted Action_Recommendations
+2. WHEN generating Action_Recommendations, THE Health_Insights_System SHALL prioritize actions by potential health impact
+3. WHEN an Action_Recommendation is provided, THE Health_Insights_System SHALL include the rationale based on the User's data
+4. WHEN Action_Recommendations are generated, THE Health_Insights_System SHALL limit the list to the top 5 most impactful actions
+5. WHEN Action_Recommendations are generated, THE Health_Insights_System SHALL categorize them by type (diet, exercise, lifestyle, medical consultation)
 
 ### Requirement 4: Trend Analysis and Insights
 
@@ -59,11 +59,11 @@ This document specifies the requirements for an AI-powered health insights syste
 
 #### Acceptance Criteria
 
-1. WHEN a user has multiple blood reports THEN THE Health_Insights_System SHALL identify trends in biomarker values
-2. WHEN a biomarker shows improvement THEN THE Health_Insights_System SHALL highlight the positive trend
-3. WHEN a biomarker shows deterioration THEN THE Health_Insights_System SHALL alert the user with increased priority
-4. WHEN analyzing trends THEN THE Health_Insights_System SHALL calculate the rate of change for key biomarkers
-5. WHEN trends are displayed THEN THE Health_Insights_System SHALL show visual representations of changes over time
+1. WHEN a User has 2 or more Blood_Reports, THE Health_Insights_System SHALL identify trends in Biomarker values
+2. WHEN a Biomarker value improves by 10% or more, THE Health_Insights_System SHALL highlight the positive trend
+3. WHEN a Biomarker value deteriorates by 10% or more, THE Health_Insights_System SHALL alert the User with increased priority
+4. WHEN analyzing trends, THE Health_Insights_System SHALL calculate the rate of change per month for key Biomarkers
+5. WHEN trends are displayed, THE Health_Insights_System SHALL show visual representations of changes over time
 
 ### Requirement 5: Risk Assessment
 
@@ -71,11 +71,11 @@ This document specifies the requirements for an AI-powered health insights syste
 
 #### Acceptance Criteria
 
-1. WHEN biomarker data is analyzed THEN THE Health_Insights_System SHALL assess risk for common conditions (cardiovascular disease, diabetes, metabolic syndrome)
-2. WHEN a risk is identified THEN THE Health_Insights_System SHALL provide a risk level (low, moderate, high)
-3. WHEN a high risk is detected THEN THE Health_Insights_System SHALL recommend medical consultation
-4. WHEN calculating risk THEN THE Health_Insights_System SHALL consider multiple biomarkers and their interactions
-5. WHEN risk assessment is complete THEN THE Health_Insights_System SHALL explain which biomarkers contribute to the risk
+1. WHEN Biomarker data is analyzed, THE Health_Insights_System SHALL assess risk for cardiovascular disease, diabetes, and metabolic syndrome
+2. WHEN a risk is identified, THE Health_Insights_System SHALL provide a risk level (low, moderate, high)
+3. WHEN a high risk is detected, THE Health_Insights_System SHALL recommend medical consultation
+4. WHEN calculating risk, THE Health_Insights_System SHALL consider at least 3 Biomarkers and their interactions
+5. WHEN risk assessment is complete, THE Health_Insights_System SHALL explain which Biomarkers contribute to the risk
 
 ### Requirement 6: Data Privacy and Security
 
@@ -83,11 +83,11 @@ This document specifies the requirements for an AI-powered health insights syste
 
 #### Acceptance Criteria
 
-1. WHEN health data is stored THEN THE Health_Insights_System SHALL encrypt it at rest
-2. WHEN health data is transmitted THEN THE Health_Insights_System SHALL use secure protocols (HTTPS/TLS)
-3. WHEN AI analysis is performed THEN THE Health_Insights_System SHALL not share identifiable user data with third parties
-4. WHEN a user requests data deletion THEN THE Health_Insights_System SHALL remove all associated health data
-5. WHEN accessing health data THEN THE Health_Insights_System SHALL require authentication and authorization
+1. WHEN health data is stored, THE Health_Insights_System SHALL encrypt it at rest using AES-256
+2. WHEN health data is transmitted, THE Health_Insights_System SHALL use TLS 1.2 or higher
+3. WHEN AI analysis is performed, THE Health_Insights_System SHALL process data without sharing identifiable User information with third parties
+4. WHEN a User requests data deletion, THE Health_Insights_System SHALL remove all associated health data within 30 days
+5. WHEN accessing health data, THE Health_Insights_System SHALL require authentication and authorization
 
 ### Requirement 7: Insight Generation
 
@@ -95,11 +95,11 @@ This document specifies the requirements for an AI-powered health insights syste
 
 #### Acceptance Criteria
 
-1. WHEN insights are generated THEN THE Health_Insights_System SHALL use plain language without excessive medical jargon
-2. WHEN an insight references a biomarker THEN THE Health_Insights_System SHALL explain what the biomarker measures
-3. WHEN insights are displayed THEN THE Health_Insights_System SHALL organize them by importance or urgency
-4. WHEN an insight requires context THEN THE Health_Insights_System SHALL provide relevant background information
-5. WHEN insights are complex THEN THE Health_Insights_System SHALL break them into digestible sections
+1. WHEN Insights are generated, THE Health_Insights_System SHALL use plain language with medical terms defined in context
+2. WHEN an Insight references a Biomarker, THE Health_Insights_System SHALL explain what the Biomarker measures
+3. WHEN Insights are displayed, THE Health_Insights_System SHALL organize them by importance or urgency
+4. WHEN an Insight requires context, THE Health_Insights_System SHALL provide relevant background information
+5. WHEN Insights contain more than 3 key points, THE Health_Insights_System SHALL break them into digestible sections
 
 ### Requirement 8: AI Model Integration
 
@@ -107,8 +107,8 @@ This document specifies the requirements for an AI-powered health insights syste
 
 #### Acceptance Criteria
 
-1. WHEN AI models are deployed THEN THE Health_Insights_System SHALL version them for tracking
-2. WHEN new models are available THEN THE Health_Insights_System SHALL support model updates without system downtime
-3. WHEN models make predictions THEN THE Health_Insights_System SHALL log model version and confidence scores
-4. WHEN model performance degrades THEN THE Health_Insights_System SHALL alert administrators
-5. WHEN multiple models exist THEN THE Health_Insights_System SHALL support A/B testing for model comparison
+1. WHEN AI models are deployed, THE Health_Insights_System SHALL version them using semantic versioning
+2. WHEN new models are available, THE Health_Insights_System SHALL support model updates without system downtime
+3. WHEN models make predictions, THE Health_Insights_System SHALL log model version and confidence scores
+4. WHEN model prediction accuracy drops below 80%, THE Health_Insights_System SHALL alert administrators
+5. WHERE multiple models exist, THE Health_Insights_System SHALL support A/B testing for model comparison
