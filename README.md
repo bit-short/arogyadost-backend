@@ -2,6 +2,15 @@
 
 FastAPI backend for the Aarogyadost healthcare application.
 
+## 📚 Documentation
+
+Comprehensive documentation is available in the `docs/` folder:
+
+- **[API Documentation](docs/API_DOCUMENTATION.md)** - Complete API reference with endpoints, request/response examples
+- **[Architecture Overview](docs/API_ARCHITECTURE.md)** - System design, data flow, and technical specifications
+- **[Deployment Guide](docs/DEPLOYMENT.md)** - AWS Elastic Beanstalk deployment instructions
+- **[CI/CD Setup](docs/CI-CD-SETUP.md)** - GitHub Actions automated deployment configuration
+
 ## Live Deployments
 
 ### Development Environment
@@ -57,14 +66,6 @@ API will be available at http://localhost:8000
 ### Chat
 - `GET /api/chat/threads` - Get chat threads
 - `POST /api/chat/message` - Send chat message
-
-## Documentation
-
-All documentation is in the `docs/` folder:
-- `docs/API_DOCUMENTATION.md` - Complete API reference
-- `docs/API_ARCHITECTURE.md` - System architecture overview
-- `docs/DEPLOYMENT.md` - Deployment guide
-- `docs/CI-CD-SETUP.md` - GitHub Actions CI/CD setup
 
 ## Deployment
 
