@@ -1,0 +1,4 @@
+# file: /Users/hareesh/work/aarogyadost/aarogyadost/tech/mvp/arogyadost-backend/app/services/upload_handler.py
+# hypothesis_version: 6.150.0
+
+[1024, '.', 'jpeg', 'jpg', 'pdf', 'png']

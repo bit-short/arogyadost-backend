@@ -1,0 +1,4 @@
+# file: /Users/hareesh/work/aarogyadost/aarogyadost/tech/mvp/arogyadost-backend/app/config.py
+# hypothesis_version: 6.150.0
+
+[0.5, '.env', 'AarogyaDost API', 'ap-south-1', 'jpeg', 'jpg', 'pdf', 'png', 'utf-8']

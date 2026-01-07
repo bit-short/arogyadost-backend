@@ -1,0 +1,4 @@
+# file: /Users/hareesh/work/aarogyadost/aarogyadost/tech/mvp/arogyadost-backend/app/services/ocr_service.py
+# hypothesis_version: 6.150.0
+
+[0.0, 0.8, 100.0, 'BlockType', 'Blocks', 'Bytes', 'Confidence', 'LINE', 'Text', 'alt', 'ast', 'calcium', 'cholesterol', 'creatinine', 'ferritin', 'glucose', 'hba1c', 'hdl', 'hemoglobin', 'iron', 'ldl', 'platelet', 'rbc', 'sgot', 'sgpt', 't3', 't4', 'textract', 'triglycerides', 'tsh', 'urea', 'vitamin b12', 'vitamin d', 'wbc']
