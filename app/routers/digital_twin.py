@@ -121,8 +121,16 @@ async def get_completeness(user_id: str):
 @router.get("/users/{user_id}/profile")
 async def get_health_profile(user_id: str):
     """Get complete health profile for AI reasoning"""
+    # Check if digital twin exists, if not create it for valid users
     if user_id not in digital_twins:
-        raise HTTPException(status_code=404, detail="Digital twin not found")
+        from app.services.user_context import user_context_manager
+        available_users = [u.user_id for u in user_context_manager.get_available_users()]
+        
+        if user_id in available_users:
+            # Auto-create digital twin for valid users
+            digital_twins[user_id] = DigitalTwin(user_id=user_id, metadata={})
+        else:
+            raise HTTPException(status_code=404, detail="User not found")
     
     twin = digital_twins[user_id]
     profile = {

@@ -90,7 +90,7 @@ async def get_user_by_id(user_id: str):
         raise HTTPException(status_code=500, detail=f"Failed to get user: {str(e)}")
 
 
-@router.get("/")
+@router.get("")
 async def list_user_ids():
     """
     Get a simple list of available user IDs for quick reference.

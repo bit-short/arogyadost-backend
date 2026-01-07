@@ -16,7 +16,7 @@ chat_service = ChatService()
 
 
 @router.post("/sessions")
-async def create_chat_session(user_id: str, title: Optional[str] = None):
+async def create_chat_session(user_id: str = "hardcoded", title: Optional[str] = None):
     """Create a new chat session."""
     try:
         session = await chat_service.create_session(user_id, title)
@@ -26,7 +26,7 @@ async def create_chat_session(user_id: str, title: Optional[str] = None):
 
 
 @router.get("/sessions")
-async def list_chat_sessions(user_id: str, limit: int = 50) -> List[ChatSessionSummary]:
+async def list_chat_sessions(user_id: str = "hardcoded", limit: int = 50) -> List[ChatSessionSummary]:
     """List all chat sessions for a user."""
     try:
         return await chat_service.list_sessions(user_id, limit)
@@ -145,7 +145,7 @@ async def send_message_streaming(
 
 
 @router.post("/message")
-async def send_message_simple(request: ChatRequest, user_id: str):
+async def send_message_simple(request: ChatRequest, user_id: str = "hardcoded"):
     """Send a message and get a simple JSON response (non-streaming)."""
     try:
         # Collect all streaming events
