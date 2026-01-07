@@ -1,0 +1,10 @@
+{
+  "demographics": {
+    "age": 35,
+    "sex": "male",
+    "location": {
+      "city": "Mumbai",
+      "country": "India"
+    }
+  }
+}
