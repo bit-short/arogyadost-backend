@@ -1,0 +1,14 @@
+{
+  "user": "test_user_11_34f",
+  "processed_at": "2026-01-07T23:01:00.000000",
+  "documents": [
+    {
+      "filename": "34_2024_10.pdf",
+      "file_size": 1800000,
+      "text_length": 16200,
+      "extracted_text": "Report for [REDACTED] [REDACTED](34Y/F)\nComprehensive Health Package\nHbA1c: 5.9%\nTotal Cholesterol: 210 mg/dL\nHDL: 42 mg/dL\nLDL: 135 mg/dL\nTriglycerides: 165 mg/dL\nVitamin D: 25 ng/mL\nCreatinine: 0.8 mg/dL",
+      "biomarkers": {},
+      "has_content": true
+    }
+  ]
+}

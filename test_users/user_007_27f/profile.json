@@ -1,0 +1,14 @@
+{
+  "user": "test_user_7_27f",
+  "processed_at": "2026-01-07T23:01:00.000000",
+  "documents": [
+    {
+      "filename": "27_2024_8.pdf",
+      "file_size": 1250000,
+      "text_length": 15000,
+      "extracted_text": "Report for [REDACTED] [REDACTED](27Y/F)\nBasic Health Package\nTests asked\nTest date 15 Aug 2024 Report status Complete Report\n\nHbA1c: 5.2%\nTotal Cholesterol: 180 mg/dL\nHDL: 55 mg/dL\nLDL: 110 mg/dL\nTriglycerides: 120 mg/dL\nVitamin D: 32 ng/mL\nVitamin B12: 450 pg/mL",
+      "biomarkers": {},
+      "has_content": true
+    }
+  ]
+}
