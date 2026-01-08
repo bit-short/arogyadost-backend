@@ -1,0 +1,152 @@
+{
+  "user_id": "test_user_5_55f",
+  "last_updated": "2024-05-01T00:00:00Z",
+  "conditions": [
+    {
+      "condition_id": "c5_001",
+      "name": "Postmenopausal Osteopenia",
+      "icd10_code": "M85.8",
+      "diagnosed_date": "2024-05-01T00:00:00Z",
+      "status": "active",
+      "severity": "moderate",
+      "notes": "T-score -1.8 at lumbar spine, -1.5 at hip, calcium and vitamin D supplementation started"
+    },
+    {
+      "condition_id": "c5_002",
+      "name": "Hypothyroidism",
+      "icd10_code": "E03.9",
+      "diagnosed_date": "2024-05-01T00:00:00Z",
+      "status": "active",
+      "severity": "mild",
+      "notes": "TSH 8.2 mIU/L, Free T4 low normal, levothyroxine initiated"
+    },
+    {
+      "condition_id": "c5_003",
+      "name": "Menopausal Syndrome",
+      "icd10_code": "N95.1",
+      "diagnosed_date": "2024-05-01T00:00:00Z",
+      "status": "active",
+      "severity": "moderate",
+      "notes": "Hot flashes, sleep disturbances, mood changes, HRT considered"
+    }
+  ],
+  "medications": [
+    {
+      "medication_id": "m5_001",
+      "name": "Levothyroxine",
+      "dosage": "50 mcg",
+      "frequency": "daily",
+      "start_date": "2024-05-05T00:00:00Z",
+      "purpose": "Thyroid hormone replacement"
+    }
+  ],
+  "supplements": [
+    {
+      "supplement_id": "s5_001",
+      "name": "Calcium Carbonate",
+      "dosage": "1200 mg",
+      "frequency": "daily",
+      "start_date": "2024-05-01T00:00:00Z",
+      "purpose": "Bone health support"
+    },
+    {
+      "supplement_id": "s5_002",
+      "name": "Vitamin D3",
+      "dosage": "2000 IU",
+      "frequency": "daily",
+      "start_date": "2024-05-01T00:00:00Z",
+      "purpose": "Bone health and calcium absorption"
+    },
+    {
+      "supplement_id": "s5_003",
+      "name": "Magnesium Glycinate",
+      "dosage": "400 mg",
+      "frequency": "daily",
+      "start_date": "2024-05-01T00:00:00Z",
+      "purpose": "Bone health and muscle function"
+    },
+    {
+      "supplement_id": "s5_004",
+      "name": "Black Cohosh",
+      "dosage": "40 mg",
+      "frequency": "twice daily",
+      "start_date": "2024-05-01T00:00:00Z",
+      "purpose": "Menopausal symptom relief"
+    }
+  ],
+  "allergies": [
+    {
+      "allergen": "Sulfa drugs",
+      "type": "drug",
+      "severity": "moderate",
+      "reaction": "Skin rash and hives",
+      "diagnosed_date": "2010-08-20T00:00:00Z"
+    }
+  ],
+  "surgeries": [
+    {
+      "surgery_id": "surg5_001",
+      "procedure": "Hysterectomy (total)",
+      "date": "2022-03-15T00:00:00Z",
+      "hospital": "Apollo Hospital Chennai",
+      "surgeon": "Dr. Priya Nair",
+      "indication": "Uterine fibroids",
+      "complications": "None"
+    }
+  ],
+  "family_history": [
+    {
+      "relation": "mother",
+      "condition": "Osteoporosis",
+      "age_of_onset": 60,
+      "notes": "Hip fracture at age 68"
+    },
+    {
+      "relation": "sister",
+      "condition": "Breast Cancer",
+      "age_of_onset": 48,
+      "notes": "BRCA negative, treated successfully"
+    },
+    {
+      "relation": "maternal_grandmother",
+      "condition": "Thyroid Disease",
+      "age_of_onset": 55,
+      "notes": "Hypothyroidism, managed with medication"
+    }
+  ],
+  "immunizations": [
+    {
+      "vaccine": "COVID-19 (Covishield)",
+      "date": "2021-05-20T00:00:00Z",
+      "next_due": null
+    },
+    {
+      "vaccine": "Influenza",
+      "date": "2023-10-15T00:00:00Z",
+      "next_due": "2024-10-15T00:00:00Z"
+    },
+    {
+      "vaccine": "Pneumococcal",
+      "date": "2024-01-10T00:00:00Z",
+      "next_due": null
+    },
+    {
+      "vaccine": "Zoster (Shingles)",
+      "date": "2024-02-01T00:00:00Z",
+      "next_due": null
+    }
+  ],
+  "lifestyle_factors": {
+    "smoking": {
+      "status": "never",
+      "packs_per_day": 0,
+      "years": 0
+    },
+    "alcohol": {
+      "status": "occasional",
+      "drinks_per_week": 1
+    },
+    "diet_type": "vegetarian",
+    "exercise_frequency": "5-6 times per week"
+  }
+}

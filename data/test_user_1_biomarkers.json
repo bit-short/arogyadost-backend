@@ -1,0 +1,65 @@
+{
+  "biomarker_history": [
+    {
+      "test_date": "2024-01-15T09:00:00",
+      "lab_name": "Apollo Diagnostics",
+      "test_package": "Comprehensive Health Panel",
+      "categories": {
+        "metabolic": {
+          "glucose": {
+            "value": 105,
+            "unit": "mg/dL",
+            "ref_range": "70-100",
+            "status": "high"
+          },
+          "hba1c": {
+            "value": 5.8,
+            "unit": "%",
+            "ref_range": "4.0-5.6",
+            "status": "high"
+          }
+        },
+        "lipid_profile": {
+          "cholesterol": {
+            "value": 220,
+            "unit": "mg/dL",
+            "ref_range": "<200",
+            "status": "high"
+          },
+          "ldl": {
+            "value": 145,
+            "unit": "mg/dL",
+            "ref_range": "<100",
+            "status": "high"
+          },
+          "hdl": {
+            "value": 38,
+            "unit": "mg/dL",
+            "ref_range": ">40",
+            "status": "low"
+          },
+          "triglycerides": {
+            "value": 185,
+            "unit": "mg/dL",
+            "ref_range": "<150",
+            "status": "high"
+          }
+        },
+        "vitamins": {
+          "vitamin_d": {
+            "value": 18,
+            "unit": "ng/mL",
+            "ref_range": "30-100",
+            "status": "low"
+          },
+          "b12": {
+            "value": 350,
+            "unit": "pg/mL",
+            "ref_range": "300-900",
+            "status": "normal"
+          }
+        }
+      }
+    }
+  ]
+}

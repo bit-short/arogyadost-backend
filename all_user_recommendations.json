@@ -1,0 +1,200 @@
+{
+  "test_user_1_29f": {
+    "user_id": "test_user_1_29f",
+    "generated_at": "2026-01-08T03:29:49.011648",
+    "summary": {
+      "total_recommendations": 3,
+      "high_priority_count": 2,
+      "medium_priority_count": 1,
+      "low_priority_count": 0,
+      "categories_covered": [
+        "complete_blood_count",
+        "lipid_profile",
+        "vitamins"
+      ]
+    },
+    "recommendations": [
+      {
+        "test_name": "Vitamin D",
+        "priority": "high",
+        "rationale": "Known vitamin D deficiency requiring monitoring",
+        "timing": "within 2 weeks",
+        "category": "vitamins"
+      },
+      {
+        "test_name": "Lipid Profile",
+        "priority": "high",
+        "rationale": "Active dyslipidemia management",
+        "timing": "within 1 month",
+        "category": "lipid_profile"
+      },
+      {
+        "test_name": "Complete Blood Count",
+        "priority": "medium",
+        "rationale": "Annual screening for young adult female",
+        "timing": "within 6 weeks",
+        "category": "complete_blood_count"
+      }
+    ]
+  },
+  "test_user_2_29m": {
+    "user_id": "test_user_2_29m",
+    "generated_at": "2026-01-08T03:29:49.011666",
+    "summary": {
+      "total_recommendations": 3,
+      "high_priority_count": 0,
+      "medium_priority_count": 2,
+      "low_priority_count": 1,
+      "categories_covered": [
+        "hormones",
+        "metabolic",
+        "vitamins"
+      ]
+    },
+    "recommendations": [
+      {
+        "test_name": "Comprehensive Metabolic Panel",
+        "priority": "medium",
+        "rationale": "Fitness optimization and metabolic assessment",
+        "timing": "within 4 weeks",
+        "category": "metabolic"
+      },
+      {
+        "test_name": "Testosterone",
+        "priority": "low",
+        "rationale": "Hormone optimization for fitness goals",
+        "timing": "within 8 weeks",
+        "category": "hormones"
+      },
+      {
+        "test_name": "Vitamin B12 and Folate",
+        "priority": "medium",
+        "rationale": "Energy metabolism support for active lifestyle",
+        "timing": "within 6 weeks",
+        "category": "vitamins"
+      }
+    ]
+  },
+  "test_user_3_31m": {
+    "user_id": "test_user_3_31m",
+    "generated_at": "2026-01-08T03:29:49.011677",
+    "summary": {
+      "total_recommendations": 3,
+      "high_priority_count": 1,
+      "medium_priority_count": 2,
+      "low_priority_count": 0,
+      "categories_covered": [
+        "hormones",
+        "lipid_profile",
+        "metabolic"
+      ]
+    },
+    "recommendations": [
+      {
+        "test_name": "HbA1c and Fasting Glucose",
+        "priority": "high",
+        "rationale": "Metabolic health assessment for weight management",
+        "timing": "within 2 weeks",
+        "category": "metabolic"
+      },
+      {
+        "test_name": "Lipid Profile",
+        "priority": "medium",
+        "rationale": "Cardiovascular risk assessment during weight loss",
+        "timing": "within 4 weeks",
+        "category": "lipid_profile"
+      },
+      {
+        "test_name": "Thyroid Function Panel",
+        "priority": "medium",
+        "rationale": "Rule out thyroid issues affecting weight",
+        "timing": "within 6 weeks",
+        "category": "hormones"
+      }
+    ]
+  },
+  "test_user_4_31m": {
+    "user_id": "test_user_4_31m",
+    "generated_at": "2026-01-08T03:29:49.011686",
+    "summary": {
+      "total_recommendations": 3,
+      "high_priority_count": 0,
+      "medium_priority_count": 2,
+      "low_priority_count": 1,
+      "categories_covered": [
+        "hormones",
+        "inflammatory",
+        "metabolic"
+      ]
+    },
+    "recommendations": [
+      {
+        "test_name": "Advanced Longevity Panel",
+        "priority": "medium",
+        "rationale": "Comprehensive longevity biomarker assessment",
+        "timing": "within 3 weeks",
+        "category": "metabolic"
+      },
+      {
+        "test_name": "Inflammatory Markers (CRP, IL-6)",
+        "priority": "medium",
+        "rationale": "Inflammation assessment for longevity optimization",
+        "timing": "within 4 weeks",
+        "category": "inflammatory"
+      },
+      {
+        "test_name": "Hormone Panel (Testosterone, IGF-1)",
+        "priority": "low",
+        "rationale": "Hormonal optimization for healthy aging",
+        "timing": "within 8 weeks",
+        "category": "hormones"
+      }
+    ]
+  },
+  "test_user_5_55f": {
+    "user_id": "test_user_5_55f",
+    "generated_at": "2026-01-08T03:29:49.011698",
+    "summary": {
+      "total_recommendations": 4,
+      "high_priority_count": 2,
+      "medium_priority_count": 2,
+      "low_priority_count": 0,
+      "categories_covered": [
+        "cardiovascular",
+        "hormones",
+        "metabolic",
+        "minerals"
+      ]
+    },
+    "recommendations": [
+      {
+        "test_name": "Menopause Hormone Panel",
+        "priority": "high",
+        "rationale": "Hormonal balance assessment for 55-year-old female",
+        "timing": "within 2 weeks",
+        "category": "hormones"
+      },
+      {
+        "test_name": "Bone Health Panel (Vitamin D, Calcium, PTH)",
+        "priority": "high",
+        "rationale": "Bone health monitoring for postmenopausal woman",
+        "timing": "within 3 weeks",
+        "category": "minerals"
+      },
+      {
+        "test_name": "Cardiovascular Risk Panel",
+        "priority": "medium",
+        "rationale": "Enhanced screening for women 50+",
+        "timing": "within 1 month",
+        "category": "cardiovascular"
+      },
+      {
+        "test_name": "Annual Health Screening",
+        "priority": "medium",
+        "rationale": "Routine screening for 55-year-old adult",
+        "timing": "within 2 months",
+        "category": "metabolic"
+      }
+    ]
+  }
+}

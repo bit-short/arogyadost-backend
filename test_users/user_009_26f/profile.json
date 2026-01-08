@@ -1,0 +1,14 @@
+{
+  "user": "test_user_9_26f",
+  "processed_at": "2026-01-07T23:01:00.000000",
+  "documents": [
+    {
+      "filename": "26_2024_9.pdf",
+      "file_size": 2100000,
+      "text_length": 18500,
+      "extracted_text": "Report for [REDACTED] [REDACTED](26Y/F)\nWomens Health Panel\nTests asked\nTest date 10 Sep 2024 Report status Complete Report\n\nHbA1c: 5.4%\nFasting Glucose: 88 mg/dL\nTotal Cholesterol: 195 mg/dL\nHDL: 48 mg/dL\nLDL: 125 mg/dL\nTriglycerides: 140 mg/dL\nTSH: 2.8 µIU/mL\nVitamin D: 28 ng/mL",
+      "biomarkers": {},
+      "has_content": true
+    }
+  ]
+}

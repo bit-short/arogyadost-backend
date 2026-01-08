@@ -1,0 +1,111 @@
+{
+  "user_id": "test_user_1_29f",
+  "last_updated": "2024-07-26T00:00:00Z",
+  "conditions": [
+    {
+      "condition_id": "c1_001",
+      "name": "Vitamin D Deficiency",
+      "icd10_code": "E55.9",
+      "diagnosed_date": "2024-07-26T00:00:00Z",
+      "status": "active",
+      "severity": "moderate",
+      "notes": "Level at 8.25 ng/mL, supplementation started"
+    },
+    {
+      "condition_id": "c1_002",
+      "name": "Dyslipidemia",
+      "icd10_code": "E78.5",
+      "diagnosed_date": "2024-07-26T00:00:00Z",
+      "status": "active",
+      "severity": "mild",
+      "notes": "Elevated triglycerides (269 mg/dL), low HDL (38 mg/dL)"
+    }
+  ],
+  "medications": [],
+  "supplements": [
+    {
+      "supplement_id": "s1_001",
+      "name": "Vitamin D3",
+      "dosage": "2000 IU",
+      "frequency": "daily",
+      "start_date": "2024-07-27T00:00:00Z",
+      "purpose": "Correct vitamin D deficiency"
+    },
+    {
+      "supplement_id": "s1_002",
+      "name": "Vitamin B12",
+      "dosage": "1000 mcg",
+      "frequency": "daily",
+      "start_date": "2024-07-27T00:00:00Z",
+      "purpose": "Correct B12 deficiency"
+    },
+    {
+      "supplement_id": "s1_003",
+      "name": "Omega-3 Fish Oil",
+      "dosage": "1000 mg",
+      "frequency": "twice daily",
+      "start_date": "2024-07-27T00:00:00Z",
+      "purpose": "Improve lipid profile, reduce triglycerides"
+    }
+  ],
+  "allergies": [
+    {
+      "allergen": "Penicillin",
+      "type": "drug",
+      "severity": "moderate",
+      "reaction": "Skin rash and itching",
+      "diagnosed_date": "2018-03-15T00:00:00Z"
+    }
+  ],
+  "surgeries": [],
+  "family_history": [
+    {
+      "relation": "mother",
+      "condition": "Type 2 Diabetes",
+      "age_of_onset": 52,
+      "notes": "Managed with medication and diet"
+    },
+    {
+      "relation": "father",
+      "condition": "Hypertension",
+      "age_of_onset": 48,
+      "notes": "On antihypertensive medication"
+    },
+    {
+      "relation": "maternal_grandmother",
+      "condition": "Osteoporosis",
+      "age_of_onset": 65,
+      "notes": "Hip fracture at age 70"
+    }
+  ],
+  "immunizations": [
+    {
+      "vaccine": "COVID-19 (Covishield)",
+      "date": "2021-06-15T00:00:00Z",
+      "next_due": null
+    },
+    {
+      "vaccine": "Influenza",
+      "date": "2023-10-01T00:00:00Z",
+      "next_due": "2024-10-01T00:00:00Z"
+    },
+    {
+      "vaccine": "Tetanus",
+      "date": "2019-05-20T00:00:00Z",
+      "next_due": "2029-05-20T00:00:00Z"
+    }
+  ],
+  "lifestyle_factors": {
+    "smoking": {
+      "status": "never",
+      "packs_per_day": 0,
+      "years": 0
+    },
+    "alcohol": {
+      "status": "occasional",
+      "drinks_per_week": 2
+    },
+    "diet_type": "vegetarian",
+    "exercise_frequency": "4-5 times per week"
+  }
+}

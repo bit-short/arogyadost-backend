@@ -1,0 +1,14 @@
+{
+  "family_history": [
+    {
+      "condition": "Type 2 Diabetes",
+      "relation": "parent",
+      "age_of_onset": 55
+    },
+    {
+      "condition": "Heart Disease",
+      "relation": "parent",
+      "age_of_onset": 62
+    }
+  ]
+}

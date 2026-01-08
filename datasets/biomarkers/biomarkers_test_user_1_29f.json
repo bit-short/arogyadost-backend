@@ -1,0 +1,321 @@
+[
+  {
+    "user_id": "test_user_1_29f",
+    "test_date": "2024-07-26T11:58:00Z",
+    "lab_name": "Thyrocare Technologies Ltd",
+    "test_package": "Womens Advanced Healthcare Package",
+    "biomarkers": {
+      "metabolic": {
+        "fasting_glucose": {
+          "value": 84.07,
+          "unit": "mg/dL",
+          "ref_range": "70-100",
+          "status": "normal"
+        },
+        "hba1c": {
+          "value": 4.7,
+          "unit": "%",
+          "ref_range": "<5.7",
+          "status": "normal"
+        },
+        "average_blood_glucose": {
+          "value": 88,
+          "unit": "mg/dL",
+          "ref_range": "90-120",
+          "status": "low"
+        }
+      },
+      "lipid_profile": {
+        "total_cholesterol": {
+          "value": 192,
+          "unit": "mg/dL",
+          "ref_range": "<200",
+          "status": "normal"
+        },
+        "hdl": {
+          "value": 38,
+          "unit": "mg/dL",
+          "ref_range": "40-60",
+          "status": "low"
+        },
+        "ldl": {
+          "value": 124,
+          "unit": "mg/dL",
+          "ref_range": "<100",
+          "status": "high"
+        },
+        "triglycerides": {
+          "value": 269,
+          "unit": "mg/dL",
+          "ref_range": "<150",
+          "status": "high"
+        },
+        "vldl": {
+          "value": 53.81,
+          "unit": "mg/dL",
+          "ref_range": "5-40",
+          "status": "high"
+        },
+        "hdl_ldl_ratio": {
+          "value": 0.31,
+          "unit": "ratio",
+          "ref_range": ">0.40",
+          "status": "low"
+        },
+        "trig_hdl_ratio": {
+          "value": 7.01,
+          "unit": "ratio",
+          "ref_range": "<3.12",
+          "status": "high"
+        }
+      },
+      "vitamins": {
+        "vitamin_d": {
+          "value": 8.25,
+          "unit": "ng/mL",
+          "ref_range": ">=30",
+          "status": "low"
+        },
+        "vitamin_b12": {
+          "value": 150,
+          "unit": "pg/mL",
+          "ref_range": "197-771",
+          "status": "low"
+        }
+      },
+      "hormones": {
+        "testosterone": {
+          "value": 69.1,
+          "unit": "ng/dL",
+          "ref_range": "6-82",
+          "status": "normal"
+        },
+        "fsh": {
+          "value": 10,
+          "unit": "mIU/mL",
+          "ref_range": "2.5-10.2",
+          "status": "normal"
+        },
+        "lh": {
+          "value": 36.55,
+          "unit": "mIU/mL",
+          "ref_range": "1.9-12.5",
+          "status": "high"
+        },
+        "prolactin": {
+          "value": 20.55,
+          "unit": "ng/mL",
+          "ref_range": "2.8-29.2",
+          "status": "normal"
+        },
+        "tsh": {
+          "value": 3.21,
+          "unit": "µIU/mL",
+          "ref_range": "0.54-5.30",
+          "status": "normal"
+        },
+        "t3": {
+          "value": 107,
+          "unit": "ng/dL",
+          "ref_range": "80-200",
+          "status": "normal"
+        },
+        "t4": {
+          "value": 9.75,
+          "unit": "µg/dL",
+          "ref_range": "4.8-12.7",
+          "status": "normal"
+        }
+      },
+      "kidney_function": {
+        "creatinine": {
+          "value": 0.87,
+          "unit": "mg/dL",
+          "ref_range": "0.55-1.02",
+          "status": "normal"
+        },
+        "bun": {
+          "value": 7.74,
+          "unit": "mg/dL",
+          "ref_range": "7.94-20.07",
+          "status": "low"
+        },
+        "egfr": {
+          "value": 90,
+          "unit": "mL/min/1.73m²",
+          "ref_range": ">=90",
+          "status": "normal"
+        },
+        "uric_acid": {
+          "value": 6.25,
+          "unit": "mg/dL",
+          "ref_range": "3.2-6.1",
+          "status": "high"
+        },
+        "calcium": {
+          "value": 10.22,
+          "unit": "mg/dL",
+          "ref_range": "8.8-10.6",
+          "status": "normal"
+        }
+      },
+      "liver_function": {
+        "sgot": {
+          "value": 19.5,
+          "unit": "U/L",
+          "ref_range": "<31",
+          "status": "normal"
+        },
+        "sgpt": {
+          "value": 18.3,
+          "unit": "U/L",
+          "ref_range": "<34",
+          "status": "normal"
+        },
+        "alkaline_phosphatase": {
+          "value": 87.8,
+          "unit": "U/L",
+          "ref_range": "45-129",
+          "status": "normal"
+        },
+        "bilirubin_total": {
+          "value": 1.6,
+          "unit": "mg/dL",
+          "ref_range": "0.3-1.2",
+          "status": "high"
+        },
+        "bilirubin_direct": {
+          "value": 0.22,
+          "unit": "mg/dL",
+          "ref_range": "<0.3",
+          "status": "normal"
+        },
+        "bilirubin_indirect": {
+          "value": 1.38,
+          "unit": "mg/dL",
+          "ref_range": "0-0.9",
+          "status": "high"
+        },
+        "ggt": {
+          "value": 19.7,
+          "unit": "U/L",
+          "ref_range": "<38",
+          "status": "normal"
+        },
+        "protein_total": {
+          "value": 7.06,
+          "unit": "gm/dL",
+          "ref_range": "5.7-8.2",
+          "status": "normal"
+        },
+        "albumin": {
+          "value": 4.37,
+          "unit": "gm/dL",
+          "ref_range": "3.2-4.8",
+          "status": "normal"
+        }
+      },
+      "complete_blood_count": {
+        "wbc": {
+          "value": 6.75,
+          "unit": "10³/µL",
+          "ref_range": "4.0-10.0",
+          "status": "normal"
+        },
+        "rbc": {
+          "value": 5.33,
+          "unit": "10⁶/µL",
+          "ref_range": "3.8-4.8",
+          "status": "high"
+        },
+        "hemoglobin": {
+          "value": 14.5,
+          "unit": "g/dL",
+          "ref_range": "12.0-15.0",
+          "status": "normal"
+        },
+        "hematocrit": {
+          "value": 45.6,
+          "unit": "%",
+          "ref_range": "36.0-46.0",
+          "status": "normal"
+        },
+        "platelet_count": {
+          "value": 160,
+          "unit": "10³/µL",
+          "ref_range": "150-410",
+          "status": "normal"
+        },
+        "neutrophils": {
+          "value": 63.8,
+          "unit": "%",
+          "ref_range": "40-80",
+          "status": "normal"
+        },
+        "lymphocytes": {
+          "value": 25.2,
+          "unit": "%",
+          "ref_range": "20-40",
+          "status": "normal"
+        }
+      },
+      "minerals": {
+        "iron": {
+          "value": 118.9,
+          "unit": "µg/dL",
+          "ref_range": "50-170",
+          "status": "normal"
+        },
+        "tibc": {
+          "value": 320.12,
+          "unit": "µg/dL",
+          "ref_range": "215-535",
+          "status": "normal"
+        },
+        "transferrin_saturation": {
+          "value": 37.14,
+          "unit": "%",
+          "ref_range": "13-45",
+          "status": "normal"
+        },
+        "sodium": {
+          "value": 138.86,
+          "unit": "mmol/L",
+          "ref_range": "136-145",
+          "status": "normal"
+        },
+        "chloride": {
+          "value": 103.56,
+          "unit": "mmol/L",
+          "ref_range": "98-107",
+          "status": "normal"
+        }
+      },
+      "tumor_markers": {
+        "ca125": {
+          "value": 15.8,
+          "unit": "U/mL",
+          "ref_range": "<30.2",
+          "status": "normal"
+        }
+      }
+    },
+    "interpretation": {
+      "critical_values": [],
+      "out_of_range": [
+        "Vitamin D - Deficiency (8.25 ng/mL)",
+        "Vitamin B12 - Low (150 pg/mL)",
+        "HDL Cholesterol - Low (38 mg/dL)",
+        "Triglycerides - High (269 mg/dL)",
+        "LDL Cholesterol - High (124 mg/dL)",
+        "LH - High (36.55 mIU/mL)",
+        "Bilirubin Total - High (1.6 mg/dL)"
+      ],
+      "trends": [
+        "Lipid profile needs attention - high triglycerides and low HDL",
+        "Vitamin supplementation recommended - D and B12 deficiency",
+        "Hormonal evaluation may be needed - elevated LH"
+      ]
+    }
+  }
+]

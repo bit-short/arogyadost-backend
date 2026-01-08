@@ -1,0 +1,172 @@
+[
+  {
+    "user_id": "test_user_1_29f",
+    "date": "2024-07-26T00:00:00Z",
+    "activity": {
+      "steps": 8542,
+      "distance_km": 6.2,
+      "active_minutes": 45,
+      "calories_burned": 320,
+      "exercise_sessions": [
+        {
+          "type": "yoga",
+          "duration_minutes": 30,
+          "intensity": "moderate",
+          "calories": 120
+        },
+        {
+          "type": "walking",
+          "duration_minutes": 45,
+          "intensity": "low",
+          "calories": 200
+        }
+      ]
+    },
+    "sleep": {
+      "duration_hours": 7.2,
+      "quality_score": 78,
+      "deep_sleep_hours": 1.8,
+      "rem_sleep_hours": 1.5,
+      "light_sleep_hours": 3.6,
+      "awake_time_hours": 0.3,
+      "sleep_start": "2024-07-25T23:15:00Z",
+      "sleep_end": "2024-07-26T06:27:00Z"
+    },
+    "nutrition": {
+      "calories_consumed": 1850,
+      "protein_g": 65,
+      "carbs_g": 220,
+      "fat_g": 58,
+      "fiber_g": 28,
+      "water_ml": 2100,
+      "meals": [
+        {
+          "type": "breakfast",
+          "time": "2024-07-26T07:30:00Z",
+          "calories": 420,
+          "description": "Oatmeal with fruits and nuts"
+        },
+        {
+          "type": "lunch",
+          "time": "2024-07-26T13:00:00Z",
+          "calories": 650,
+          "description": "Grilled chicken salad with quinoa"
+        },
+        {
+          "type": "snack",
+          "time": "2024-07-26T16:30:00Z",
+          "calories": 180,
+          "description": "Greek yogurt with berries"
+        },
+        {
+          "type": "dinner",
+          "time": "2024-07-26T20:00:00Z",
+          "calories": 600,
+          "description": "Salmon with roasted vegetables"
+        }
+      ]
+    },
+    "stress": {
+      "level": 4,
+      "hrv_ms": 58,
+      "resting_hr": 62,
+      "meditation_minutes": 15,
+      "notes": "Moderate work stress, yoga helped"
+    },
+    "vitals": {
+      "weight_kg": 58.2,
+      "body_fat_percentage": 22.5,
+      "blood_pressure": {
+        "systolic": 118,
+        "diastolic": 76
+      },
+      "resting_heart_rate": 62,
+      "body_temperature_c": 36.7
+    }
+  },
+  {
+    "user_id": "test_user_1_29f",
+    "date": "2024-07-27T00:00:00Z",
+    "activity": {
+      "steps": 10234,
+      "distance_km": 7.5,
+      "active_minutes": 60,
+      "calories_burned": 425,
+      "exercise_sessions": [
+        {
+          "type": "running",
+          "duration_minutes": 35,
+          "intensity": "high",
+          "calories": 320
+        },
+        {
+          "type": "strength",
+          "duration_minutes": 25,
+          "intensity": "moderate",
+          "calories": 105
+        }
+      ]
+    },
+    "sleep": {
+      "duration_hours": 6.8,
+      "quality_score": 72,
+      "deep_sleep_hours": 1.5,
+      "rem_sleep_hours": 1.3,
+      "light_sleep_hours": 3.7,
+      "awake_time_hours": 0.3,
+      "sleep_start": "2024-07-26T23:45:00Z",
+      "sleep_end": "2024-07-27T06:33:00Z"
+    },
+    "nutrition": {
+      "calories_consumed": 1920,
+      "protein_g": 78,
+      "carbs_g": 210,
+      "fat_g": 62,
+      "fiber_g": 30,
+      "water_ml": 2400,
+      "meals": [
+        {
+          "type": "breakfast",
+          "time": "2024-07-27T07:00:00Z",
+          "calories": 450,
+          "description": "Protein smoothie with banana and spinach"
+        },
+        {
+          "type": "lunch",
+          "time": "2024-07-27T13:30:00Z",
+          "calories": 680,
+          "description": "Brown rice bowl with tofu and vegetables"
+        },
+        {
+          "type": "snack",
+          "time": "2024-07-27T16:00:00Z",
+          "calories": 150,
+          "description": "Almonds and apple"
+        },
+        {
+          "type": "dinner",
+          "time": "2024-07-27T19:30:00Z",
+          "calories": 640,
+          "description": "Grilled fish with sweet potato"
+        }
+      ]
+    },
+    "stress": {
+      "level": 3,
+      "hrv_ms": 62,
+      "resting_hr": 60,
+      "meditation_minutes": 20,
+      "notes": "Good day, exercise helped reduce stress"
+    },
+    "vitals": {
+      "weight_kg": 58.0,
+      "body_fat_percentage": 22.4,
+      "blood_pressure": {
+        "systolic": 116,
+        "diastolic": 74
+      },
+      "resting_heart_rate": 60,
+      "body_temperature_c": 36.6
+    }
+  }
+]

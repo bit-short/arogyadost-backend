@@ -1,0 +1,114 @@
+{
+  "user_id": "test_user_3_31m",
+  "last_updated": "2024-06-15T00:00:00Z",
+  "conditions": [
+    {
+      "condition_id": "c3_001",
+      "name": "Pre-diabetes",
+      "icd10_code": "R73.03",
+      "diagnosed_date": "2024-06-15T00:00:00Z",
+      "status": "active",
+      "severity": "mild",
+      "notes": "HbA1c at 5.9%, fasting glucose 108 mg/dL, lifestyle intervention recommended"
+    },
+    {
+      "condition_id": "c3_002",
+      "name": "Hypertension Stage 1",
+      "icd10_code": "I10",
+      "diagnosed_date": "2024-06-15T00:00:00Z",
+      "status": "active",
+      "severity": "mild",
+      "notes": "BP 142/88 mmHg, weight management and DASH diet recommended"
+    },
+    {
+      "condition_id": "c3_003",
+      "name": "Fatty Liver Disease",
+      "icd10_code": "K76.0",
+      "diagnosed_date": "2024-06-15T00:00:00Z",
+      "status": "active",
+      "severity": "mild",
+      "notes": "Mild hepatic steatosis on ultrasound, ALT 45 U/L, weight loss advised"
+    }
+  ],
+  "medications": [
+    {
+      "medication_id": "m3_001",
+      "name": "Metformin",
+      "dosage": "500 mg",
+      "frequency": "twice daily",
+      "start_date": "2024-06-20T00:00:00Z",
+      "purpose": "Blood glucose control"
+    }
+  ],
+  "supplements": [
+    {
+      "supplement_id": "s3_001",
+      "name": "Chromium Picolinate",
+      "dosage": "200 mcg",
+      "frequency": "daily",
+      "start_date": "2024-06-20T00:00:00Z",
+      "purpose": "Glucose metabolism support"
+    },
+    {
+      "supplement_id": "s3_002",
+      "name": "Milk Thistle",
+      "dosage": "300 mg",
+      "frequency": "twice daily",
+      "start_date": "2024-06-20T00:00:00Z",
+      "purpose": "Liver health support"
+    }
+  ],
+  "allergies": [],
+  "surgeries": [],
+  "family_history": [
+    {
+      "relation": "father",
+      "condition": "Type 2 Diabetes",
+      "age_of_onset": 45,
+      "notes": "Managed with medication, developed complications"
+    },
+    {
+      "relation": "mother",
+      "condition": "Hypertension",
+      "age_of_onset": 50,
+      "notes": "Well controlled with ACE inhibitors"
+    },
+    {
+      "relation": "paternal_grandfather",
+      "condition": "Myocardial Infarction",
+      "age_of_onset": 58,
+      "notes": "Fatal heart attack"
+    }
+  ],
+  "immunizations": [
+    {
+      "vaccine": "COVID-19 (Covaxin)",
+      "date": "2021-07-10T00:00:00Z",
+      "next_due": null
+    },
+    {
+      "vaccine": "Influenza",
+      "date": "2023-11-01T00:00:00Z",
+      "next_due": "2024-11-01T00:00:00Z"
+    },
+    {
+      "vaccine": "Hepatitis B",
+      "date": "2020-03-15T00:00:00Z",
+      "next_due": null
+    }
+  ],
+  "lifestyle_factors": {
+    "smoking": {
+      "status": "former",
+      "packs_per_day": 0.5,
+      "years": 8,
+      "quit_date": "2022-01-01T00:00:00Z"
+    },
+    "alcohol": {
+      "status": "regular",
+      "drinks_per_week": 8
+    },
+    "diet_type": "mixed",
+    "exercise_frequency": "2-3 times per week"
+  }
+}

@@ -1,0 +1,265 @@
+[
+  {
+    "user_id": "test_user_1_29f",
+    "intervention_id": "int_001",
+    "intervention_type": "supplement",
+    "name": "Vitamin D3 Supplementation",
+    "description": "High-dose vitamin D3 to correct deficiency",
+    "start_date": "2024-07-27T00:00:00Z",
+    "end_date": null,
+    "status": "active",
+    "protocol": {
+      "dosage": "4000 IU",
+      "frequency": "daily",
+      "timing": "with breakfast",
+      "duration_planned": "12 weeks initial, then reassess"
+    },
+    "target_biomarkers": [
+      {
+        "biomarker": "vitamin_d",
+        "baseline_value": 8.25,
+        "target_value": 40,
+        "unit": "ng/mL"
+      }
+    ],
+    "outcomes": [
+      {
+        "measurement_date": "2024-07-26T00:00:00Z",
+        "biomarker": "vitamin_d",
+        "value": 8.25,
+        "unit": "ng/mL",
+        "change_from_baseline": 0,
+        "change_percentage": 0
+      }
+    ],
+    "adherence": {
+      "compliance_rate": 95,
+      "missed_doses": 2,
+      "notes": "Excellent adherence, only missed 2 doses in first month"
+    },
+    "side_effects": [],
+    "subjective_outcomes": [
+      {
+        "date": "2024-08-10T00:00:00Z",
+        "metric": "energy",
+        "score": 7,
+        "notes": "Feeling more energetic after 2 weeks"
+      },
+      {
+        "date": "2024-08-10T00:00:00Z",
+        "metric": "mood",
+        "score": 8,
+        "notes": "Mood has improved noticeably"
+      }
+    ],
+    "cost": {
+      "monthly_cost": 15,
+      "currency": "USD"
+    }
+  },
+  {
+    "user_id": "test_user_1_29f",
+    "intervention_id": "int_002",
+    "intervention_type": "supplement",
+    "name": "Omega-3 Fish Oil",
+    "description": "EPA/DHA supplementation to reduce triglycerides",
+    "start_date": "2024-07-27T00:00:00Z",
+    "end_date": null,
+    "status": "active",
+    "protocol": {
+      "dosage": "2000 mg (1400mg EPA + 600mg DHA)",
+      "frequency": "twice daily",
+      "timing": "with lunch and dinner",
+      "duration_planned": "ongoing"
+    },
+    "target_biomarkers": [
+      {
+        "biomarker": "triglycerides",
+        "baseline_value": 269,
+        "target_value": 150,
+        "unit": "mg/dL"
+      },
+      {
+        "biomarker": "hdl",
+        "baseline_value": 38,
+        "target_value": 50,
+        "unit": "mg/dL"
+      }
+    ],
+    "outcomes": [
+      {
+        "measurement_date": "2024-07-26T00:00:00Z",
+        "biomarker": "triglycerides",
+        "value": 269,
+        "unit": "mg/dL",
+        "change_from_baseline": 0,
+        "change_percentage": 0
+      },
+      {
+        "measurement_date": "2024-07-26T00:00:00Z",
+        "biomarker": "hdl",
+        "value": 38,
+        "unit": "mg/dL",
+        "change_from_baseline": 0,
+        "change_percentage": 0
+      }
+    ],
+    "adherence": {
+      "compliance_rate": 90,
+      "missed_doses": 6,
+      "notes": "Good adherence, occasionally forgets evening dose"
+    },
+    "side_effects": [
+      {
+        "date": "2024-08-05T00:00:00Z",
+        "description": "Mild fishy aftertaste",
+        "severity": "mild"
+      }
+    ],
+    "subjective_outcomes": [],
+    "cost": {
+      "monthly_cost": 25,
+      "currency": "USD"
+    }
+  },
+  {
+    "user_id": "test_user_1_29f",
+    "intervention_id": "int_003",
+    "intervention_type": "lifestyle",
+    "name": "Low-Carb Mediterranean Diet",
+    "description": "Dietary intervention to improve lipid profile",
+    "start_date": "2024-07-28T00:00:00Z",
+    "end_date": null,
+    "status": "active",
+    "protocol": {
+      "dosage": "N/A",
+      "frequency": "daily",
+      "timing": "all meals",
+      "duration_planned": "ongoing lifestyle change"
+    },
+    "target_biomarkers": [
+      {
+        "biomarker": "triglycerides",
+        "baseline_value": 269,
+        "target_value": 150,
+        "unit": "mg/dL"
+      },
+      {
+        "biomarker": "weight",
+        "baseline_value": 58.2,
+        "target_value": 56,
+        "unit": "kg"
+      }
+    ],
+    "outcomes": [
+      {
+        "measurement_date": "2024-08-28T00:00:00Z",
+        "biomarker": "weight",
+        "value": 57.1,
+        "unit": "kg",
+        "change_from_baseline": -1.1,
+        "change_percentage": -1.9
+      }
+    ],
+    "adherence": {
+      "compliance_rate": 85,
+      "missed_doses": 0,
+      "notes": "Following diet well, occasional social events make it challenging"
+    },
+    "side_effects": [],
+    "subjective_outcomes": [
+      {
+        "date": "2024-08-15T00:00:00Z",
+        "metric": "energy",
+        "score": 8,
+        "notes": "More stable energy throughout the day"
+      },
+      {
+        "date": "2024-08-15T00:00:00Z",
+        "metric": "satiety",
+        "score": 9,
+        "notes": "Feeling more satisfied after meals"
+      }
+    ],
+    "cost": {
+      "monthly_cost": 50,
+      "currency": "USD"
+    }
+  },
+  {
+    "user_id": "test_user_1_29f",
+    "intervention_id": "int_004",
+    "intervention_type": "exercise",
+    "name": "Structured Exercise Program",
+    "description": "Combination of cardio and strength training to improve fitness and lipid profile",
+    "start_date": "2024-07-29T00:00:00Z",
+    "end_date": null,
+    "status": "active",
+    "protocol": {
+      "dosage": "N/A",
+      "frequency": "5 days per week",
+      "timing": "morning or evening",
+      "duration_planned": "ongoing"
+    },
+    "target_biomarkers": [
+      {
+        "biomarker": "hdl",
+        "baseline_value": 38,
+        "target_value": 50,
+        "unit": "mg/dL"
+      },
+      {
+        "biomarker": "vo2_max",
+        "baseline_value": 32,
+        "target_value": 38,
+        "unit": "mL/kg/min"
+      }
+    ],
+    "outcomes": [
+      {
+        "measurement_date": "2024-08-29T00:00:00Z",
+        "biomarker": "vo2_max",
+        "value": 34,
+        "unit": "mL/kg/min",
+        "change_from_baseline": 2,
+        "change_percentage": 6.25
+      }
+    ],
+    "adherence": {
+      "compliance_rate": 88,
+      "missed_doses": 0,
+      "notes": "Completed 4-5 sessions per week consistently"
+    },
+    "side_effects": [
+      {
+        "date": "2024-08-10T00:00:00Z",
+        "description": "Mild muscle soreness initially",
+        "severity": "mild"
+      }
+    ],
+    "subjective_outcomes": [
+      {
+        "date": "2024-08-20T00:00:00Z",
+        "metric": "fitness",
+        "score": 7,
+        "notes": "Noticing improved endurance"
+      },
+      {
+        "date": "2024-08-20T00:00:00Z",
+        "metric": "mood",
+        "score": 9,
+        "notes": "Exercise significantly improves mood"
+      },
+      {
+        "date": "2024-08-20T00:00:00Z",
+        "metric": "sleep_quality",
+        "score": 8,
+        "notes": "Sleeping better on exercise days"
+      }
+    ],
+    "cost": {
+      "monthly_cost": 0,
+      "currency": "USD"
+    }
+  }
+]

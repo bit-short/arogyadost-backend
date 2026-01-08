@@ -1,0 +1,15 @@
+{
+  "lifestyle": {
+    "diet_type": "mixed",
+    "exercise_frequency": "2-3 times per week",
+    "smoking": {
+      "status": "never"
+    },
+    "alcohol": {
+      "frequency": "social",
+      "drinks_per_week": 3
+    },
+    "sleep_quality": 7.5,
+    "stress_level": 6
+  }
+}

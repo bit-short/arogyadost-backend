@@ -1,0 +1,148 @@
+{
+  "user_id": "test_user_6_65m",
+  "last_updated": "2024-04-01T00:00:00Z",
+  "conditions": [
+    {
+      "condition_id": "c6_001",
+      "name": "Coronary Artery Disease",
+      "icd10_code": "I25.10",
+      "diagnosed_date": "2024-04-01T00:00:00Z",
+      "status": "active",
+      "severity": "moderate",
+      "notes": "70% stenosis in LAD, managed medically, lifestyle modifications emphasized"
+    },
+    {
+      "condition_id": "c6_002",
+      "name": "Hyperlipidemia",
+      "icd10_code": "E78.5",
+      "diagnosed_date": "2024-04-01T00:00:00Z",
+      "status": "active",
+      "severity": "moderate",
+      "notes": "Total cholesterol 285 mg/dL, LDL 195 mg/dL, HDL 35 mg/dL, statin therapy initiated"
+    },
+    {
+      "condition_id": "c6_003",
+      "name": "Benign Prostatic Hyperplasia",
+      "icd10_code": "N40.1",
+      "diagnosed_date": "2024-04-01T00:00:00Z",
+      "status": "active",
+      "severity": "mild",
+      "notes": "Prostate volume 45cc, mild urinary symptoms, watchful waiting"
+    }
+  ],
+  "medications": [
+    {
+      "medication_id": "m6_001",
+      "name": "Atorvastatin",
+      "dosage": "40 mg",
+      "frequency": "daily",
+      "start_date": "2024-04-05T00:00:00Z",
+      "purpose": "Cholesterol management"
+    },
+    {
+      "medication_id": "m6_002",
+      "name": "Aspirin",
+      "dosage": "75 mg",
+      "frequency": "daily",
+      "start_date": "2024-04-05T00:00:00Z",
+      "purpose": "Cardiovascular protection"
+    },
+    {
+      "medication_id": "m6_003",
+      "name": "Metoprolol",
+      "dosage": "25 mg",
+      "frequency": "twice daily",
+      "start_date": "2024-04-05T00:00:00Z",
+      "purpose": "Heart rate and blood pressure control"
+    }
+  ],
+  "supplements": [
+    {
+      "supplement_id": "s6_001",
+      "name": "Coenzyme Q10",
+      "dosage": "100 mg",
+      "frequency": "daily",
+      "start_date": "2024-04-05T00:00:00Z",
+      "purpose": "Cardiovascular health and statin side effect mitigation"
+    },
+    {
+      "supplement_id": "s6_002",
+      "name": "Omega-3 Fish Oil",
+      "dosage": "2000 mg",
+      "frequency": "daily",
+      "start_date": "2024-04-05T00:00:00Z",
+      "purpose": "Cardiovascular health and inflammation reduction"
+    },
+    {
+      "supplement_id": "s6_003",
+      "name": "Saw Palmetto",
+      "dosage": "320 mg",
+      "frequency": "daily",
+      "start_date": "2024-04-05T00:00:00Z",
+      "purpose": "Prostate health support"
+    }
+  ],
+  "allergies": [],
+  "surgeries": [
+    {
+      "surgery_id": "surg6_001",
+      "procedure": "Coronary Angiography",
+      "date": "2024-03-28T00:00:00Z",
+      "hospital": "Fortis Hospital Pune",
+      "surgeon": "Dr. Rajesh Khanna",
+      "indication": "Chest pain evaluation",
+      "complications": "None"
+    }
+  ],
+  "family_history": [
+    {
+      "relation": "father",
+      "condition": "Myocardial Infarction",
+      "age_of_onset": 62,
+      "notes": "Fatal heart attack, heavy smoker"
+    },
+    {
+      "relation": "brother",
+      "condition": "Coronary Artery Disease",
+      "age_of_onset": 58,
+      "notes": "Required bypass surgery"
+    },
+    {
+      "relation": "mother",
+      "condition": "Stroke",
+      "age_of_onset": 70,
+      "notes": "Ischemic stroke, recovered with mild deficits"
+    }
+  ],
+  "immunizations": [
+    {
+      "vaccine": "COVID-19 (Covaxin)",
+      "date": "2021-04-15T00:00:00Z",
+      "next_due": null
+    },
+    {
+      "vaccine": "Influenza",
+      "date": "2023-09-20T00:00:00Z",
+      "next_due": "2024-09-20T00:00:00Z"
+    },
+    {
+      "vaccine": "Pneumococcal",
+      "date": "2024-01-15T00:00:00Z",
+      "next_due": null
+    }
+  ],
+  "lifestyle_factors": {
+    "smoking": {
+      "status": "former",
+      "packs_per_day": 1,
+      "years": 30,
+      "quit_date": "2020-01-01T00:00:00Z"
+    },
+    "alcohol": {
+      "status": "moderate",
+      "drinks_per_week": 4
+    },
+    "diet_type": "mixed",
+    "exercise_frequency": "4-5 times per week"
+  }
+}

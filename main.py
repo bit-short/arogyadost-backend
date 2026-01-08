@@ -1,14 +1,89 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 import json
 import asyncio
+import logging
 from pathlib import Path
 from cors_config import setup_cors, create_cors_preflight_handler
+from app.routers.digital_twin import router as digital_twin_router
+from app.routers.biological_age import router as biological_age_router
+from app.routers.recommendations import router as recommendations_router
+from app.routers.chat import router as chat_router
+from app.routers.admin import router as admin_router
+from app.routers.users import router as users_router
+from app.routers.user_management import router as user_management_router
+from app.routers.health import router as health_router
+
+# Initialize logging
+from app.config.logging import setup_logging
+setup_logging(log_level="INFO")
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Aarogyadost API")
 
 # Setup CORS using centralized configuration
 setup_cors(app)
 create_cors_preflight_handler(app)
+
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Include routers
+app.include_router(digital_twin_router)
+app.include_router(biological_age_router)
+app.include_router(recommendations_router)
+app.include_router(chat_router)
+app.include_router(admin_router)
+app.include_router(users_router)
+app.include_router(user_management_router)  # New user management router
+app.include_router(health_router)  # New health check router
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize application on startup."""
+    logger.info("Starting Aarogyadost API with Digital Brain Integration")
+    
+    # Initialize database and storage
+    try:
+        from app.storage.persistent_storage import persistent_storage
+        from app.config.database import db_config
+        
+        logger.info(f"Database path: {db_config.database_file_path}")
+        logger.info(f"Cache enabled: {db_config.enable_cache}")
+        
+        # Test database connectivity
+        users = persistent_storage.list_all_users()
+        logger.info(f"Found {len(users)} existing users in database")
+        
+        # Initialize user context with persistent users
+        from app.services.user_context import user_context_manager
+        user_context_manager.refresh_persistent_users()
+        
+        logger.info("Digital Brain Integration initialized successfully")
+        
+    except Exception as e:
+        logger.error(f"Failed to initialize Digital Brain Integration: {e}")
+        # Don't fail startup, fall back to in-memory storage
+        logger.warning("Falling back to in-memory storage")
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Cleanup on application shutdown."""
+    logger.info("Shutting down Aarogyadost API")
+    
+    try:
+        # Clear cache to free memory
+        from app.storage.persistent_storage import persistent_storage
+        persistent_storage.clear_cache()
+        logger.info("Cleared storage cache")
+        
+    except Exception as e:
+        logger.error(f"Error during shutdown: {e}")
+    
+    logger.info("Shutdown complete")
 
 # Mock data - in production, this would come from a database
 mock_data = {
@@ -271,6 +346,85 @@ mock_data = {
         {"id": 3, "name": "Metropolis Healthcare", "location": "Major cities", "rating": 4.4, "tests": ["VO2 Max Testing", "Body Composition Analysis", "Genetic Testing"]},
         {"id": 4, "name": "Thyrocare", "location": "Home collection", "rating": 4.3, "tests": ["Full Body Checkup", "Vitamin D3", "Testosterone Panel"]},
         {"id": 5, "name": "Apollo Diagnostics", "location": "Premium centers", "rating": 4.7, "tests": ["Biological Age Assessment", "Telomere Length", "Advanced Cardiac Risk"]}
+    ],
+    "daily_routine": [
+        {
+            "step": "Morning Longevity Stack",
+            "products": [
+                {
+                    "name": "Vitamin D3 + K2",
+                    "description": "2000 IU with breakfast for bone health",
+                    "image": "/src/assets/products/vitamins.jpg"
+                },
+                {
+                    "name": "Omega-3 EPA/DHA",
+                    "description": "2g daily for cardiovascular health",
+                    "image": "/src/assets/products/omega3.jpg"
+                }
+            ]
+        },
+        {
+            "step": "Exercise & Movement",
+            "products": [
+                {
+                    "name": "Zone 2 Cardio",
+                    "description": "45min at 180-age heart rate",
+                    "image": "/src/assets/products/walking.jpg"
+                },
+                {
+                    "name": "Resistance Training",
+                    "description": "3x/week for muscle maintenance",
+                    "image": "/src/assets/products/walking.jpg"
+                }
+            ]
+        },
+        {
+            "step": "Supplements",
+            "products": [
+                {
+                    "name": "Magnesium Glycinate",
+                    "description": "400mg before bed for sleep quality",
+                    "image": "/src/assets/products/vitamins.jpg"
+                },
+                {
+                    "name": "Omega-3 Fish Oil",
+                    "description": "Take 2 capsules daily",
+                    "image": "/src/assets/products/omega3.jpg"
+                },
+                {
+                    "name": "Probiotic",
+                    "description": "Take 1 capsule before bed",
+                    "image": "/src/assets/products/probiotic.jpg"
+                }
+            ]
+        },
+        {
+            "step": "Wellness",
+            "products": [
+                {
+                    "name": "8 Glasses of Water",
+                    "description": "Stay hydrated throughout the day",
+                    "image": "/src/assets/products/water.jpg"
+                },
+                {
+                    "name": "10-Min Meditation",
+                    "description": "Practice mindfulness daily",
+                    "image": "/src/assets/products/meditation.jpg"
+                }
+            ]
+        }
+    ],
+    "weekly_routine": [
+        {
+            "step": "Exercise",
+            "products": [
+                {
+                    "name": "30-Minute Walk",
+                    "description": "2 of 3 completed this week",
+                    "image": "/src/assets/products/walking.jpg"
+                }
+            ]
+        }
     ]
 }
 
@@ -300,41 +454,89 @@ def health_check_options():
 def api_options(path: str):
     return {"message": "OK"}
 
-# Health endpoints
+# Health endpoints - User-aware API with backward compatibility
 @app.get("/api/health/biomarkers")
 async def get_biomarkers():
     await simulate_delay(300)
-    return mock_data["health_categories"]
+    
+    from app.services.user_context import user_context_manager
+    from app.services.user_health_generator import generate_health_categories
+    
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["health_categories"]
+    else:
+        user_id = user_context_manager.active_user_id
+        categories = generate_health_categories(user_id)
+        return categories if categories else []
 
 @app.get("/api/health/recommendations")
 async def get_recommendations():
     await simulate_delay(200)
-    return mock_data["recommended_actions"]
+    
+    from app.services.user_context import user_context_manager
+    from app.services.user_health_generator import generate_recommendations
+    
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["recommended_actions"]
+    else:
+        user_id = user_context_manager.active_user_id
+        recommendations = generate_recommendations(user_id)
+        return recommendations if recommendations else []
 
 @app.get("/api/health/metrics")
 async def get_health_metrics():
     await simulate_delay(250)
-    return mock_data["health_metrics"]
+    
+    from app.services.user_context import user_context_manager
+    from app.services.user_health_generator import generate_health_metrics
+    
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["health_metrics"]
+    else:
+        user_id = user_context_manager.active_user_id
+        metrics = generate_health_metrics(user_id)
+        return metrics if metrics else []
 
 @app.get("/api/health/status")
 async def get_health_status():
     await simulate_delay(300)
-    return {
-        "overall_score": 84,
-        "age": 35,
-        "biological_age": 32,
-        "longevity_score": 87,
-        "categories": mock_data["health_categories"],
-        "key_insights": [
-            "Your biological age is 3 years younger than chronological age - excellent progress!",
-            "VO2 Max of 42 mL/kg/min puts you in top 25% for your age group",
-            "Vitamin D deficiency needs immediate attention for optimal longevity",
-            "HDL cholesterol could be improved with Zone 2 cardio training",
-            "Excellent muscle mass and bone density for long-term health",
-            "Low inflammation markers indicate effective lifestyle interventions"
-        ],
-        "last_updated": "2024-12-22T12:00:00Z"
-    }
+    
+    from app.services.user_context import user_context_manager
+    from app.services.user_health_generator import generate_health_status
+    
+    if user_context_manager.is_hardcoded_user_active():
+        return {
+            "overall_score": 84,
+            "age": 35,
+            "biological_age": 32,
+            "longevity_score": 87,
+            "categories": mock_data["health_categories"],
+            "key_insights": [
+                "Your biological age is 3 years younger than chronological age - excellent progress!",
+                "VO2 Max of 42 mL/kg/min puts you in top 25% for your age group",
+                "Vitamin D deficiency needs immediate attention for optimal longevity",
+                "HDL cholesterol could be improved with Zone 2 cardio training",
+                "Excellent muscle mass and bone density for long-term health",
+                "Low inflammation markers indicate effective lifestyle interventions"
+            ],
+            "last_updated": "2024-12-22T12:00:00Z"
+        }
+    else:
+        user_id = user_context_manager.active_user_id
+        status = generate_health_status(user_id)
+        if status:
+            return status
+        
+        current_user = user_context_manager.get_current_user()
+        return {
+            "overall_score": 0,
+            "age": current_user.demographics.age if current_user.demographics else 30,
+            "biological_age": None,
+            "longevity_score": 0,
+            "categories": [],
+            "key_insights": ["No health data available for this user yet."],
+            "last_updated": None
+        }
 
 # Biomarker details
 @app.get("/api/biomarkers/{biomarker_id}")
@@ -407,7 +609,14 @@ async def get_biomarker_details(biomarker_id: str):
 @app.get("/api/doctors")
 async def get_doctors():
     await simulate_delay(300)
-    return mock_data["doctors"]
+    
+    from app.services.user_context import user_context_manager
+    
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["doctors"]
+    else:
+        # Return same data for OCR users (generic reference data)
+        return mock_data["doctors"]
 
 @app.get("/api/doctors/{doctor_id}")
 async def get_doctor_details(doctor_id: int):
@@ -421,7 +630,14 @@ async def get_doctor_details(doctor_id: int):
 @app.get("/api/labs")
 async def get_labs():
     await simulate_delay(250)
-    return mock_data["labs"]
+    
+    from app.services.user_context import user_context_manager
+    
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["labs"]
+    else:
+        # Return same data for OCR users (generic reference data)
+        return mock_data["labs"]
 
 @app.get("/api/labs/{lab_id}")
 async def get_lab_details(lab_id: int):
@@ -435,12 +651,21 @@ async def get_lab_details(lab_id: int):
 @app.get("/api/chat/threads")
 async def get_chat_threads():
     await simulate_delay(200)
-    return [
-        {"id": 1, "title": "Longevity Protocol Review", "last_message": "Your biological age assessment shows excellent progress", "timestamp": "2024-12-22T10:00:00Z"},
-        {"id": 2, "title": "VO2 Max Optimization", "last_message": "Zone 2 training plan for improving cardiovascular fitness", "timestamp": "2024-12-21T15:30:00Z"},
-        {"id": 3, "title": "Hormone Optimization", "last_message": "Testosterone levels are good, focus on sleep quality", "timestamp": "2024-12-20T09:15:00Z"},
-        {"id": 4, "title": "Supplement Stack Review", "last_message": "Vitamin D3, Omega-3, and Magnesium recommendations", "timestamp": "2024-12-19T14:20:00Z"}
-    ]
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        return [
+            {"id": 1, "title": "Longevity Protocol Review", "last_message": "Your biological age assessment shows excellent progress", "timestamp": "2024-12-22T10:00:00Z"},
+            {"id": 2, "title": "VO2 Max Optimization", "last_message": "Zone 2 training plan for improving cardiovascular fitness", "timestamp": "2024-12-21T15:30:00Z"},
+            {"id": 3, "title": "Hormone Optimization", "last_message": "Testosterone levels are good, focus on sleep quality", "timestamp": "2024-12-20T09:15:00Z"},
+            {"id": 4, "title": "Supplement Stack Review", "last_message": "Vitamin D3, Omega-3, and Magnesium recommendations", "timestamp": "2024-12-19T14:20:00Z"}
+        ]
+    else:
+        # Return empty data for non-default users
+        return []
 
 @app.post("/api/chat/message")
 async def send_chat_message(message: dict):
@@ -519,31 +744,133 @@ async def send_chat_message(message: dict):
 @app.get("/api/medical-files/categories")
 async def get_file_categories():
     await simulate_delay(150)
-    return mock_data["file_categories"]
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Get medical files for the current user
+    files = user_context_manager.get_user_medical_files()
+    
+    if not files:
+        return []
+    
+    # If hardcoded user, return full mock data categories
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["file_categories"]
+    else:
+        # For other users, return categories based on their files with proper format
+        category_counts = {}
+        for file in files:
+            category = file["category"]
+            category_counts[category] = category_counts.get(category, 0) + 1
+        
+        # Map categories to icons
+        category_icons = {
+            "Lab Report": "🧪",
+            "Imaging": "🏥", 
+            "Diagnostic Test": "📊",
+            "Procedure Report": "⚕️",
+            "Health Checkup": "📋",
+            "X-Ray": "🦴",
+            "Stress Test": "💓"
+        }
+        
+        categories = []
+        for category, count in category_counts.items():
+            categories.append({
+                "id": category.lower().replace(" ", "_"),
+                "name": category,
+                "count": count,
+                "icon": category_icons.get(category, "📄")
+            })
+        
+        return categories
 
 @app.get("/api/medical-files/specialties")
 async def get_specialties():
     await simulate_delay(150)
-    return mock_data["specialties"]
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Get medical files for the current user
+    files = user_context_manager.get_user_medical_files()
+    
+    if not files:
+        return []
+    
+    # If hardcoded user, return full mock data specialties
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["specialties"]
+    else:
+        # For other users, return specialties based on their files with proper format
+        specialty_counts = {}
+        for file in files:
+            specialty = file["specialty"]
+            specialty_counts[specialty] = specialty_counts.get(specialty, 0) + 1
+        
+        # Map specialties to colors
+        specialty_colors = {
+            "Cardiology": "#ef4444",
+            "Orthopedics": "#f97316",
+            "Neurology": "#8b5cf6",
+            "Endocrinology": "#06b6d4",
+            "Gastroenterology": "#10b981",
+            "Pulmonology": "#f59e0b",
+            "Dermatology": "#ec4899",
+            "Ophthalmology": "#84cc16",
+            "Internal Medicine": "#6b7280",
+            "General Medicine": "#059669",
+            "Pathology": "#7c3aed",
+            "Hematology": "#dc2626"
+        }
+        
+        specialties = []
+        for specialty, count in specialty_counts.items():
+            specialties.append({
+                "id": specialty.lower().replace(" ", "_"),
+                "name": specialty,
+                "count": count,
+                "color": specialty_colors.get(specialty, "#6b7280")
+            })
+        
+        return specialties
 
 @app.get("/api/medical-files/by-specialty/{specialty}")
 async def get_files_by_specialty(specialty: str):
     await simulate_delay(250)
-    files = [f for f in mock_data["medical_files"] if f["specialty"].lower() == specialty.lower()]
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Get medical files for the current user
+    files = user_context_manager.get_user_medical_files()
+    files = [f for f in files if f["specialty"].lower() == specialty.lower()]
     files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
     return files
 
 @app.get("/api/medical-files/by-category/{category}")
 async def get_files_by_category(category: str):
     await simulate_delay(250)
-    files = [f for f in mock_data["medical_files"] if f["category"].lower().replace(" ", "_") == category.lower()]
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Get medical files for the current user
+    files = user_context_manager.get_user_medical_files()
+    files = [f for f in files if f["category"].lower().replace(" ", "_") == category.lower()]
     files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
     return files
 
 @app.get("/api/medical-files")
 async def get_medical_files(specialty: str = None, category: str = None, limit: int = 20):
     await simulate_delay(300)
-    files = mock_data["medical_files"]
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Get medical files for the current user
+    files = user_context_manager.get_user_medical_files()
     
     # Filter by specialty if provided
     if specialty:
@@ -561,7 +888,14 @@ async def get_medical_files(specialty: str = None, category: str = None, limit: 
 @app.get("/api/medical-files/{file_id}")
 async def get_medical_file_details(file_id: str):
     await simulate_delay(200)
-    file_detail = next((f for f in mock_data["medical_files"] if f["id"] == file_id), None)
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Get medical files for the current user
+    files = user_context_manager.get_user_medical_files()
+    file_detail = next((f for f in files if f["id"] == file_id), None)
+    
     if not file_detail:
         raise HTTPException(status_code=404, detail="Medical file not found")
     return file_detail
@@ -582,4 +916,316 @@ async def upload_medical_file(file_data: dict):
             "summary": "AI-generated summary of the medical report"
         },
         "timestamp": "2024-12-22T12:00:00Z"
+    }
+
+# Metric details endpoint
+@app.get("/api/metrics/{metric_id}")
+async def get_metric_details(metric_id: str):
+    await simulate_delay(400)
+    
+    # Mock detailed metric data
+    metric_details = {
+        "cholesterol": {
+            "id": "cholesterol",
+            "title": "Cholesterol Panel",
+            "subtitle": "Last 12 months trend",
+            "status": "attention",
+            "metrics": [
+                {"name": "Total", "value": "186", "normalRange": "< 200", "color": "#3B82F6"},
+                {"name": "LDL", "value": "107", "normalRange": "< 100", "color": "#F97316"},
+                {"name": "HDL", "value": "67", "normalRange": "> 40", "color": "#22C55E"},
+                {"name": "Triglycerides", "value": "121", "normalRange": "< 150", "color": "#EAB308"},
+            ],
+            "chartData": [
+                {"date": "Jan 20", "total": 190, "ldl": 120, "hdl": 55, "triglycerides": 58},
+                {"date": "Jul 20", "total": 195, "ldl": 110, "hdl": 60, "triglycerides": 155},
+                {"date": "Jan 21", "total": 200, "ldl": 115, "hdl": 55, "triglycerides": 145},
+                {"date": "Jul 21", "total": 220, "ldl": 118, "hdl": 65, "triglycerides": 160},
+                {"date": "Jan 22", "total": 185, "ldl": 125, "hdl": 58, "triglycerides": 150},
+                {"date": "Jul 22", "total": 210, "ldl": 112, "hdl": 55, "triglycerides": 175},
+                {"date": "Jan 23", "total": 205, "ldl": 108, "hdl": 70, "triglycerides": 145},
+                {"date": "Jul 23", "total": 210, "ldl": 105, "hdl": 55, "triglycerides": 140},
+                {"date": "Jan 24", "total": 200, "ldl": 118, "hdl": 60, "triglycerides": 135},
+                {"date": "Jul 24", "total": 215, "ldl": 105, "hdl": 65, "triglycerides": 125},
+                {"date": "Jan 25", "total": 220, "ldl": 102, "hdl": 68, "triglycerides": 118},
+                {"date": "Jul 25", "total": 186, "ldl": 107, "hdl": 67, "triglycerides": 121},
+            ],
+            "chartLines": [
+                {"key": "total", "name": "Total", "color": "#3B82F6"},
+                {"key": "ldl", "name": "LDL", "color": "#F97316"},
+                {"key": "hdl", "name": "HDL", "color": "#22C55E"},
+                {"key": "triglycerides", "name": "Triglycerides", "color": "#EAB308"},
+            ],
+        },
+        "hba1c": {
+            "id": "hba1c",
+            "title": "HbA1c",
+            "subtitle": "Last 6 months trend",
+            "status": "borderline",
+            "metrics": [
+                {"name": "HbA1c", "value": "5.8", "normalRange": "< 5.7", "color": "#F97316"},
+            ],
+            "chartData": [
+                {"date": "Jun", "hba1c": 5.5},
+                {"date": "Jul", "hba1c": 5.6},
+                {"date": "Aug", "hba1c": 5.6},
+                {"date": "Sep", "hba1c": 5.7},
+                {"date": "Oct", "hba1c": 5.7},
+                {"date": "Nov", "hba1c": 5.8},
+            ],
+            "chartLines": [
+                {"key": "hba1c", "name": "HbA1c", "color": "#F97316"},
+            ],
+        },
+        "vitamin_d": {
+            "id": "vitamin_d",
+            "title": "Vitamin D",
+            "subtitle": "Last 6 months trend",
+            "status": "deficient",
+            "metrics": [
+                {"name": "Level", "value": "28", "normalRange": "30-100", "color": "#EF4444"},
+            ],
+            "chartData": [
+                {"date": "Jun", "level": 22},
+                {"date": "Jul", "level": 24},
+                {"date": "Aug", "level": 26},
+                {"date": "Sep", "level": 28},
+                {"date": "Oct", "level": 29},
+                {"date": "Nov", "level": 28},
+            ],
+            "chartLines": [
+                {"key": "level", "name": "Vitamin D", "color": "#EF4444"},
+            ],
+        }
+    }
+    
+    if metric_id not in metric_details:
+        raise HTTPException(status_code=404, detail="Metric not found")
+    
+    return metric_details[metric_id]
+
+# Action details endpoint
+@app.get("/api/actions/{action_id}")
+async def get_action_details(action_id: str):
+    await simulate_delay(300)
+    
+    # Mock detailed action data
+    action_details = {
+        "1": {
+            "id": "1",
+            "title": "Start Zone 2 cardio training",
+            "icon": "Activity",
+            "color": "bg-green-500",
+            "overview": "Zone 2 cardio training is a low-intensity exercise method that improves mitochondrial function and VO2 max, which are key markers for longevity and metabolic health.",
+            "benefits": [
+                "Improves mitochondrial function and density",
+                "Increases VO2 max and cardiovascular fitness",
+                "Enhances fat oxidation and metabolic flexibility",
+                "Reduces risk of cardiovascular disease by up to 35%",
+                "Supports healthy aging and longevity"
+            ],
+            "howItHelps": "Your current VO2 max of 42 mL/kg/min is good but can be improved. Zone 2 training specifically targets the aerobic energy system, building more efficient mitochondria and improving your body's ability to use oxygen. This type of training is particularly effective for longevity because it enhances the cellular machinery responsible for energy production.",
+            "nextSteps": [
+                "Calculate your Zone 2 heart rate (180 minus your age)",
+                "Start with 30-minute sessions, 2-3 times per week",
+                "Maintain conversational pace throughout the workout",
+                "Gradually increase duration to 45-60 minutes",
+                "Monitor heart rate to stay in Zone 2 range"
+            ],
+            "isTodo": True,
+            "todoItems": [
+                {"label": "Calculate your Zone 2 heart rate range", "checked": False},
+                {"label": "Choose your preferred Zone 2 activity (walking, cycling, swimming)", "checked": False},
+                {"label": "Schedule 3 weekly Zone 2 sessions in your calendar", "checked": False},
+                {"label": "Get a heart rate monitor or fitness tracker", "checked": False},
+                {"label": "Complete your first 30-minute Zone 2 session", "checked": False}
+            ],
+            "personalizedSummary": {
+                "improving": [
+                    {"label": "Current VO2 Max", "detail": "42 mL/kg/min - good for your age group"},
+                    {"label": "Resting Heart Rate", "detail": "58 bpm - excellent cardiovascular fitness indicator"}
+                ],
+                "declining": [
+                    {"label": "Cardiovascular Endurance", "detail": "Could benefit from structured aerobic training"},
+                    {"label": "Mitochondrial Efficiency", "detail": "Zone 2 training will optimize cellular energy production"}
+                ]
+            }
+        },
+        "2": {
+            "id": "2",
+            "title": "Optimize sleep to 7-8 hours",
+            "icon": "Moon",
+            "color": "bg-purple-500",
+            "overview": "Quality sleep is critical for growth hormone release, cellular repair, and longevity. Optimizing sleep duration and quality can significantly impact your biological age and overall health.",
+            "benefits": [
+                "Enhances growth hormone release for cellular repair",
+                "Improves cognitive function and memory consolidation",
+                "Supports immune system function",
+                "Regulates metabolism and weight management",
+                "Reduces inflammation and oxidative stress"
+            ],
+            "howItHelps": "Your current sleep patterns may be impacting your recovery and longevity potential. During deep sleep, your body releases growth hormone, clears metabolic waste from the brain, and repairs cellular damage. Consistent 7-8 hours of quality sleep is one of the most powerful longevity interventions available.",
+            "nextSteps": [
+                "Set a consistent bedtime and wake time",
+                "Create a sleep-conducive environment (cool, dark, quiet)",
+                "Establish a relaxing bedtime routine",
+                "Limit screen time 1 hour before bed",
+                "Track your sleep quality and duration"
+            ],
+            "isTodo": True,
+            "todoItems": [
+                {"label": "Set a consistent bedtime (aim for 7-8 hours before wake time)", "checked": False},
+                {"label": "Install blackout curtains or use an eye mask", "checked": False},
+                {"label": "Remove electronic devices from bedroom", "checked": False},
+                {"label": "Create a 30-minute wind-down routine", "checked": False},
+                {"label": "Track sleep for one week to establish baseline", "checked": False}
+            ]
+        },
+        "cardiologist": {
+            "id": "cardiologist",
+            "title": "Cardiologist Visit",
+            "icon": "Stethoscope",
+            "color": "bg-red-500",
+            "overview": "Based on your health data, a visit to a cardiologist is recommended to evaluate your cardiovascular health and address any potential concerns.",
+            "benefits": [
+                "Comprehensive heart health evaluation",
+                "Early detection of cardiovascular issues",
+                "Personalized treatment and prevention plan",
+                "Peace of mind about your heart health"
+            ],
+            "howItHelps": "A cardiologist can perform detailed assessments including ECG, stress tests, and echocardiograms to get a complete picture of your heart health. Early intervention is key to preventing serious cardiovascular events.",
+            "nextSteps": [],
+            "isTodo": True,
+            "todoItems": [
+                {"label": "Find a cardiologist in your network", "checked": False, "link": "/find-cardiologist"},
+                {"label": "Schedule an appointment", "checked": False},
+                {"label": "Gather recent health records and test results", "checked": False},
+                {"label": "Prepare list of symptoms and questions", "checked": False},
+                {"label": "Note family history of heart disease", "checked": False},
+                {"label": "List current medications and supplements", "checked": False}
+            ],
+            "personalizedSummary": {
+                "improving": [
+                    {"label": "Resting Heart Rate", "detail": "Down 5 bpm over last month"},
+                    {"label": "Daily Steps", "detail": "Averaging 6,200 steps (up from 4,800)"}
+                ],
+                "declining": [
+                    {"label": "Blood Pressure", "detail": "Elevated readings (138/88 avg)"},
+                    {"label": "Heart Rate Variability", "detail": "Below optimal range for your age"},
+                    {"label": "Cholesterol (estimated)", "detail": "LDL trending higher based on lifestyle factors"}
+                ]
+            },
+            "hasReport": True
+        }
+    }
+    
+    if action_id not in action_details:
+        raise HTTPException(status_code=404, detail="Action not found")
+    
+    return action_details[action_id]
+
+# Routine endpoints
+@app.get("/api/routines/daily")
+async def get_daily_routine():
+    await simulate_delay(200)
+    
+    from app.services.user_context import user_context_manager
+    from app.services.digital_twin_db import digital_twin_db
+    
+    current_user = user_context_manager.get_current_user()
+    
+    # Try to get computed routine from database
+    computed = digital_twin_db.get_computed_data(current_user.user_id)
+    if computed and computed.get('daily_routine'):
+        return computed['daily_routine']
+    
+    # Fall back to mock data for hardcoded user
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["daily_routine"]
+    
+    return []
+
+@app.get("/api/routines/weekly")
+async def get_weekly_routine():
+    await simulate_delay(200)
+    
+    from app.services.user_context import user_context_manager
+    from app.services.digital_twin_db import digital_twin_db
+    
+    current_user = user_context_manager.get_current_user()
+    
+    # Try to get computed routine from database
+    computed = digital_twin_db.get_computed_data(current_user.user_id)
+    if computed and computed.get('weekly_routine'):
+        return computed['weekly_routine']
+    
+    # Fall back to mock data for hardcoded user
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["weekly_routine"]
+    
+    return []
+
+# Mock biological age endpoint (works without digital twin for frontend testing)
+@app.get("/api/biological-age/mock/{user_id}")
+async def get_mock_biological_age(user_id: str):
+    """Mock biological age endpoint for frontend testing - no digital twin required"""
+    await simulate_delay(300)
+    
+    from app.services.user_context import user_context_manager
+    from app.services.digital_twin_db import digital_twin_db
+    
+    # Try to get computed biological age from database
+    computed = digital_twin_db.get_computed_data(user_id)
+    if computed and computed.get('biological_age'):
+        bio_age_data = computed['biological_age']
+        return {
+            "user_id": user_id,
+            "chronological_age": bio_age_data.get('chronological_age', 30),
+            "biological_age": bio_age_data.get('biological_age'),
+            "age_difference": bio_age_data.get('age_difference'),
+            "longevity_score": max(0, 100 - abs(bio_age_data.get('age_difference', 0)) * 5),
+            "status": "younger" if bio_age_data.get('age_difference', 0) < 0 else "older" if bio_age_data.get('age_difference', 0) > 0 else "same",
+            "insights": bio_age_data.get('factors', []),
+            "recommendations": bio_age_data.get('recommendations', [])
+        }
+    
+    # Fall back to mock data for hardcoded user
+    if user_context_manager.is_hardcoded_user_active() and user_id == "user_001_29f":
+        return {
+            "user_id": user_id,
+            "chronological_age": 32,
+            "biological_age": 29,
+            "age_difference": -3,
+            "longevity_score": 87,
+            "status": "excellent",
+            "insights": [
+                "Your biological age is 3 years younger than your chronological age",
+                "Excellent cardiovascular fitness based on VO2 max",
+                "Low inflammation markers indicate healthy aging",
+                "Muscle mass and bone density are optimal for longevity"
+            ],
+            "recommendations": [
+                "Continue Zone 2 cardio training for cardiovascular health",
+                "Address Vitamin D deficiency for optimal longevity",
+                "Maintain current sleep and stress management practices"
+            ]
+        }
+    
+    # Return default for users without data
+    current_user = user_context_manager.get_current_user()
+    return {
+        "user_id": user_id,
+        "chronological_age": current_user.demographics.age if current_user.demographics else 30,
+        "biological_age": None,
+        "age_difference": None,
+        "longevity_score": 0,
+        "status": "no_data",
+        "insights": [
+            "No biological age data available for this user yet.",
+            "Upload health records and biomarker data to calculate biological age."
+        ],
+        "recommendations": [
+            "Start by uploading recent lab reports",
+            "Complete the health questionnaire for baseline assessment"
+        ]
     }
