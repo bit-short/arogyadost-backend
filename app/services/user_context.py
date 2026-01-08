@@ -102,8 +102,8 @@ class UserContextManager:
                 goal_id=goal_data.get("goal_id", ""),
                 type=goal_data.get("type", ""),
                 target=goal_data.get("target", ""),
-                start_date=datetime.fromisoformat(goal_data["start_date"]) if goal_data.get("start_date") else None,
-                target_date=datetime.fromisoformat(goal_data["target_date"]) if goal_data.get("target_date") else None,
+                start_date=datetime.fromisoformat(goal_data["start_date"].replace('Z', '+00:00')) if goal_data.get("start_date") else None,
+                target_date=datetime.fromisoformat(goal_data["target_date"].replace('Z', '+00:00')) if goal_data.get("target_date") else None,
                 status=goal_data.get("status", "active")
             )
             goals.append(goal)
@@ -111,10 +111,8 @@ class UserContextManager:
         # Check data availability
         data_availability = self._check_data_availability(user_id)
         
-        # Create display name
-        age = demographics.age
-        gender = demographics.gender
-        display_name = f"{user_id} ({age}{gender.upper()})"
+        # Use user_id as display name
+        display_name = user_id
         
         return UserProfile(
             user_id=user_id,
@@ -124,8 +122,8 @@ class UserContextManager:
             health_profile=health_profile,
             goals=goals,
             data_availability=data_availability,
-            created_at=datetime.fromisoformat(user_data["created_at"]) if user_data.get("created_at") else None,
-            last_active=datetime.fromisoformat(user_data["last_active"]) if user_data.get("last_active") else None
+            created_at=datetime.fromisoformat(user_data["created_at"].replace('Z', '+00:00')) if user_data.get("created_at") else None,
+            last_active=datetime.fromisoformat(user_data["last_active"].replace('Z', '+00:00')) if user_data.get("last_active") else None
         )
     
     def _check_data_availability(self, user_id: str) -> DataAvailability:
@@ -140,17 +138,25 @@ class UserContextManager:
                 completeness_score=85.0
             )
         
-        # Check for dataset files
+        # Check for dataset files - support multiple naming patterns
         biomarkers_file = self.datasets_dir / "biomarkers" / f"biomarkers_{user_id}.json"
         medical_history_file = self.datasets_dir / "medical_history" / f"medical_history_{user_id}.json"
-        lifestyle_file = self.datasets_dir / "lifestyle" / f"lifestyle_{user_id}_2024-07.json"
-        ai_interactions_file = self.datasets_dir / "ai_interactions" / f"interactions_{user_id}_session_001.json"
         interventions_file = self.datasets_dir / "interventions" / f"interventions_{user_id}.json"
+        
+        # Check lifestyle files with any date pattern
+        lifestyle_dir = self.datasets_dir / "lifestyle"
+        lifestyle_available = False
+        if lifestyle_dir.exists():
+            lifestyle_available = any(lifestyle_dir.glob(f"lifestyle_{user_id}_*.json"))
+        
+        # Check AI interactions with any session pattern
+        ai_dir = self.datasets_dir / "ai_interactions"
+        ai_interactions_available = False
+        if ai_dir.exists():
+            ai_interactions_available = any(ai_dir.glob(f"interactions_{user_id}_*.json"))
         
         biomarkers_available = biomarkers_file.exists()
         medical_history_available = medical_history_file.exists()
-        lifestyle_available = lifestyle_file.exists()
-        ai_interactions_available = ai_interactions_file.exists()
         interventions_available = interventions_file.exists()
         
         # Calculate completeness score
