@@ -45,8 +45,15 @@ class UserDBService:
         entries = self.db.query(MedicalHistory).filter(MedicalHistory.user_id == user_id).all()
         result = {'conditions': [], 'supplements': [], 'medications': [], 'family_history': []}
         for e in entries:
-            if e.type in result:
-                result[e.type].append(self._medical_to_dict(e))
+            entry_dict = self._medical_to_dict(e)
+            if e.type == 'condition':
+                result['conditions'].append(entry_dict)
+            elif e.type == 'supplement':
+                result['supplements'].append(entry_dict)
+            elif e.type == 'medication':
+                result['medications'].append(entry_dict)
+            elif e.type == 'family_history':
+                result['family_history'].append(entry_dict)
         return result
     
     def get_user_goals(self, user_id: str) -> List[Dict[str, Any]]:
