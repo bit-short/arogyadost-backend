@@ -3,8 +3,49 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 from app.models.digital_twin import DigitalTwin, FieldState
 from app.storage.digital_twins import digital_twin_storage
+from app.services.digital_twin_db import digital_twin_db
 
 router = APIRouter(prefix="/api/digital-twin", tags=["digital-twin"])
+
+
+@router.get("/users/{user_id}/from-db")
+async def get_digital_twin_from_db(user_id: str):
+    """Get digital twin populated from database."""
+    twin = digital_twin_db.get_or_create_digital_twin(user_id)
+    if not twin:
+        raise HTTPException(status_code=404, detail=f"User '{user_id}' not found in database")
+    
+    return {
+        "user_id": user_id,
+        "domains": {domain: len(fields) for domain, fields in twin.domains.items()},
+        "completeness": twin.get_overall_completeness(),
+        "data": {
+            domain: {
+                field: {
+                    "value": state.value,
+                    "unit": state.unit,
+                    "timestamp": state.timestamp.isoformat() if state.timestamp else None
+                }
+                for field, state in fields.items()
+            }
+            for domain, fields in twin.domains.items()
+        }
+    }
+
+
+@router.get("/users/{user_id}/summary")
+async def get_digital_twin_summary(user_id: str):
+    """Get digital twin summary from database."""
+    summary = digital_twin_db.get_digital_twin_summary(user_id)
+    if not summary:
+        raise HTTPException(status_code=404, detail=f"User '{user_id}' not found")
+    return summary
+
+
+@router.get("/db/users")
+async def list_db_digital_twins():
+    """List all users with digital twin data from database."""
+    return digital_twin_db.list_available_twins()
 
 
 @router.post("/users/{user_id}/create")
