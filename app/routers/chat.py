@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from fastapi.responses import StreamingResponse
 from typing import Optional, List
 import json
@@ -8,6 +8,7 @@ from app.services.chat.chat_service import ChatService
 from app.services.chat.models import (
     ChatRequest, ChatSession, ChatSessionSummary, Message, StreamEvent
 )
+from app.middleware.translation import get_translator, get_language
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
 
@@ -95,22 +96,31 @@ async def update_session_title(session_id: str, user_id: str, title: str):
 async def send_message_streaming(
     session_id: str,
     user_id: str,
-    request: ChatRequest
+    request: ChatRequest,
+    http_request: Request
 ):
     """Send a message and stream the response using Server-Sent Events."""
     
+    # Get language from request
+    language = get_language(http_request)
+    t = get_translator(http_request)
+    
     async def event_stream():
         try:
-            # Send initial session info
+            # Send initial session info with language context
             session_info = {
                 "session_id": session_id,
                 "user_id": user_id,
+                "language": language,
                 "timestamp": "2024-01-08T03:35:00Z"
             }
             yield f"data: {json.dumps({'type': 'session_info', 'data': session_info})}\n\n"
             
+            # Add language context to chat request
+            request.language = language
+            
             # Stream the chat response
-            async for event in chat_service.send_message(user_id, session_id, request.message):
+            async for event in chat_service.send_message(user_id, session_id, request.message, language=language):
                 event_data = {
                     "type": event.event_type.value,
                     "data": event.data,
@@ -125,9 +135,10 @@ async def send_message_streaming(
             yield f"data: {json.dumps({'type': 'stream_end'})}\n\n"
             
         except Exception as e:
+            error_message = t('chat.responses.error') if hasattr(t, '__call__') else f"Error processing message: {str(e)}"
             error_data = {
                 "type": "error",
-                "data": f"Error processing message: {str(e)}",
+                "data": error_message,
                 "timestamp": "2024-01-08T03:35:00Z"
             }
             yield f"data: {json.dumps(error_data)}\n\n"

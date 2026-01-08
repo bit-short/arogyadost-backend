@@ -2,9 +2,10 @@
 Database-backed API endpoints for user data.
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from app.services.user_db_service import user_db_service
 from app.services.digital_twin_db import digital_twin_db
+from app.middleware.translation import get_translator, get_language
 
 router = APIRouter(prefix="/api/db", tags=["database"])
 
@@ -26,14 +27,48 @@ async def get_user(user_id: str):
 
 
 @router.get("/users/{user_id}/biomarkers")
-async def get_user_biomarkers(user_id: str):
+async def get_user_biomarkers(user_id: str, request: Request):
     """Get user biomarkers grouped by category."""
     biomarkers = user_db_service.get_user_biomarkers_by_category(user_id)
     if not biomarkers:
         raise HTTPException(status_code=404, detail=f"No biomarkers found for '{user_id}'")
     
+    # Get translation function
+    t = get_translator(request)
+    
+    # Translate biomarker categories and names
+    translated_biomarkers = {}
+    for category, markers in biomarkers.items():
+        translated_category = t(f"health.categories.{category}")
+        translated_markers = []
+        
+        for marker in markers:
+            translated_marker = marker.copy()
+            # Translate biomarker name if it has a translation key
+            if 'name' in marker:
+                biomarker_key = marker['name'].lower().replace(' ', '').replace('-', '')
+                translated_name = t(f"health.biomarkers.{biomarker_key}")
+                if translated_name != f"health.biomarkers.{biomarker_key}":  # Translation found
+                    translated_marker['name'] = translated_name
+            
+            # Translate status
+            if 'status' in marker:
+                status_key = marker['status'].lower()
+                translated_status = t(f"health.status.{status_key}")
+                if translated_status != f"health.status.{status_key}":  # Translation found
+                    translated_marker['status_label'] = translated_status
+            
+            translated_markers.append(translated_marker)
+        
+        translated_biomarkers[translated_category] = translated_markers
+    
     total = sum(len(v) for v in biomarkers.values())
-    return {"user_id": user_id, "biomarkers": biomarkers, "total_count": total}
+    return {
+        "user_id": user_id, 
+        "biomarkers": translated_biomarkers, 
+        "total_count": total,
+        "language": get_language(request)
+    }
 
 
 @router.get("/users/{user_id}/medical-history")

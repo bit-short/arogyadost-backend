@@ -54,6 +54,36 @@ GET /api/recommendations/{user_id}                      # Get personalized recom
 GET /api/recommendations/{user_id}/summary              # Get recommendations summary
 ```
 
+### User Management (CRUD)
+```
+POST   /api/users/                                      # Create new user with digital twin
+GET    /api/users/                                      # List all users
+PUT    /api/users/select                                # Select/switch active user
+GET    /api/users/{user_id}                             # Get user by ID
+DELETE /api/users/{user_id}                             # Delete user
+PUT    /api/users/{user_id}/display-name                # Update display name
+GET    /api/users/stats/overview                        # Get user statistics
+```
+
+### Database API
+```
+GET  /api/db/users                                      # Get all users from database
+GET  /api/db/users/{user_id}                            # Get user from database
+GET  /api/db/users/{user_id}/biomarkers                 # Get biomarkers by category
+GET  /api/db/users/{user_id}/medical-history            # Get medical history
+GET  /api/db/users/{user_id}/full                       # Get complete user data
+GET  /api/db/users/{user_id}/routines                   # Get auto-computed routines
+GET  /api/db/users/{user_id}/health-scores              # Get computed health scores
+POST /api/db/users/{user_id}/recompute                  # Force recompute derived data
+```
+
+### Health Check API
+```
+GET /api/health/database                                # Database connectivity check
+GET /api/health/storage                                 # Storage layer health
+GET /api/health/digital-brain                           # Overall digital brain health
+```
+
 ### Health Data Management (Legacy Mock Data)
 ```
 GET /api/health/biomarkers     # Health categories & scores
