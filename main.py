@@ -42,32 +42,32 @@ mock_data = {
         # Cardiology Reports
         {
             "id": "card_001",
-            "filename": "+ ECG_Report_2024_03_15.pdf",
-            "specialty": "+ Cardiology",
-            "category": "+ Diagnostic Test",
-            "hospital": "+ Apollo Hospital Delhi",
-            "doctor": "+ Dr. Rajesh Sharma",
+            "filename": "ECG_Report_2024_03_15.pdf",
+            "specialty": "Cardiology",
+            "category": "Diagnostic Test",
+            "hospital": "Apollo Hospital Delhi",
+            "doctor": "Dr. Rajesh Sharma",
             "date": "2024-03-15",
             "file_type": "pdf",
             "file_size": "2.3 MB",
-            "summary": "+ ECG shows normal sinus rhythm, no signs of arrhythmia",
-            "key_findings": ["+ Normal sinus rhythm", "+ Heart rate: 68 bpm", "+ No ST elevation"],
-            "tags": ["+ heart", "+ ecg", "+ cardiology", "+ routine"],
+            "summary": "ECG shows normal sinus rhythm, no signs of arrhythmia",
+            "key_findings": ["Normal sinus rhythm", "Heart rate: 68 bpm", "No ST elevation"],
+            "tags": ["heart", "ecg", "cardiology", "routine"],
             "upload_date": "2024-03-16T10:30:00Z"
         },
         {
             "id": "card_002", 
-            "filename": "+ Echocardiogram_Report_2024_02_28.pdf",
-            "specialty": "+ Cardiology",
-            "category": "+ Imaging",
-            "hospital": "+ Max Hospital Gurgaon",
-            "doctor": "+ Dr. Priya Nair",
+            "filename": "Echocardiogram_Report_2024_02_28.pdf",
+            "specialty": "Cardiology",
+            "category": "Imaging",
+            "hospital": "Max Hospital Gurgaon",
+            "doctor": "Dr. Priya Nair",
             "date": "2024-02-28",
             "file_type": "pdf",
             "file_size": "4.1 MB",
-            "summary": "+ 2D Echo shows good left ventricular function, EF 65%",
-            "key_findings": ["+ EF: 65%", "+ Normal wall motion", "+ Mild mitral regurgitation"],
-            "tags": ["+ heart", "+ echo", "+ imaging", "+ function"],
+            "summary": "2D Echo shows good left ventricular function, EF 65%",
+            "key_findings": ["EF: 65%", "Normal wall motion", "Mild mitral regurgitation"],
+            "tags": ["heart", "echo", "imaging", "function"],
             "upload_date": "2024-03-01T14:20:00Z"
         },
         {
@@ -89,49 +89,49 @@ mock_data = {
         # Orthopedic Reports
         {
             "id": "ortho_001",
-            "filename": "+ Knee_MRI_Report_2024_03_10.pdf",
-            "specialty": "+ Orthopedics", 
-            "category": "+ Imaging",
-            "hospital": "+ AIIMS Delhi",
-            "doctor": "+ Dr. Vikram Singh",
+            "filename": "Knee_MRI_Report_2024_03_10.pdf",
+            "specialty": "Orthopedics", 
+            "category": "Imaging",
+            "hospital": "AIIMS Delhi",
+            "doctor": "Dr. Vikram Singh",
             "date": "2024-03-10",
             "file_type": "pdf",
             "file_size": "6.2 MB",
-            "summary": "+ MRI shows mild degenerative changes in medial meniscus",
-            "key_findings": ["+ Grade 1 meniscal tear", "+ No ACL injury", "+ Mild joint effusion"],
-            "tags": ["+ knee", "+ mri", "+ meniscus", "+ sports injury"],
+            "summary": "MRI shows mild degenerative changes in medial meniscus",
+            "key_findings": ["Grade 1 meniscal tear", "No ACL injury", "Mild joint effusion"],
+            "tags": ["knee", "mri", "meniscus", "sports injury"],
             "upload_date": "2024-03-12T16:45:00Z"
         },
         {
             "id": "ortho_002",
-            "filename": "+ Spine_X_Ray_2024_02_15.pdf",
-            "specialty": "+ Orthopedics",
-            "category": "+ X-Ray",
-            "hospital": "+ Manipal Hospital Bangalore",
-            "doctor": "+ Dr. Sunita Reddy",
+            "filename": "Spine_X_Ray_2024_02_15.pdf",
+            "specialty": "Orthopedics",
+            "category": "X-Ray",
+            "hospital": "Manipal Hospital Bangalore",
+            "doctor": "Dr. Sunita Reddy",
             "date": "2024-02-15", 
             "file_type": "pdf",
             "file_size": "3.4 MB",
-            "summary": "+ Lumbar spine X-ray shows mild disc space narrowing at L4-L5",
-            "key_findings": ["+ L4-L5 disc narrowing", "+ No fractures", "+ Normal alignment"],
-            "tags": ["+ spine", "+ back pain", "+ disc", "+ lumbar"],
+            "summary": "Lumbar spine X-ray shows mild disc space narrowing at L4-L5",
+            "key_findings": ["L4-L5 disc narrowing", "No fractures", "Normal alignment"],
+            "tags": ["spine", "back pain", "disc", "lumbar"],
             "upload_date": "2024-02-16T11:30:00Z"
         },
         
         # Neurology Reports
         {
             "id": "neuro_001",
-            "filename": "+ Brain_MRI_Report_2024_03_05.pdf",
-            "specialty": "+ Neurology",
-            "category": "+ Imaging", 
-            "hospital": "+ Medanta Hospital Gurgaon",
-            "doctor": "+ Dr. Ravi Kumar",
+            "filename": "Brain_MRI_Report_2024_03_05.pdf",
+            "specialty": "Neurology",
+            "category": "Imaging", 
+            "hospital": "Medanta Hospital Gurgaon",
+            "doctor": "Dr. Ravi Kumar",
             "date": "2024-03-05",
             "file_type": "pdf",
             "file_size": "8.1 MB",
-            "summary": "+ Brain MRI shows no acute abnormalities, age-appropriate changes",
-            "key_findings": ["+ No acute lesions", "+ Normal ventricles", "+ Mild white matter changes"],
-            "tags": ["+ brain", "+ mri", "+ headache", "+ neurology"],
+            "summary": "Brain MRI shows no acute abnormalities, age-appropriate changes",
+            "key_findings": ["No acute lesions", "Normal ventricles", "Mild white matter changes"],
+            "tags": ["brain", "mri", "headache", "neurology"],
             "upload_date": "2024-03-07T13:20:00Z"
         },
         {
@@ -153,32 +153,32 @@ mock_data = {
         # Endocrinology Reports
         {
             "id": "endo_001",
-            "filename": "+ Thyroid_Function_Test_2024_03_20.pdf",
-            "specialty": "+ Endocrinology",
-            "category": "+ Lab Report",
-            "hospital": "+ SRL Diagnostics",
-            "doctor": "+ Dr. Anjali Gupta",
+            "filename": "Thyroid_Function_Test_2024_03_20.pdf",
+            "specialty": "Endocrinology",
+            "category": "Lab Report",
+            "hospital": "SRL Diagnostics",
+            "doctor": "Dr. Anjali Gupta",
             "date": "2024-03-20",
             "file_type": "pdf", 
             "file_size": "1.2 MB",
-            "summary": "+ Thyroid function tests within normal limits",
-            "key_findings": ["+ TSH: 2.1 mIU/L", "+ T3: 1.2 ng/mL", "+ T4: 8.5 μg/dL"],
-            "tags": ["+ thyroid", "+ hormone", "+ metabolism", "+ lab"],
+            "summary": "Thyroid function tests within normal limits",
+            "key_findings": ["TSH: 2.1 mIU/L", "T3: 1.2 ng/mL", "T4: 8.5 μg/dL"],
+            "tags": ["thyroid", "hormone", "metabolism", "lab"],
             "upload_date": "2024-03-21T08:45:00Z"
         },
         {
             "id": "endo_002",
-            "filename": "+ HbA1c_Diabetes_Panel_2024_02_25.pdf",
-            "specialty": "+ Endocrinology",
-            "category": "+ Lab Report",
-            "hospital": "+ Dr Lal PathLabs",
-            "doctor": "+ Dr. Suresh Patel",
+            "filename": "HbA1c_Diabetes_Panel_2024_02_25.pdf",
+            "specialty": "Endocrinology",
+            "category": "Lab Report",
+            "hospital": "Dr Lal PathLabs",
+            "doctor": "Dr. Suresh Patel",
             "date": "2024-02-25",
             "file_type": "pdf",
             "file_size": "0.9 MB", 
-            "summary": "+ HbA1c slightly elevated, suggests pre-diabetes",
-            "key_findings": ["+ HbA1c: 5.8%", "+ Fasting glucose: 105 mg/dL", "+ PPBS: 145 mg/dL"],
-            "tags": ["+ diabetes", "+ glucose", "+ hba1c", "+ prediabetes"],
+            "summary": "HbA1c slightly elevated, suggests pre-diabetes",
+            "key_findings": ["HbA1c: 5.8%", "Fasting glucose: 105 mg/dL", "PPBS: 145 mg/dL"],
+            "tags": ["diabetes", "glucose", "hba1c", "prediabetes"],
             "upload_date": "2024-02-26T15:30:00Z"
         },
         
@@ -202,32 +202,32 @@ mock_data = {
         # Pulmonology Reports  
         {
             "id": "pulmo_001",
-            "filename": "+ Chest_CT_Report_2024_02_10.pdf",
-            "specialty": "+ Pulmonology",
-            "category": "+ Imaging",
-            "hospital": "+ Chest Research Foundation Pune",
-            "doctor": "+ Dr. Zarir Udwadia",
+            "filename": "Chest_CT_Report_2024_02_10.pdf",
+            "specialty": "Pulmonology",
+            "category": "Imaging",
+            "hospital": "Chest Research Foundation Pune",
+            "doctor": "Dr. Zarir Udwadia",
             "date": "2024-02-10",
             "file_type": "pdf",
             "file_size": "5.6 MB",
-            "summary": "+ HRCT chest shows no active pulmonary disease",
-            "key_findings": ["+ Clear lung fields", "+ No nodules", "+ Normal mediastinum"],
-            "tags": ["+ chest", "+ lungs", "+ ct scan", "+ respiratory"],
+            "summary": "HRCT chest shows no active pulmonary disease",
+            "key_findings": ["Clear lung fields", "No nodules", "Normal mediastinum"],
+            "tags": ["chest", "lungs", "ct scan", "respiratory"],
             "upload_date": "2024-02-12T14:25:00Z"
         },
         {
             "id": "pulmo_002",
-            "filename": "+ Pulmonary_Function_Test_2024_03_01.pdf",
-            "specialty": "+ Pulmonology", 
-            "category": "+ Diagnostic Test",
-            "hospital": "+ Narayana Health Bangalore",
-            "doctor": "+ Dr. Sheetu Singh",
+            "filename": "Pulmonary_Function_Test_2024_03_01.pdf",
+            "specialty": "Pulmonology", 
+            "category": "Diagnostic Test",
+            "hospital": "Narayana Health Bangalore",
+            "doctor": "Dr. Sheetu Singh",
             "date": "2024-03-01",
             "file_type": "pdf",
             "file_size": "2.1 MB",
-            "summary": "+ PFT shows normal lung function, no obstruction",
-            "key_findings": ["+ FEV1: 95% predicted", "+ FVC: 98% predicted", "+ Normal flow rates"],
-            "tags": ["+ pft", "+ lung function", "+ breathing", "+ spirometry"],
+            "summary": "PFT shows normal lung function, no obstruction",
+            "key_findings": ["FEV1: 95% predicted", "FVC: 98% predicted", "Normal flow rates"],
+            "tags": ["pft", "lung function", "breathing", "spirometry"],
             "upload_date": "2024-03-03T09:40:00Z"
         }
     ],
@@ -451,57 +451,57 @@ async def get_biomarker_details(biomarker_id: str):
     biomarker_details = {
         "metabolic": {
             "id": "metabolic",
-            "name": "+ Metabolic Health",
+            "name": "Metabolic Health",
             "current_value": 82,
             "trend": "stable",
             "history": [78, 80, 82],
-            "key_markers": ["+ HbA1c: 5.8%", "+ Fasting Glucose: 92 mg/dL", "+ Insulin: 8.2 μU/mL", "+ HOMA-IR: 1.9"],
-            "recommendations": ["+ Practice 16:8 intermittent fasting", "+ Add post-meal walks", "+ Consider berberine supplementation", "+ Monitor continuous glucose"]
+            "key_markers": ["HbA1c: 5.8%", "Fasting Glucose: 92 mg/dL", "Insulin: 8.2 μU/mL", "HOMA-IR: 1.9"],
+            "recommendations": ["Practice 16:8 intermittent fasting", "Add post-meal walks", "Consider berberine supplementation", "Monitor continuous glucose"]
         },
         "cardiovascular": {
             "id": "cardiovascular", 
-            "name": "+ Heart Health",
+            "name": "Heart Health",
             "current_value": 75,
             "trend": "needs_attention",
             "history": [78, 76, 75],
-            "key_markers": ["+ VO2 Max: 42 mL/kg/min", "+ Resting HR: 58 bpm", "+ HDL: 42 mg/dL", "+ BP: 128/82 mmHg"],
-            "recommendations": ["+ Zone 2 cardio 3x/week", "+ Add omega-3 supplements", "+ Monitor HRV daily", "+ Increase NEAT activities"]
+            "key_markers": ["VO2 Max: 42 mL/kg/min", "Resting HR: 58 bpm", "HDL: 42 mg/dL", "BP: 128/82 mmHg"],
+            "recommendations": ["Zone 2 cardio 3x/week", "Add omega-3 supplements", "Monitor HRV daily", "Increase NEAT activities"]
         },
         "hormonal": {
             "id": "hormonal",
-            "name": "+ Hormonal Balance", 
+            "name": "Hormonal Balance", 
             "current_value": 88,
             "trend": "good",
             "history": [85, 87, 88],
-            "key_markers": ["+ Testosterone: 485 ng/dL", "+ Free T: 12.5 pg/mL", "+ DHEA-S: 350 μg/dL", "+ Cortisol: 12 μg/dL"],
-            "recommendations": ["+ Maintain 7-8 hours sleep", "+ Zinc and magnesium supplementation", "+ Regular strength training", "+ Manage stress levels"]
+            "key_markers": ["Testosterone: 485 ng/dL", "Free T: 12.5 pg/mL", "DHEA-S: 350 μg/dL", "Cortisol: 12 μg/dL"],
+            "recommendations": ["Maintain 7-8 hours sleep", "Zinc and magnesium supplementation", "Regular strength training", "Manage stress levels"]
         },
         "inflammation": {
             "id": "inflammation",
-            "name": "+ Inflammation Markers",
+            "name": "Inflammation Markers",
             "current_value": 92,
             "trend": "excellent", 
             "history": [88, 90, 92],
-            "key_markers": ["+ CRP: 0.8 mg/L", "+ ESR: 8 mm/hr", "+ IL-6: Low", "+ TNF-α: Normal"],
-            "recommendations": ["+ Continue anti-inflammatory diet", "+ Maintain current exercise routine", "+ Consider curcumin supplementation"]
+            "key_markers": ["CRP: 0.8 mg/L", "ESR: 8 mm/hr", "IL-6: Low", "TNF-α: Normal"],
+            "recommendations": ["Continue anti-inflammatory diet", "Maintain current exercise routine", "Consider curcumin supplementation"]
         },
         "liver": {
             "id": "liver",
-            "name": "+ Liver Function",
+            "name": "Liver Function",
             "current_value": 85,
             "trend": "good",
             "history": [82, 84, 85],
-            "key_markers": ["+ ALT: 22 U/L", "+ AST: 24 U/L", "+ GGT: 18 U/L", "+ Bilirubin: 0.9 mg/dL"],
-            "recommendations": ["+ Limit alcohol to 2 drinks/week", "+ Add milk thistle supplement", "+ Maintain healthy weight"]
+            "key_markers": ["ALT: 22 U/L", "AST: 24 U/L", "GGT: 18 U/L", "Bilirubin: 0.9 mg/dL"],
+            "recommendations": ["Limit alcohol to 2 drinks/week", "Add milk thistle supplement", "Maintain healthy weight"]
         },
         "kidney": {
             "id": "kidney",
-            "name": "+ Kidney Function",
+            "name": "Kidney Function",
             "current_value": 95,
             "trend": "excellent",
             "history": [93, 94, 95],
-            "key_markers": ["+ Creatinine: 0.9 mg/dL", "+ eGFR: >90", "+ BUN: 15 mg/dL", "+ Microalbumin: Normal"],
-            "recommendations": ["+ Maintain adequate hydration", "+ Monitor blood pressure", "+ Continue current lifestyle"]
+            "key_markers": ["Creatinine: 0.9 mg/dL", "eGFR: >90", "BUN: 15 mg/dL", "Microalbumin: Normal"],
+            "recommendations": ["Maintain adequate hydration", "Monitor blood pressure", "Continue current lifestyle"]
         }
     }
     
@@ -700,14 +700,14 @@ async def get_metric_details(metric_id: str):
     metric_details = {
         "cholesterol": {
             "id": "cholesterol",
-            "title": "+ Cholesterol Panel",
-            "subtitle": "+ Last 12 months trend",
+            "title": "Cholesterol Panel",
+            "subtitle": "Last 12 months trend",
             "status": "attention",
             "metrics": [
-                {"name": "+ Total", "value": "186", "normalRange": "< 200", "color": "#3B82F6"},
-                {"name": "+ LDL", "value": "107", "normalRange": "< 100", "color": "#F97316"},
-                {"name": "+ HDL", "value": "67", "normalRange": "> 40", "color": "#22C55E"},
-                {"name": "+ Triglycerides", "value": "121", "normalRange": "< 150", "color": "#EAB308"},
+                {"name": "Total", "value": "186", "normalRange": "< 200", "color": "#3B82F6"},
+                {"name": "LDL", "value": "107", "normalRange": "< 100", "color": "#F97316"},
+                {"name": "HDL", "value": "67", "normalRange": "> 40", "color": "#22C55E"},
+                {"name": "Triglycerides", "value": "121", "normalRange": "< 150", "color": "#EAB308"},
             ],
             "chartData": [
                 {"date": "Jan 20", "total": 190, "ldl": 120, "hdl": 55, "triglycerides": 58},
@@ -732,11 +732,11 @@ async def get_metric_details(metric_id: str):
         },
         "hba1c": {
             "id": "hba1c",
-            "title": "+ HbA1c",
-            "subtitle": "+ Last 6 months trend",
+            "title": "HbA1c",
+            "subtitle": "Last 6 months trend",
             "status": "borderline",
             "metrics": [
-                {"name": "+ HbA1c", "value": "5.8", "normalRange": "< 5.7", "color": "#F97316"},
+                {"name": "HbA1c", "value": "5.8", "normalRange": "< 5.7", "color": "#F97316"},
             ],
             "chartData": [
                 {"date": "Jun", "hba1c": 5.5},
@@ -752,11 +752,11 @@ async def get_metric_details(metric_id: str):
         },
         "vitamin_d": {
             "id": "vitamin_d",
-            "title": "+ Vitamin D",
-            "subtitle": "+ Last 6 months trend",
+            "title": "Vitamin D",
+            "subtitle": "Last 6 months trend",
             "status": "deficient",
             "metrics": [
-                {"name": "+ Level", "value": "28", "normalRange": "30-100", "color": "#EF4444"},
+                {"name": "Level", "value": "28", "normalRange": "30-100", "color": "#EF4444"},
             ],
             "chartData": [
                 {"date": "Jun", "level": 22},
@@ -786,106 +786,106 @@ async def get_action_details(action_id: str):
     action_details = {
         "1": {
             "id": "1",
-            "title": "+ Start Zone 2 cardio training",
+            "title": "Start Zone 2 cardio training",
             "icon": "Activity",
             "color": "bg-green-500",
-            "overview": "+ Zone 2 cardio training is a low-intensity exercise method that improves mitochondrial function and VO2 max, which are key markers for longevity and metabolic health.",
+            "overview": "Zone 2 cardio training is a low-intensity exercise method that improves mitochondrial function and VO2 max, which are key markers for longevity and metabolic health.",
             "benefits": [
-                "+ Improves mitochondrial function and density",
-                "+ Increases VO2 max and cardiovascular fitness",
-                "+ Enhances fat oxidation and metabolic flexibility",
-                "+ Reduces risk of cardiovascular disease by up to 35%",
-                "+ Supports healthy aging and longevity"
+                "Improves mitochondrial function and density",
+                "Increases VO2 max and cardiovascular fitness",
+                "Enhances fat oxidation and metabolic flexibility",
+                "Reduces risk of cardiovascular disease by up to 35%",
+                "Supports healthy aging and longevity"
             ],
-            "howItHelps": "+ Your current VO2 max of 42 mL/kg/min is good but can be improved. Zone 2 training specifically targets the aerobic energy system, building more efficient mitochondria and improving your body's ability to use oxygen. This type of training is particularly effective for longevity because it enhances the cellular machinery responsible for energy production.",
+            "howItHelps": "Your current VO2 max of 42 mL/kg/min is good but can be improved. Zone 2 training specifically targets the aerobic energy system, building more efficient mitochondria and improving your body's ability to use oxygen. This type of training is particularly effective for longevity because it enhances the cellular machinery responsible for energy production.",
             "nextSteps": [
-                "+ Calculate your Zone 2 heart rate (180 minus your age)",
-                "+ Start with 30-minute sessions, 2-3 times per week",
-                "+ Maintain conversational pace throughout the workout",
-                "+ Gradually increase duration to 45-60 minutes",
-                "+ Monitor heart rate to stay in Zone 2 range"
+                "Calculate your Zone 2 heart rate (180 minus your age)",
+                "Start with 30-minute sessions, 2-3 times per week",
+                "Maintain conversational pace throughout the workout",
+                "Gradually increase duration to 45-60 minutes",
+                "Monitor heart rate to stay in Zone 2 range"
             ],
             "isTodo": True,
             "todoItems": [
-                {"label": "+ Calculate your Zone 2 heart rate range", "checked": False},
-                {"label": "+ Choose your preferred Zone 2 activity (walking, cycling, swimming)", "checked": False},
-                {"label": "+ Schedule 3 weekly Zone 2 sessions in your calendar", "checked": False},
-                {"label": "+ Get a heart rate monitor or fitness tracker", "checked": False},
-                {"label": "+ Complete your first 30-minute Zone 2 session", "checked": False}
+                {"label": "Calculate your Zone 2 heart rate range", "checked": False},
+                {"label": "Choose your preferred Zone 2 activity (walking, cycling, swimming)", "checked": False},
+                {"label": "Schedule 3 weekly Zone 2 sessions in your calendar", "checked": False},
+                {"label": "Get a heart rate monitor or fitness tracker", "checked": False},
+                {"label": "Complete your first 30-minute Zone 2 session", "checked": False}
             ],
             "personalizedSummary": {
                 "improving": [
-                    {"label": "+ Current VO2 Max", "detail": "+ 42 mL/kg/min - good for your age group"},
-                    {"label": "+ Resting Heart Rate", "detail": "+ 58 bpm - excellent cardiovascular fitness indicator"}
+                    {"label": "Current VO2 Max", "detail": "42 mL/kg/min - good for your age group"},
+                    {"label": "Resting Heart Rate", "detail": "58 bpm - excellent cardiovascular fitness indicator"}
                 ],
                 "declining": [
-                    {"label": "+ Cardiovascular Endurance", "detail": "+ Could benefit from structured aerobic training"},
-                    {"label": "+ Mitochondrial Efficiency", "detail": "+ Zone 2 training will optimize cellular energy production"}
+                    {"label": "Cardiovascular Endurance", "detail": "Could benefit from structured aerobic training"},
+                    {"label": "Mitochondrial Efficiency", "detail": "Zone 2 training will optimize cellular energy production"}
                 ]
             }
         },
         "2": {
             "id": "2",
-            "title": "+ Optimize sleep to 7-8 hours",
+            "title": "Optimize sleep to 7-8 hours",
             "icon": "Moon",
             "color": "bg-purple-500",
-            "overview": "+ Quality sleep is critical for growth hormone release, cellular repair, and longevity. Optimizing sleep duration and quality can significantly impact your biological age and overall health.",
+            "overview": "Quality sleep is critical for growth hormone release, cellular repair, and longevity. Optimizing sleep duration and quality can significantly impact your biological age and overall health.",
             "benefits": [
-                "+ Enhances growth hormone release for cellular repair",
-                "+ Improves cognitive function and memory consolidation",
-                "+ Supports immune system function",
-                "+ Regulates metabolism and weight management",
-                "+ Reduces inflammation and oxidative stress"
+                "Enhances growth hormone release for cellular repair",
+                "Improves cognitive function and memory consolidation",
+                "Supports immune system function",
+                "Regulates metabolism and weight management",
+                "Reduces inflammation and oxidative stress"
             ],
-            "howItHelps": "+ Your current sleep patterns may be impacting your recovery and longevity potential. During deep sleep, your body releases growth hormone, clears metabolic waste from the brain, and repairs cellular damage. Consistent 7-8 hours of quality sleep is one of the most powerful longevity interventions available.",
+            "howItHelps": "Your current sleep patterns may be impacting your recovery and longevity potential. During deep sleep, your body releases growth hormone, clears metabolic waste from the brain, and repairs cellular damage. Consistent 7-8 hours of quality sleep is one of the most powerful longevity interventions available.",
             "nextSteps": [
-                "+ Set a consistent bedtime and wake time",
-                "+ Create a sleep-conducive environment (cool, dark, quiet)",
-                "+ Establish a relaxing bedtime routine",
-                "+ Limit screen time 1 hour before bed",
-                "+ Track your sleep quality and duration"
+                "Set a consistent bedtime and wake time",
+                "Create a sleep-conducive environment (cool, dark, quiet)",
+                "Establish a relaxing bedtime routine",
+                "Limit screen time 1 hour before bed",
+                "Track your sleep quality and duration"
             ],
             "isTodo": True,
             "todoItems": [
-                {"label": "+ Set a consistent bedtime (aim for 7-8 hours before wake time)", "checked": False},
-                {"label": "+ Install blackout curtains or use an eye mask", "checked": False},
-                {"label": "+ Remove electronic devices from bedroom", "checked": False},
-                {"label": "+ Create a 30-minute wind-down routine", "checked": False},
-                {"label": "+ Track sleep for one week to establish baseline", "checked": False}
+                {"label": "Set a consistent bedtime (aim for 7-8 hours before wake time)", "checked": False},
+                {"label": "Install blackout curtains or use an eye mask", "checked": False},
+                {"label": "Remove electronic devices from bedroom", "checked": False},
+                {"label": "Create a 30-minute wind-down routine", "checked": False},
+                {"label": "Track sleep for one week to establish baseline", "checked": False}
             ]
         },
         "cardiologist": {
             "id": "cardiologist",
-            "title": "+ Cardiologist Visit",
+            "title": "Cardiologist Visit",
             "icon": "Stethoscope",
             "color": "bg-red-500",
-            "overview": "+ Based on your health data, a visit to a cardiologist is recommended to evaluate your cardiovascular health and address any potential concerns.",
+            "overview": "Based on your health data, a visit to a cardiologist is recommended to evaluate your cardiovascular health and address any potential concerns.",
             "benefits": [
-                "+ Comprehensive heart health evaluation",
-                "+ Early detection of cardiovascular issues",
-                "+ Personalized treatment and prevention plan",
-                "+ Peace of mind about your heart health"
+                "Comprehensive heart health evaluation",
+                "Early detection of cardiovascular issues",
+                "Personalized treatment and prevention plan",
+                "Peace of mind about your heart health"
             ],
-            "howItHelps": "+ A cardiologist can perform detailed assessments including ECG, stress tests, and echocardiograms to get a complete picture of your heart health. Early intervention is key to preventing serious cardiovascular events.",
+            "howItHelps": "A cardiologist can perform detailed assessments including ECG, stress tests, and echocardiograms to get a complete picture of your heart health. Early intervention is key to preventing serious cardiovascular events.",
             "nextSteps": [],
             "isTodo": True,
             "todoItems": [
-                {"label": "+ Find a cardiologist in your network", "checked": False, "link": "/find-cardiologist"},
-                {"label": "+ Schedule an appointment", "checked": False},
-                {"label": "+ Gather recent health records and test results", "checked": False},
-                {"label": "+ Prepare list of symptoms and questions", "checked": False},
-                {"label": "+ Note family history of heart disease", "checked": False},
-                {"label": "+ List current medications and supplements", "checked": False}
+                {"label": "Find a cardiologist in your network", "checked": False, "link": "/find-cardiologist"},
+                {"label": "Schedule an appointment", "checked": False},
+                {"label": "Gather recent health records and test results", "checked": False},
+                {"label": "Prepare list of symptoms and questions", "checked": False},
+                {"label": "Note family history of heart disease", "checked": False},
+                {"label": "List current medications and supplements", "checked": False}
             ],
             "personalizedSummary": {
                 "improving": [
-                    {"label": "+ Resting Heart Rate", "detail": "+ Down 5 bpm over last month"},
-                    {"label": "+ Daily Steps", "detail": "+ Averaging 6,200 steps (up from 4,800)"}
+                    {"label": "Resting Heart Rate", "detail": "Down 5 bpm over last month"},
+                    {"label": "Daily Steps", "detail": "Averaging 6,200 steps (up from 4,800)"}
                 ],
                 "declining": [
-                    {"label": "+ Blood Pressure", "detail": "+ Elevated readings (138/88 avg)"},
-                    {"label": "+ Heart Rate Variability", "detail": "+ Below optimal range for your age"},
-                    {"label": "+ Cholesterol (estimated)", "detail": "+ LDL trending higher based on lifestyle factors"}
+                    {"label": "Blood Pressure", "detail": "Elevated readings (138/88 avg)"},
+                    {"label": "Heart Rate Variability", "detail": "Below optimal range for your age"},
+                    {"label": "Cholesterol (estimated)", "detail": "LDL trending higher based on lifestyle factors"}
                 ]
             },
             "hasReport": True
