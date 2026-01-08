@@ -459,52 +459,51 @@ def api_options(path: str):
 async def get_biomarkers():
     await simulate_delay(300)
     
-    # Import user context manager
     from app.services.user_context import user_context_manager
+    from app.services.user_health_generator import generate_health_categories
     
-    # Return data only for hardcoded user, empty for others
     if user_context_manager.is_hardcoded_user_active():
         return mock_data["health_categories"]
     else:
-        # Return empty data for non-default users
-        return []
+        user_id = user_context_manager.active_user_id
+        categories = generate_health_categories(user_id)
+        return categories if categories else []
 
 @app.get("/api/health/recommendations")
 async def get_recommendations():
     await simulate_delay(200)
     
-    # Import user context manager
     from app.services.user_context import user_context_manager
+    from app.services.user_health_generator import generate_recommendations
     
-    # Return data only for hardcoded user, empty for others
     if user_context_manager.is_hardcoded_user_active():
         return mock_data["recommended_actions"]
     else:
-        # Return empty data for non-default users
-        return []
+        user_id = user_context_manager.active_user_id
+        recommendations = generate_recommendations(user_id)
+        return recommendations if recommendations else []
 
 @app.get("/api/health/metrics")
 async def get_health_metrics():
     await simulate_delay(250)
     
-    # Import user context manager
     from app.services.user_context import user_context_manager
+    from app.services.user_health_generator import generate_health_metrics
     
-    # Return data only for hardcoded user, empty for others
     if user_context_manager.is_hardcoded_user_active():
         return mock_data["health_metrics"]
     else:
-        # Return empty data for non-default users
-        return []
+        user_id = user_context_manager.active_user_id
+        metrics = generate_health_metrics(user_id)
+        return metrics if metrics else []
 
 @app.get("/api/health/status")
 async def get_health_status():
     await simulate_delay(300)
     
-    # Import user context manager
     from app.services.user_context import user_context_manager
+    from app.services.user_health_generator import generate_health_status
     
-    # Return data only for hardcoded user, empty for others
     if user_context_manager.is_hardcoded_user_active():
         return {
             "overall_score": 84,
@@ -523,7 +522,11 @@ async def get_health_status():
             "last_updated": "2024-12-22T12:00:00Z"
         }
     else:
-        # Return empty/default data for non-default users
+        user_id = user_context_manager.active_user_id
+        status = generate_health_status(user_id)
+        if status:
+            return status
+        
         current_user = user_context_manager.get_current_user()
         return {
             "overall_score": 0,
@@ -531,11 +534,7 @@ async def get_health_status():
             "biological_age": None,
             "longevity_score": 0,
             "categories": [],
-            "key_insights": [
-                "No health data available for this user yet.",
-                "Start by uploading medical reports or connecting wearable devices.",
-                "Complete your health profile to get personalized insights."
-            ],
+            "key_insights": ["No health data available for this user yet."],
             "last_updated": None
         }
 
