@@ -1133,29 +1133,41 @@ async def get_action_details(action_id: str):
 async def get_daily_routine():
     await simulate_delay(200)
     
-    # Import user context manager
     from app.services.user_context import user_context_manager
+    from app.services.digital_twin_db import digital_twin_db
     
-    # Return data only for hardcoded user, empty for others
+    current_user = user_context_manager.get_current_user()
+    
+    # Try to get computed routine from database
+    computed = digital_twin_db.get_computed_data(current_user.user_id)
+    if computed and computed.get('daily_routine'):
+        return computed['daily_routine']
+    
+    # Fall back to mock data for hardcoded user
     if user_context_manager.is_hardcoded_user_active():
         return mock_data["daily_routine"]
-    else:
-        # Return empty data for non-default users
-        return []
+    
+    return []
 
 @app.get("/api/routines/weekly")
 async def get_weekly_routine():
     await simulate_delay(200)
     
-    # Import user context manager
     from app.services.user_context import user_context_manager
+    from app.services.digital_twin_db import digital_twin_db
     
-    # Return data only for hardcoded user, empty for others
+    current_user = user_context_manager.get_current_user()
+    
+    # Try to get computed routine from database
+    computed = digital_twin_db.get_computed_data(current_user.user_id)
+    if computed and computed.get('weekly_routine'):
+        return computed['weekly_routine']
+    
+    # Fall back to mock data for hardcoded user
     if user_context_manager.is_hardcoded_user_active():
         return mock_data["weekly_routine"]
-    else:
-        # Return empty data for non-default users
-        return []
+    
+    return []
 
 # Mock biological age endpoint (works without digital twin for frontend testing)
 @app.get("/api/biological-age/mock/{user_id}")
