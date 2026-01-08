@@ -220,52 +220,108 @@ class UserContextManager:
                     # Generate sample medical files based on conditions and test results
                     sample_files = []
                     
-                    # Add files for each condition
-                    for i, condition in enumerate(medical_history.get("conditions", [])[:3]):  # Limit to 3 files
-                        file_id = f"file_{self.active_user_id}_{i+1:03d}"
+                    # Add files for each condition (limit to 3 files)
+                    for i, condition in enumerate(medical_history.get("conditions", [])[:3]):
+                        file_id = f"{self.active_user_id}_cond_{i+1:03d}"
+                        
+                        # Map condition to appropriate specialty and category
+                        specialty_mapping = {
+                            "vitamin d deficiency": "Endocrinology",
+                            "dyslipidemia": "Cardiology", 
+                            "diabetes": "Endocrinology",
+                            "hypertension": "Cardiology",
+                            "thyroid": "Endocrinology",
+                            "anemia": "Hematology"
+                        }
+                        
+                        condition_name_lower = condition['name'].lower()
+                        specialty = "Internal Medicine"  # default
+                        for key, spec in specialty_mapping.items():
+                            if key in condition_name_lower:
+                                specialty = spec
+                                break
+                        
+                        # Determine category based on condition type
+                        category = "Lab Report" if any(word in condition_name_lower for word in ["deficiency", "level", "diabetes", "lipid"]) else "Diagnostic Test"
+                        
                         sample_files.append({
-                            "file_id": file_id,
+                            "id": file_id,  # Frontend expects 'id', not 'file_id'
                             "filename": f"{condition['name'].replace(' ', '_').lower()}_report.pdf",
                             "upload_date": condition["diagnosed_date"],
                             "file_type": "pdf",
-                            "category": "Lab Report",
-                            "specialty": "Internal Medicine",
-                            "hospital": "Apollo Hospital",
+                            "category": category,
+                            "specialty": specialty,
+                            "hospital": "Apollo Hospital Mumbai",
                             "doctor": "Dr. Sharma",
                             "date": condition["diagnosed_date"][:10],
+                            "file_size": "2.3 MB",
                             "summary": f"Lab report showing {condition['name']} - {condition['notes']}",
                             "key_findings": [
                                 condition['notes'],
                                 f"Severity: {condition['severity']}",
                                 f"Status: {condition['status']}"
                             ],
-                            "tags": [condition['name'].lower().replace(' ', '_'), condition['severity'], "lab_report"],
-                            "ocr_confidence": 0.95,
-                            "file_size": "2.3 MB"
+                            "tags": [condition['name'].lower().replace(' ', '_'), condition['severity'], "lab_report"]
                         })
                     
-                    # Add a general health checkup file
+                    # Add a general health checkup file if we have less than 3 files
                     if len(sample_files) < 3:
                         sample_files.append({
-                            "file_id": f"file_{self.active_user_id}_checkup",
+                            "id": f"{self.active_user_id}_checkup_001",
                             "filename": "annual_health_checkup_2024.pdf",
                             "upload_date": "2024-07-26T00:00:00Z",
                             "file_type": "pdf",
                             "category": "Health Checkup",
                             "specialty": "General Medicine",
-                            "hospital": "Max Healthcare",
+                            "hospital": "Max Healthcare Mumbai",
                             "doctor": "Dr. Patel",
                             "date": "2024-07-26",
+                            "file_size": "1.8 MB",
                             "summary": "Comprehensive annual health checkup with blood work and physical examination",
                             "key_findings": [
                                 "Overall health status: Good",
                                 "Blood pressure: Normal",
                                 "BMI: Within normal range"
                             ],
-                            "tags": ["annual_checkup", "preventive_care", "general_health"],
-                            "ocr_confidence": 0.92,
-                            "file_size": "1.8 MB"
+                            "tags": ["annual_checkup", "preventive_care", "general_health"]
                         })
+                    
+                    # Add biomarker-based lab report if user has biomarkers
+                    biomarkers_file = self.datasets_dir / "biomarkers" / f"biomarkers_{self.active_user_id}.json"
+                    if biomarkers_file.exists() and len(sample_files) < 4:
+                        try:
+                            with open(biomarkers_file, 'r') as f:
+                                biomarkers_data = json.load(f)
+                            
+                            # Extract some key biomarkers for the report
+                            key_biomarkers = []
+                            if "lipid_panel" in biomarkers_data:
+                                lipid = biomarkers_data["lipid_panel"]
+                                if "total_cholesterol" in lipid:
+                                    key_biomarkers.append(f"Total Cholesterol: {lipid['total_cholesterol']['value']} {lipid['total_cholesterol']['unit']}")
+                                if "hdl_cholesterol" in lipid:
+                                    key_biomarkers.append(f"HDL: {lipid['hdl_cholesterol']['value']} {lipid['hdl_cholesterol']['unit']}")
+                                if "triglycerides" in lipid:
+                                    key_biomarkers.append(f"Triglycerides: {lipid['triglycerides']['value']} {lipid['triglycerides']['unit']}")
+                            
+                            if key_biomarkers:
+                                sample_files.append({
+                                    "id": f"{self.active_user_id}_biomarkers_001",
+                                    "filename": "comprehensive_biomarker_panel_2024.pdf",
+                                    "upload_date": "2024-07-26T00:00:00Z",
+                                    "file_type": "pdf",
+                                    "category": "Lab Report",
+                                    "specialty": "Pathology",
+                                    "hospital": "SRL Diagnostics",
+                                    "doctor": "Dr. Kumar",
+                                    "date": "2024-07-26",
+                                    "file_size": "3.2 MB",
+                                    "summary": "Comprehensive biomarker analysis including lipid profile, metabolic markers, and nutritional status",
+                                    "key_findings": key_biomarkers[:3],  # Limit to 3 findings
+                                    "tags": ["biomarkers", "lipid_profile", "metabolic_health", "lab_report"]
+                                })
+                        except Exception as e:
+                            print(f"Error loading biomarkers for {self.active_user_id}: {e}")
                     
                     return sample_files
                     

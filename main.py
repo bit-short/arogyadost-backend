@@ -702,15 +702,37 @@ async def get_file_categories():
     if not files:
         return []
     
-    # Extract unique categories from user's files
-    categories = list(set(f["category"] for f in files))
-    
     # If hardcoded user, return full mock data categories
     if user_context_manager.is_hardcoded_user_active():
         return mock_data["file_categories"]
     else:
-        # For other users, return categories based on their files
-        return [{"name": cat, "count": len([f for f in files if f["category"] == cat])} for cat in categories]
+        # For other users, return categories based on their files with proper format
+        category_counts = {}
+        for file in files:
+            category = file["category"]
+            category_counts[category] = category_counts.get(category, 0) + 1
+        
+        # Map categories to icons
+        category_icons = {
+            "Lab Report": "🧪",
+            "Imaging": "🏥", 
+            "Diagnostic Test": "📊",
+            "Procedure Report": "⚕️",
+            "Health Checkup": "📋",
+            "X-Ray": "🦴",
+            "Stress Test": "💓"
+        }
+        
+        categories = []
+        for category, count in category_counts.items():
+            categories.append({
+                "id": category.lower().replace(" ", "_"),
+                "name": category,
+                "count": count,
+                "icon": category_icons.get(category, "📄")
+            })
+        
+        return categories
 
 @app.get("/api/medical-files/specialties")
 async def get_specialties():
@@ -725,15 +747,42 @@ async def get_specialties():
     if not files:
         return []
     
-    # Extract unique specialties from user's files
-    specialties = list(set(f["specialty"] for f in files))
-    
     # If hardcoded user, return full mock data specialties
     if user_context_manager.is_hardcoded_user_active():
         return mock_data["specialties"]
     else:
-        # For other users, return specialties based on their files
-        return [{"name": spec, "count": len([f for f in files if f["specialty"] == spec])} for spec in specialties]
+        # For other users, return specialties based on their files with proper format
+        specialty_counts = {}
+        for file in files:
+            specialty = file["specialty"]
+            specialty_counts[specialty] = specialty_counts.get(specialty, 0) + 1
+        
+        # Map specialties to colors
+        specialty_colors = {
+            "Cardiology": "#ef4444",
+            "Orthopedics": "#f97316",
+            "Neurology": "#8b5cf6",
+            "Endocrinology": "#06b6d4",
+            "Gastroenterology": "#10b981",
+            "Pulmonology": "#f59e0b",
+            "Dermatology": "#ec4899",
+            "Ophthalmology": "#84cc16",
+            "Internal Medicine": "#6b7280",
+            "General Medicine": "#059669",
+            "Pathology": "#7c3aed",
+            "Hematology": "#dc2626"
+        }
+        
+        specialties = []
+        for specialty, count in specialty_counts.items():
+            specialties.append({
+                "id": specialty.lower().replace(" ", "_"),
+                "name": specialty,
+                "count": count,
+                "color": specialty_colors.get(specialty, "#6b7280")
+            })
+        
+        return specialties
 
 @app.get("/api/medical-files/by-specialty/{specialty}")
 async def get_files_by_specialty(specialty: str):
@@ -787,7 +836,14 @@ async def get_medical_files(specialty: str = None, category: str = None, limit: 
 @app.get("/api/medical-files/{file_id}")
 async def get_medical_file_details(file_id: str):
     await simulate_delay(200)
-    file_detail = next((f for f in mock_data["medical_files"] if f["id"] == file_id), None)
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Get medical files for the current user
+    files = user_context_manager.get_user_medical_files()
+    file_detail = next((f for f in files if f["id"] == file_id), None)
+    
     if not file_detail:
         raise HTTPException(status_code=404, detail="Medical file not found")
     return file_detail
