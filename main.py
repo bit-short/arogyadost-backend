@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 import json
 import asyncio
+import logging
 from pathlib import Path
 from cors_config import setup_cors, create_cors_preflight_handler
 from app.routers.digital_twin import router as digital_twin_router
@@ -10,6 +11,14 @@ from app.routers.recommendations import router as recommendations_router
 from app.routers.chat import router as chat_router
 from app.routers.admin import router as admin_router
 from app.routers.users import router as users_router
+from app.routers.user_management import router as user_management_router
+from app.routers.health import router as health_router
+
+# Initialize logging
+from app.config.logging import setup_logging
+setup_logging(log_level="INFO")
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Aarogyadost API")
 
@@ -27,6 +36,54 @@ app.include_router(recommendations_router)
 app.include_router(chat_router)
 app.include_router(admin_router)
 app.include_router(users_router)
+app.include_router(user_management_router)  # New user management router
+app.include_router(health_router)  # New health check router
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize application on startup."""
+    logger.info("Starting Aarogyadost API with Digital Brain Integration")
+    
+    # Initialize database and storage
+    try:
+        from app.storage.persistent_storage import persistent_storage
+        from app.config.database import db_config
+        
+        logger.info(f"Database path: {db_config.database_file_path}")
+        logger.info(f"Cache enabled: {db_config.enable_cache}")
+        
+        # Test database connectivity
+        users = persistent_storage.list_all_users()
+        logger.info(f"Found {len(users)} existing users in database")
+        
+        # Initialize user context with persistent users
+        from app.services.user_context import user_context_manager
+        user_context_manager.refresh_persistent_users()
+        
+        logger.info("Digital Brain Integration initialized successfully")
+        
+    except Exception as e:
+        logger.error(f"Failed to initialize Digital Brain Integration: {e}")
+        # Don't fail startup, fall back to in-memory storage
+        logger.warning("Falling back to in-memory storage")
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Cleanup on application shutdown."""
+    logger.info("Shutting down Aarogyadost API")
+    
+    try:
+        # Clear cache to free memory
+        from app.storage.persistent_storage import persistent_storage
+        persistent_storage.clear_cache()
+        logger.info("Cleared storage cache")
+        
+    except Exception as e:
+        logger.error(f"Error during shutdown: {e}")
+    
+    logger.info("Shutdown complete")
 
 # Mock data - in production, this would come from a database
 mock_data = {

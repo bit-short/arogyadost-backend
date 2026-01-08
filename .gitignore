@@ -9,6 +9,11 @@ venv/
 .env
 .DS_Store
 
+# Digital Brain Integration
+digital_twins.db
+test_*.db
+logs/
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

@@ -3,12 +3,16 @@ import os
 from pathlib import Path
 from typing import Dict, List, Optional
 from datetime import datetime
+import logging
 
 from app.models.user_profile import UserProfile, Demographics, HealthProfile, HealthGoal, DataAvailability
+from app.storage.persistent_storage import persistent_storage
+
+logger = logging.getLogger(__name__)
 
 
-class UserContextManager:
-    """Manages user selection and context for testing and development."""
+class EnhancedUserContextManager:
+    """Enhanced user context manager that supports persistent users alongside existing functionality."""
     
     def __init__(self, datasets_dir: str = "datasets"):
         self.datasets_dir = Path(datasets_dir)
@@ -17,11 +21,18 @@ class UserContextManager:
         self._load_all_users()
     
     def _load_all_users(self) -> None:
-        """Load all available users including hardcoded and dataset users."""
+        """Load all available users including hardcoded, dataset, and persistent users."""
         # Load hardcoded user
         self.users_cache["hardcoded"] = self._create_hardcoded_user()
         
         # Load dataset users
+        self._load_dataset_users()
+        
+        # Load persistent users
+        self._load_persistent_users()
+    
+    def _load_dataset_users(self) -> None:
+        """Load users from dataset files."""
         users_file = self.datasets_dir / "users" / "users.json"
         if users_file.exists():
             try:
@@ -31,8 +42,84 @@ class UserContextManager:
                 for user_data in users_data:
                     user_profile = self._create_user_profile_from_data(user_data)
                     self.users_cache[user_profile.user_id] = user_profile
+                    
+                logger.info(f"Loaded {len(users_data)} dataset users")
             except Exception as e:
-                print(f"Error loading users from dataset: {e}")
+                logger.error(f"Error loading users from dataset: {e}")
+    
+    def _load_persistent_users(self) -> None:
+        """Load users from persistent storage."""
+        try:
+            persistent_users = persistent_storage.list_all_users()
+            for user_info in persistent_users:
+                user_profile = self._create_user_profile_from_persistent(user_info)
+                self.users_cache[user_profile.user_id] = user_profile
+            
+            logger.info(f"Loaded {len(persistent_users)} persistent users")
+        except Exception as e:
+            logger.error(f"Error loading persistent users: {e}")
+    
+    def _create_user_profile_from_persistent(self, user_info) -> UserProfile:
+        """Create user profile from persistent storage user info."""
+        # Get digital twin to extract health data
+        digital_twin = persistent_storage.get_digital_twin(user_info.user_id)
+        
+        # Extract demographics from digital twin if available
+        demographics = Demographics(age=30, gender="Unknown", location={})
+        health_profile = HealthProfile()
+        goals = []
+        
+        if digital_twin:
+            # Extract demographics
+            demo_domain = digital_twin.get_domain("demographics")
+            if demo_domain:
+                age_field = demo_domain.fields.get("age")
+                gender_field = demo_domain.fields.get("gender")
+                location_field = demo_domain.fields.get("location")
+                
+                demographics = Demographics(
+                    age=age_field.get_latest_value().value if age_field and age_field.values else 30,
+                    gender=gender_field.get_latest_value().value if gender_field and gender_field.values else "Unknown",
+                    location=location_field.get_latest_value().value if location_field and location_field.values else {}
+                )
+            
+            # Extract health profile
+            bio_domain = digital_twin.get_domain("biomarkers")
+            if bio_domain:
+                height_field = bio_domain.fields.get("height_cm")
+                weight_field = bio_domain.fields.get("weight_kg")
+                bmi_field = bio_domain.fields.get("bmi")
+                blood_type_field = bio_domain.fields.get("blood_type")
+                
+                health_profile = HealthProfile(
+                    height_cm=height_field.get_latest_value().value if height_field and height_field.values else None,
+                    weight_kg=weight_field.get_latest_value().value if weight_field and weight_field.values else None,
+                    bmi=bmi_field.get_latest_value().value if bmi_field and bmi_field.values else None,
+                    blood_type=blood_type_field.get_latest_value().value if blood_type_field and blood_type_field.values else None,
+                    biological_age=None  # Will be calculated by biological age engine
+                )
+        
+        # Create data availability based on digital twin completeness
+        data_availability = DataAvailability(
+            biomarkers=digital_twin.get_domain("biomarkers").get_completeness_percentage() > 0 if digital_twin else False,
+            medical_history=digital_twin.get_domain("medical_history").get_completeness_percentage() > 0 if digital_twin else False,
+            lifestyle=digital_twin.get_domain("lifestyle").get_completeness_percentage() > 0 if digital_twin else False,
+            ai_interactions=False,  # Not implemented yet
+            interventions=False,    # Not implemented yet
+            completeness_score=digital_twin.get_overall_completeness() if digital_twin else 0.0
+        )
+        
+        return UserProfile(
+            user_id=user_info.user_id,
+            display_name=user_info.display_name,
+            is_hardcoded=False,
+            demographics=demographics,
+            health_profile=health_profile,
+            goals=goals,
+            data_availability=data_availability,
+            created_at=user_info.created_at,
+            last_active=user_info.updated_at
+        )
     
     def _create_hardcoded_user(self) -> UserProfile:
         """Create user profile for the hardcoded mock data."""
@@ -331,6 +418,89 @@ class UserContextManager:
             else:
                 # Return empty list if no medical history available
                 return []
+
+
+    
+    def create_persistent_user(self, user_id: str, display_name: str) -> UserProfile:
+        """Create a new persistent user with digital twin."""
+        try:
+            # Create user in persistent storage
+            digital_twin = persistent_storage.create_user_digital_twin(user_id, display_name)
+            
+            # Create user profile
+            user_profile = UserProfile(
+                user_id=user_id,
+                display_name=display_name,
+                is_hardcoded=False,
+                demographics=Demographics(age=30, gender="Unknown", location={}),
+                health_profile=HealthProfile(),
+                goals=[],
+                data_availability=DataAvailability(
+                    biomarkers=False,
+                    medical_history=False,
+                    lifestyle=False,
+                    ai_interactions=False,
+                    interventions=False,
+                    completeness_score=0.0
+                ),
+                created_at=datetime.now(),
+                last_active=datetime.now()
+            )
+            
+            # Add to cache
+            self.users_cache[user_id] = user_profile
+            
+            logger.info(f"Created persistent user '{user_id}' with display name '{display_name}'")
+            return user_profile
+            
+        except Exception as e:
+            logger.error(f"Failed to create persistent user '{user_id}': {e}")
+            raise
+    
+    def refresh_persistent_users(self) -> None:
+        """Refresh the cache with latest persistent users."""
+        try:
+            # Remove existing persistent users from cache (keep hardcoded and dataset users)
+            persistent_user_ids = []
+            for user_id, user_profile in list(self.users_cache.items()):
+                if not user_profile.is_hardcoded and not self._is_dataset_user(user_id):
+                    persistent_user_ids.append(user_id)
+            
+            for user_id in persistent_user_ids:
+                del self.users_cache[user_id]
+            
+            # Reload persistent users
+            self._load_persistent_users()
+            
+            logger.info("Refreshed persistent users cache")
+        except Exception as e:
+            logger.error(f"Failed to refresh persistent users: {e}")
+    
+    def _is_dataset_user(self, user_id: str) -> bool:
+        """Check if a user is from the dataset files."""
+        users_file = self.datasets_dir / "users" / "users.json"
+        if users_file.exists():
+            try:
+                with open(users_file, 'r') as f:
+                    users_data = json.load(f)
+                return any(user_data.get("user_id") == user_id for user_data in users_data)
+            except Exception:
+                pass
+        return False
+    
+    def is_persistent_user(self, user_id: str) -> bool:
+        """Check if a user is a persistent user."""
+        if user_id == "hardcoded":
+            return False
+        if self._is_dataset_user(user_id):
+            return False
+        return persistent_storage.user_exists(user_id)
+
+
+# Maintain backward compatibility
+class UserContextManager(EnhancedUserContextManager):
+    """Backward compatible user context manager."""
+    pass
 
 
 # Global instance for the application
