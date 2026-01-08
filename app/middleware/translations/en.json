@@ -1,0 +1,56 @@
+{
+  "health": {
+    "categories": {
+      "cardiovascular": "Cardiovascular",
+      "metabolic": "Metabolic",
+      "inflammatory": "Inflammatory",
+      "hormonal": "Hormonal",
+      "nutritional": "Nutritional",
+      "lifestyle": "Lifestyle"
+    },
+    "biomarkers": {
+      "bloodPressure": "Blood Pressure",
+      "cholesterol": "Cholesterol",
+      "bloodSugar": "Blood Sugar",
+      "bmi": "BMI",
+      "heartRate": "Heart Rate"
+    },
+    "status": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "fair": "Fair",
+      "poor": "Poor",
+      "normal": "Normal",
+      "high": "High",
+      "low": "Low"
+    },
+    "recommendations": {
+      "exercise": "Regular exercise is recommended",
+      "diet": "Consider dietary improvements",
+      "sleep": "Improve sleep quality",
+      "stress": "Manage stress levels"
+    }
+  },
+  "chat": {
+    "greeting": "Hello! I'm your AI health assistant. How can I help you today?",
+    "analyzing": "Analyzing your health data...",
+    "disclaimer": "This is AI-generated advice. Please consult your doctor for medical decisions."
+  },
+  "bioAge": {
+    "insights": {
+      "youngerAge": "Your biological age is 3 years younger than your chronological age",
+      "cardiovascular": "Excellent cardiovascular fitness based on VO2 max",
+      "inflammation": "Low inflammation markers indicate healthy aging",
+      "muscleBone": "Muscle mass and bone density are optimal for longevity",
+      "noData": "No biological age data available for this user yet.",
+      "uploadData": "Upload health records and biomarker data to calculate biological age."
+    },
+    "recommendations": {
+      "cardio": "Continue Zone 2 cardio training for cardiovascular health",
+      "vitaminD": "Address Vitamin D deficiency for optimal longevity",
+      "sleep": "Maintain current sleep and stress management practices",
+      "uploadLabs": "Start by uploading recent lab reports",
+      "questionnaire": "Complete the health questionnaire for baseline assessment"
+    }
+  }
+}

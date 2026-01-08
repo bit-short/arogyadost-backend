@@ -6,13 +6,12 @@ from datetime import datetime
 import logging
 
 from app.models.user_profile import UserProfile, Demographics, HealthProfile, HealthGoal, DataAvailability
-from app.storage.persistent_storage import persistent_storage
 
 logger = logging.getLogger(__name__)
 
 
 class EnhancedUserContextManager:
-    """Enhanced user context manager that supports persistent users alongside existing functionality."""
+    """Enhanced user context manager that supports database users alongside existing functionality."""
     
     def __init__(self, datasets_dir: str = "datasets"):
         self.datasets_dir = Path(datasets_dir)
@@ -21,15 +20,15 @@ class EnhancedUserContextManager:
         self._load_all_users()
     
     def _load_all_users(self) -> None:
-        """Load all available users including hardcoded, dataset, and persistent users."""
+        """Load all available users including hardcoded, dataset, and database users."""
         # Load hardcoded user
         self.users_cache["hardcoded"] = self._create_hardcoded_user()
         
         # Load dataset users
         self._load_dataset_users()
         
-        # Load persistent users
-        self._load_persistent_users()
+        # Load database users
+        self._load_database_users()
     
     def _load_dataset_users(self) -> None:
         """Load users from dataset files."""
@@ -47,79 +46,108 @@ class EnhancedUserContextManager:
             except Exception as e:
                 logger.error(f"Error loading users from dataset: {e}")
     
-    def _load_persistent_users(self) -> None:
-        """Load users from persistent storage."""
+    def _load_database_users(self) -> None:
+        """Load users from unified database."""
         try:
-            persistent_users = persistent_storage.list_all_users()
-            for user_info in persistent_users:
-                user_profile = self._create_user_profile_from_persistent(user_info)
+            from app.services.user_db_service import user_db_service
+            db_users = user_db_service.get_all_users()
+            
+            for user_data in db_users:
+                user_profile = self._create_user_profile_from_database(user_data)
                 self.users_cache[user_profile.user_id] = user_profile
             
-            logger.info(f"Loaded {len(persistent_users)} persistent users")
+            logger.info(f"Loaded {len(db_users)} database users")
         except Exception as e:
-            logger.error(f"Error loading persistent users: {e}")
+            logger.error(f"Error loading database users: {e}")
     
-    def _create_user_profile_from_persistent(self, user_info) -> UserProfile:
-        """Create user profile from persistent storage user info."""
-        # Get digital twin to extract health data
-        digital_twin = persistent_storage.get_digital_twin(user_info.user_id)
+    def _create_user_profile_from_database(self, user_data: Dict) -> UserProfile:
+        """Create user profile from database user data."""
+        user_id = user_data["user_id"]
         
-        # Extract demographics from digital twin if available
-        demographics = Demographics(age=30, gender="Unknown", location={})
-        health_profile = HealthProfile()
-        goals = []
-        
-        if digital_twin:
-            # Extract demographics
-            demo_domain = digital_twin.get_domain("demographics")
-            if demo_domain:
-                age_field = demo_domain.fields.get("age")
-                gender_field = demo_domain.fields.get("gender")
-                location_field = demo_domain.fields.get("location")
-                
-                demographics = Demographics(
-                    age=age_field.get_latest_value().value if age_field and age_field.values else 30,
-                    gender=gender_field.get_latest_value().value if gender_field and gender_field.values else "Unknown",
-                    location=location_field.get_latest_value().value if location_field and location_field.values else {}
-                )
-            
-            # Extract health profile
-            bio_domain = digital_twin.get_domain("biomarkers")
-            if bio_domain:
-                height_field = bio_domain.fields.get("height_cm")
-                weight_field = bio_domain.fields.get("weight_kg")
-                bmi_field = bio_domain.fields.get("bmi")
-                blood_type_field = bio_domain.fields.get("blood_type")
-                
-                health_profile = HealthProfile(
-                    height_cm=height_field.get_latest_value().value if height_field and height_field.values else None,
-                    weight_kg=weight_field.get_latest_value().value if weight_field and weight_field.values else None,
-                    bmi=bmi_field.get_latest_value().value if bmi_field and bmi_field.values else None,
-                    blood_type=blood_type_field.get_latest_value().value if blood_type_field and blood_type_field.values else None,
-                    biological_age=None  # Will be calculated by biological age engine
-                )
-        
-        # Create data availability based on digital twin completeness
-        data_availability = DataAvailability(
-            biomarkers=digital_twin.get_domain("biomarkers").get_completeness_percentage() > 0 if digital_twin else False,
-            medical_history=digital_twin.get_domain("medical_history").get_completeness_percentage() > 0 if digital_twin else False,
-            lifestyle=digital_twin.get_domain("lifestyle").get_completeness_percentage() > 0 if digital_twin else False,
-            ai_interactions=False,  # Not implemented yet
-            interventions=False,    # Not implemented yet
-            completeness_score=digital_twin.get_overall_completeness() if digital_twin else 0.0
+        # Extract demographics
+        demographics = Demographics(
+            age=user_data.get("age", 30),
+            gender=user_data.get("gender", "Unknown"),
+            location={"city": user_data.get("city"), "country": user_data.get("country", "India")}
         )
         
+        # Extract health profile
+        health_profile = HealthProfile(
+            height_cm=user_data.get("height_cm"),
+            weight_kg=user_data.get("weight_kg"),
+            bmi=user_data.get("bmi"),
+            blood_type=user_data.get("blood_type"),
+            biological_age=user_data.get("biological_age")
+        )
+        
+        # Get additional data to determine availability
+        try:
+            from app.services.user_db_service import user_db_service
+            biomarkers = user_db_service.get_user_biomarkers(user_id)
+            medical_history = user_db_service.get_user_medical_history(user_id)
+            goals = user_db_service.get_user_goals(user_id)
+            
+            # Convert goals to HealthGoal objects
+            health_goals = []
+            for goal_data in goals:
+                health_goal = HealthGoal(
+                    goal_id=goal_data.get("goal_id", ""),
+                    type=goal_data.get("type", ""),
+                    target=goal_data.get("target", ""),
+                    status=goal_data.get("status", "active")
+                )
+                health_goals.append(health_goal)
+            
+            # Calculate data availability
+            data_availability = DataAvailability(
+                biomarkers=len(biomarkers) > 0,
+                medical_history=any(len(v) > 0 for v in medical_history.values()),
+                lifestyle=False,  # Not implemented in database yet
+                ai_interactions=False,  # Not implemented yet
+                interventions=False,    # Not implemented yet
+                completeness_score=self._calculate_db_completeness(biomarkers, medical_history, goals)
+            )
+            
+        except Exception as e:
+            logger.error(f"Error loading additional data for user {user_id}: {e}")
+            health_goals = []
+            data_availability = DataAvailability(
+                biomarkers=False,
+                medical_history=False,
+                lifestyle=False,
+                ai_interactions=False,
+                interventions=False,
+                completeness_score=0.0
+            )
+        
         return UserProfile(
-            user_id=user_info.user_id,
-            display_name=user_info.display_name,
+            user_id=user_id,
+            display_name=f"{user_id} ({user_data.get('data_source', 'database')})",
             is_hardcoded=False,
             demographics=demographics,
             health_profile=health_profile,
-            goals=goals,
+            goals=health_goals,
             data_availability=data_availability,
-            created_at=user_info.created_at,
-            last_active=user_info.updated_at
+            created_at=datetime.now(),  # Database doesn't store created_at yet
+            last_active=datetime.now()
         )
+    
+    def _calculate_db_completeness(self, biomarkers: List, medical_history: Dict, goals: List) -> float:
+        """Calculate completeness score for database users."""
+        total_categories = 5  # biomarkers, medical_history, goals, demographics, health_profile
+        available_categories = 0
+        
+        if len(biomarkers) > 0:
+            available_categories += 1
+        if any(len(v) > 0 for v in medical_history.values()):
+            available_categories += 1
+        if len(goals) > 0:
+            available_categories += 1
+        
+        # Demographics and health_profile are always available from database
+        available_categories += 2
+        
+        return (available_categories / total_categories) * 100
     
     def _create_hardcoded_user(self) -> UserProfile:
         """Create user profile for the hardcoded mock data."""
@@ -302,185 +330,314 @@ class EnhancedUserContextManager:
             from main import mock_data
             return mock_data["medical_files"]
         else:
-            # For test users, create sample medical files based on their medical history
-            medical_history_file = self.datasets_dir / "medical_history" / f"medical_history_{self.active_user_id}.json"
-            
-            if medical_history_file.exists():
-                try:
-                    with open(medical_history_file, 'r') as f:
-                        medical_history = json.load(f)
+            # For database users, generate sample medical files based on their medical history
+            try:
+                from app.services.user_db_service import user_db_service
+                medical_history = user_db_service.get_user_medical_history(self.active_user_id)
+                
+                if not medical_history or not any(len(v) > 0 for v in medical_history.values()):
+                    # Try dataset files as fallback
+                    return self._get_dataset_medical_files()
+                
+                # Generate sample medical files based on conditions and test results
+                sample_files = []
+                
+                # Add files for each condition (limit to 3 files)
+                for i, condition in enumerate(medical_history.get("conditions", [])[:3]):
+                    file_id = f"{self.active_user_id}_cond_{i+1:03d}"
                     
-                    # Generate sample medical files based on conditions and test results
-                    sample_files = []
+                    # Map condition to appropriate specialty and category
+                    specialty_mapping = {
+                        "vitamin d deficiency": "Endocrinology",
+                        "dyslipidemia": "Cardiology", 
+                        "diabetes": "Endocrinology",
+                        "hypertension": "Cardiology",
+                        "thyroid": "Endocrinology",
+                        "anemia": "Hematology"
+                    }
                     
-                    # Add files for each condition (limit to 3 files)
-                    for i, condition in enumerate(medical_history.get("conditions", [])[:3]):
-                        file_id = f"{self.active_user_id}_cond_{i+1:03d}"
-                        
-                        # Map condition to appropriate specialty and category
-                        specialty_mapping = {
-                            "vitamin d deficiency": "Endocrinology",
-                            "dyslipidemia": "Cardiology", 
-                            "diabetes": "Endocrinology",
-                            "hypertension": "Cardiology",
-                            "thyroid": "Endocrinology",
-                            "anemia": "Hematology"
-                        }
-                        
-                        condition_name_lower = condition['name'].lower()
-                        specialty = "Internal Medicine"  # default
-                        for key, spec in specialty_mapping.items():
-                            if key in condition_name_lower:
-                                specialty = spec
-                                break
-                        
-                        # Determine category based on condition type
-                        category = "Lab Report" if any(word in condition_name_lower for word in ["deficiency", "level", "diabetes", "lipid"]) else "Diagnostic Test"
-                        
+                    condition_name_lower = condition['name'].lower()
+                    specialty = "Internal Medicine"  # default
+                    for key, spec in specialty_mapping.items():
+                        if key in condition_name_lower:
+                            specialty = spec
+                            break
+                    
+                    # Determine category based on condition type
+                    category = "Lab Report" if any(word in condition_name_lower for word in ["deficiency", "level", "diabetes", "lipid"]) else "Diagnostic Test"
+                    
+                    sample_files.append({
+                        "id": file_id,
+                        "filename": f"{condition['name'].replace(' ', '_').lower()}_report.pdf",
+                        "upload_date": condition.get("start_date", "2024-07-26T00:00:00Z"),
+                        "file_type": "pdf",
+                        "category": category,
+                        "specialty": specialty,
+                        "hospital": "Apollo Hospital Mumbai",
+                        "doctor": "Dr. Sharma",
+                        "date": condition.get("start_date", "2024-07-26")[:10] if condition.get("start_date") else "2024-07-26",
+                        "file_size": "2.3 MB",
+                        "summary": f"Medical report for {condition['name']} - {condition.get('details', 'No additional details')}",
+                        "key_findings": [
+                            condition.get('details', 'No details available'),
+                            f"Type: {condition.get('type', 'condition')}",
+                            "Status: Active"
+                        ],
+                        "tags": [condition['name'].lower().replace(' ', '_'), "medical_condition", "lab_report"]
+                    })
+                
+                # Add biomarker-based lab report if user has biomarkers
+                biomarkers = user_db_service.get_user_biomarkers(self.active_user_id)
+                if biomarkers and len(sample_files) < 4:
+                    # Extract some key biomarkers for the report
+                    key_biomarkers = []
+                    for biomarker in biomarkers[:3]:  # Limit to 3 biomarkers
+                        key_biomarkers.append(f"{biomarker['name']}: {biomarker['value']} {biomarker.get('unit', '')}")
+                    
+                    if key_biomarkers:
                         sample_files.append({
-                            "id": file_id,  # Frontend expects 'id', not 'file_id'
-                            "filename": f"{condition['name'].replace(' ', '_').lower()}_report.pdf",
-                            "upload_date": condition["diagnosed_date"],
-                            "file_type": "pdf",
-                            "category": category,
-                            "specialty": specialty,
-                            "hospital": "Apollo Hospital Mumbai",
-                            "doctor": "Dr. Sharma",
-                            "date": condition["diagnosed_date"][:10],
-                            "file_size": "2.3 MB",
-                            "summary": f"Lab report showing {condition['name']} - {condition['notes']}",
-                            "key_findings": [
-                                condition['notes'],
-                                f"Severity: {condition['severity']}",
-                                f"Status: {condition['status']}"
-                            ],
-                            "tags": [condition['name'].lower().replace(' ', '_'), condition['severity'], "lab_report"]
-                        })
-                    
-                    # Add a general health checkup file if we have less than 3 files
-                    if len(sample_files) < 3:
-                        sample_files.append({
-                            "id": f"{self.active_user_id}_checkup_001",
-                            "filename": "annual_health_checkup_2024.pdf",
+                            "id": f"{self.active_user_id}_biomarkers_001",
+                            "filename": "comprehensive_biomarker_panel_2024.pdf",
                             "upload_date": "2024-07-26T00:00:00Z",
                             "file_type": "pdf",
-                            "category": "Health Checkup",
-                            "specialty": "General Medicine",
-                            "hospital": "Max Healthcare Mumbai",
-                            "doctor": "Dr. Patel",
+                            "category": "Lab Report",
+                            "specialty": "Pathology",
+                            "hospital": "SRL Diagnostics",
+                            "doctor": "Dr. Kumar",
                             "date": "2024-07-26",
-                            "file_size": "1.8 MB",
-                            "summary": "Comprehensive annual health checkup with blood work and physical examination",
-                            "key_findings": [
-                                "Overall health status: Good",
-                                "Blood pressure: Normal",
-                                "BMI: Within normal range"
-                            ],
-                            "tags": ["annual_checkup", "preventive_care", "general_health"]
+                            "file_size": "3.2 MB",
+                            "summary": "Comprehensive biomarker analysis including metabolic markers and nutritional status",
+                            "key_findings": key_biomarkers,
+                            "tags": ["biomarkers", "metabolic_health", "lab_report"]
                         })
+                
+                # Add a general health checkup file if we have less than 2 files
+                if len(sample_files) < 2:
+                    sample_files.append({
+                        "id": f"{self.active_user_id}_checkup_001",
+                        "filename": "annual_health_checkup_2024.pdf",
+                        "upload_date": "2024-07-26T00:00:00Z",
+                        "file_type": "pdf",
+                        "category": "Health Checkup",
+                        "specialty": "General Medicine",
+                        "hospital": "Max Healthcare Mumbai",
+                        "doctor": "Dr. Patel",
+                        "date": "2024-07-26",
+                        "file_size": "1.8 MB",
+                        "summary": "Comprehensive annual health checkup with blood work and physical examination",
+                        "key_findings": [
+                            "Overall health status: Good",
+                            "Blood pressure: Normal",
+                            "BMI: Within normal range"
+                        ],
+                        "tags": ["annual_checkup", "preventive_care", "general_health"]
+                    })
+                
+                return sample_files
+                
+            except Exception as e:
+                logger.error(f"Error loading medical files for database user {self.active_user_id}: {e}")
+                # Fallback to dataset files
+                return self._get_dataset_medical_files()
+    
+    def _get_dataset_medical_files(self) -> List[dict]:
+        """Get medical files from dataset files (fallback method)."""
+        medical_history_file = self.datasets_dir / "medical_history" / f"medical_history_{self.active_user_id}.json"
+        
+        if medical_history_file.exists():
+            try:
+                with open(medical_history_file, 'r') as f:
+                    medical_history = json.load(f)
+                
+                # Generate sample medical files based on conditions and test results
+                sample_files = []
+                
+                # Add files for each condition (limit to 3 files)
+                for i, condition in enumerate(medical_history.get("conditions", [])[:3]):
+                    file_id = f"{self.active_user_id}_cond_{i+1:03d}"
                     
-                    # Add biomarker-based lab report if user has biomarkers
-                    biomarkers_file = self.datasets_dir / "biomarkers" / f"biomarkers_{self.active_user_id}.json"
-                    if biomarkers_file.exists() and len(sample_files) < 4:
-                        try:
-                            with open(biomarkers_file, 'r') as f:
-                                biomarkers_data = json.load(f)
-                            
-                            # Extract some key biomarkers for the report
-                            key_biomarkers = []
-                            if "lipid_panel" in biomarkers_data:
-                                lipid = biomarkers_data["lipid_panel"]
-                                if "total_cholesterol" in lipid:
-                                    key_biomarkers.append(f"Total Cholesterol: {lipid['total_cholesterol']['value']} {lipid['total_cholesterol']['unit']}")
-                                if "hdl_cholesterol" in lipid:
-                                    key_biomarkers.append(f"HDL: {lipid['hdl_cholesterol']['value']} {lipid['hdl_cholesterol']['unit']}")
-                                if "triglycerides" in lipid:
-                                    key_biomarkers.append(f"Triglycerides: {lipid['triglycerides']['value']} {lipid['triglycerides']['unit']}")
-                            
-                            if key_biomarkers:
-                                sample_files.append({
-                                    "id": f"{self.active_user_id}_biomarkers_001",
-                                    "filename": "comprehensive_biomarker_panel_2024.pdf",
-                                    "upload_date": "2024-07-26T00:00:00Z",
-                                    "file_type": "pdf",
-                                    "category": "Lab Report",
-                                    "specialty": "Pathology",
-                                    "hospital": "SRL Diagnostics",
-                                    "doctor": "Dr. Kumar",
-                                    "date": "2024-07-26",
-                                    "file_size": "3.2 MB",
-                                    "summary": "Comprehensive biomarker analysis including lipid profile, metabolic markers, and nutritional status",
-                                    "key_findings": key_biomarkers[:3],  # Limit to 3 findings
-                                    "tags": ["biomarkers", "lipid_profile", "metabolic_health", "lab_report"]
-                                })
-                        except Exception as e:
-                            print(f"Error loading biomarkers for {self.active_user_id}: {e}")
+                    # Map condition to appropriate specialty and category
+                    specialty_mapping = {
+                        "vitamin d deficiency": "Endocrinology",
+                        "dyslipidemia": "Cardiology", 
+                        "diabetes": "Endocrinology",
+                        "hypertension": "Cardiology",
+                        "thyroid": "Endocrinology",
+                        "anemia": "Hematology"
+                    }
                     
-                    return sample_files
+                    condition_name_lower = condition['name'].lower()
+                    specialty = "Internal Medicine"  # default
+                    for key, spec in specialty_mapping.items():
+                        if key in condition_name_lower:
+                            specialty = spec
+                            break
                     
-                except Exception as e:
-                    print(f"Error loading medical history for {self.active_user_id}: {e}")
-                    return []
-            else:
-                # Return empty list if no medical history available
+                    # Determine category based on condition type
+                    category = "Lab Report" if any(word in condition_name_lower for word in ["deficiency", "level", "diabetes", "lipid"]) else "Diagnostic Test"
+                    
+                    sample_files.append({
+                        "id": file_id,  # Frontend expects 'id', not 'file_id'
+                        "filename": f"{condition['name'].replace(' ', '_').lower()}_report.pdf",
+                        "upload_date": condition["diagnosed_date"],
+                        "file_type": "pdf",
+                        "category": category,
+                        "specialty": specialty,
+                        "hospital": "Apollo Hospital Mumbai",
+                        "doctor": "Dr. Sharma",
+                        "date": condition["diagnosed_date"][:10],
+                        "file_size": "2.3 MB",
+                        "summary": f"Lab report showing {condition['name']} - {condition['notes']}",
+                        "key_findings": [
+                            condition['notes'],
+                            f"Severity: {condition['severity']}",
+                            f"Status: {condition['status']}"
+                        ],
+                        "tags": [condition['name'].lower().replace(' ', '_'), condition['severity'], "lab_report"]
+                    })
+                
+                # Add a general health checkup file if we have less than 3 files
+                if len(sample_files) < 3:
+                    sample_files.append({
+                        "id": f"{self.active_user_id}_checkup_001",
+                        "filename": "annual_health_checkup_2024.pdf",
+                        "upload_date": "2024-07-26T00:00:00Z",
+                        "file_type": "pdf",
+                        "category": "Health Checkup",
+                        "specialty": "General Medicine",
+                        "hospital": "Max Healthcare Mumbai",
+                        "doctor": "Dr. Patel",
+                        "date": "2024-07-26",
+                        "file_size": "1.8 MB",
+                        "summary": "Comprehensive annual health checkup with blood work and physical examination",
+                        "key_findings": [
+                            "Overall health status: Good",
+                            "Blood pressure: Normal",
+                            "BMI: Within normal range"
+                        ],
+                        "tags": ["annual_checkup", "preventive_care", "general_health"]
+                    })
+                
+                # Add biomarker-based lab report if user has biomarkers
+                biomarkers_file = self.datasets_dir / "biomarkers" / f"biomarkers_{self.active_user_id}.json"
+                if biomarkers_file.exists() and len(sample_files) < 4:
+                    try:
+                        with open(biomarkers_file, 'r') as f:
+                            biomarkers_data = json.load(f)
+                        
+                        # Extract some key biomarkers for the report
+                        key_biomarkers = []
+                        if "lipid_panel" in biomarkers_data:
+                            lipid = biomarkers_data["lipid_panel"]
+                            if "total_cholesterol" in lipid:
+                                key_biomarkers.append(f"Total Cholesterol: {lipid['total_cholesterol']['value']} {lipid['total_cholesterol']['unit']}")
+                            if "hdl_cholesterol" in lipid:
+                                key_biomarkers.append(f"HDL: {lipid['hdl_cholesterol']['value']} {lipid['hdl_cholesterol']['unit']}")
+                            if "triglycerides" in lipid:
+                                key_biomarkers.append(f"Triglycerides: {lipid['triglycerides']['value']} {lipid['triglycerides']['unit']}")
+                        
+                        if key_biomarkers:
+                            sample_files.append({
+                                "id": f"{self.active_user_id}_biomarkers_001",
+                                "filename": "comprehensive_biomarker_panel_2024.pdf",
+                                "upload_date": "2024-07-26T00:00:00Z",
+                                "file_type": "pdf",
+                                "category": "Lab Report",
+                                "specialty": "Pathology",
+                                "hospital": "SRL Diagnostics",
+                                "doctor": "Dr. Kumar",
+                                "date": "2024-07-26",
+                                "file_size": "3.2 MB",
+                                "summary": "Comprehensive biomarker analysis including lipid profile, metabolic markers, and nutritional status",
+                                "key_findings": key_biomarkers[:3],  # Limit to 3 findings
+                                "tags": ["biomarkers", "lipid_profile", "metabolic_health", "lab_report"]
+                            })
+                    except Exception as e:
+                        logger.error(f"Error loading biomarkers for {self.active_user_id}: {e}")
+                
+                return sample_files
+                
+            except Exception as e:
+                logger.error(f"Error loading medical history for {self.active_user_id}: {e}")
                 return []
+        else:
+            # Return empty list if no medical history available
+            return []
 
 
     
     def create_persistent_user(self, user_id: str, display_name: str) -> UserProfile:
-        """Create a new persistent user with digital twin."""
+        """Create a new database user."""
         try:
-            # Create user in persistent storage
-            digital_twin = persistent_storage.create_user_digital_twin(user_id, display_name)
+            from app.services.user_db_service import user_db_service
+            from app.database import SessionLocal
+            from app.models.db_models import User
             
-            # Create user profile
-            user_profile = UserProfile(
-                user_id=user_id,
-                display_name=display_name,
-                is_hardcoded=False,
-                demographics=Demographics(age=30, gender="Unknown", location={}),
-                health_profile=HealthProfile(),
-                goals=[],
-                data_availability=DataAvailability(
-                    biomarkers=False,
-                    medical_history=False,
-                    lifestyle=False,
-                    ai_interactions=False,
-                    interventions=False,
-                    completeness_score=0.0
-                ),
-                created_at=datetime.now(),
-                last_active=datetime.now()
-            )
-            
-            # Add to cache
-            self.users_cache[user_id] = user_profile
-            
-            logger.info(f"Created persistent user '{user_id}' with display name '{display_name}'")
-            return user_profile
+            # Create user in database
+            db = SessionLocal()
+            try:
+                new_user = User(
+                    id=user_id,
+                    age=30,  # Default values
+                    gender="Unknown",
+                    city="Unknown",
+                    country="India",
+                    data_source="manual"
+                )
+                db.add(new_user)
+                db.commit()
+                
+                # Create user profile
+                user_profile = UserProfile(
+                    user_id=user_id,
+                    display_name=display_name,
+                    is_hardcoded=False,
+                    demographics=Demographics(age=30, gender="Unknown", location={"city": "Unknown", "country": "India"}),
+                    health_profile=HealthProfile(),
+                    goals=[],
+                    data_availability=DataAvailability(
+                        biomarkers=False,
+                        medical_history=False,
+                        lifestyle=False,
+                        ai_interactions=False,
+                        interventions=False,
+                        completeness_score=40.0  # Demographics and health_profile available
+                    ),
+                    created_at=datetime.now(),
+                    last_active=datetime.now()
+                )
+                
+                # Add to cache
+                self.users_cache[user_id] = user_profile
+                
+                logger.info(f"Created database user '{user_id}' with display name '{display_name}'")
+                return user_profile
+                
+            finally:
+                db.close()
             
         except Exception as e:
-            logger.error(f"Failed to create persistent user '{user_id}': {e}")
+            logger.error(f"Failed to create database user '{user_id}': {e}")
             raise
     
     def refresh_persistent_users(self) -> None:
-        """Refresh the cache with latest persistent users."""
+        """Refresh the cache with latest database users."""
         try:
-            # Remove existing persistent users from cache (keep hardcoded and dataset users)
-            persistent_user_ids = []
+            # Remove existing database users from cache (keep hardcoded and dataset users)
+            db_user_ids = []
             for user_id, user_profile in list(self.users_cache.items()):
                 if not user_profile.is_hardcoded and not self._is_dataset_user(user_id):
-                    persistent_user_ids.append(user_id)
+                    db_user_ids.append(user_id)
             
-            for user_id in persistent_user_ids:
+            for user_id in db_user_ids:
                 del self.users_cache[user_id]
             
-            # Reload persistent users
-            self._load_persistent_users()
+            # Reload database users
+            self._load_database_users()
             
-            logger.info("Refreshed persistent users cache")
+            logger.info("Refreshed database users cache")
         except Exception as e:
-            logger.error(f"Failed to refresh persistent users: {e}")
+            logger.error(f"Failed to refresh database users: {e}")
     
     def _is_dataset_user(self, user_id: str) -> bool:
         """Check if a user is from the dataset files."""
@@ -495,12 +652,18 @@ class EnhancedUserContextManager:
         return False
     
     def is_persistent_user(self, user_id: str) -> bool:
-        """Check if a user is a persistent user."""
+        """Check if a user is a database user."""
         if user_id == "hardcoded":
             return False
         if self._is_dataset_user(user_id):
             return False
-        return persistent_storage.user_exists(user_id)
+        
+        try:
+            from app.services.user_db_service import user_db_service
+            user = user_db_service.get_user(user_id)
+            return user is not None
+        except Exception:
+            return False
 
 
 # Maintain backward compatibility

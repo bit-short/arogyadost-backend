@@ -1,10 +1,11 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 import json
 import asyncio
 import logging
 from pathlib import Path
 from cors_config import setup_cors, create_cors_preflight_handler
+from app.middleware.translation_middleware import TranslationMiddleware
 from app.routers.digital_twin import router as digital_twin_router
 from app.routers.biological_age import router as biological_age_router
 from app.routers.recommendations import router as recommendations_router
@@ -13,6 +14,7 @@ from app.routers.admin import router as admin_router
 from app.routers.users import router as users_router
 from app.routers.user_management import router as user_management_router
 from app.routers.health import router as health_router
+from app.routers.db_users import router as db_users_router
 
 # Initialize logging
 from app.config.logging import setup_logging
@@ -26,6 +28,9 @@ app = FastAPI(title="Aarogyadost API")
 setup_cors(app)
 create_cors_preflight_handler(app)
 
+# Add translation middleware
+app.add_middleware(TranslationMiddleware)
+
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -36,35 +41,37 @@ app.include_router(recommendations_router)
 app.include_router(chat_router)
 app.include_router(admin_router)
 app.include_router(users_router)
-app.include_router(user_management_router)  # New user management router
-app.include_router(health_router)  # New health check router
+app.include_router(user_management_router)  # Legacy user management router
+app.include_router(health_router)  # Health check router
+app.include_router(db_users_router)  # New unified database router
 
 
 @app.on_event("startup")
 async def startup_event():
     """Initialize application on startup."""
-    logger.info("Starting Aarogyadost API with Digital Brain Integration")
+    logger.info("Starting Aarogyadost API with Unified Database System")
     
-    # Initialize database and storage
+    # Initialize unified database system
     try:
-        from app.storage.persistent_storage import persistent_storage
-        from app.config.database import db_config
+        from app.database import init_db
+        from app.services.user_db_service import user_db_service
         
-        logger.info(f"Database path: {db_config.database_file_path}")
-        logger.info(f"Cache enabled: {db_config.enable_cache}")
+        # Initialize database tables
+        init_db()
+        logger.info("Database tables initialized")
         
         # Test database connectivity
-        users = persistent_storage.list_all_users()
-        logger.info(f"Found {len(users)} existing users in database")
+        users = user_db_service.get_all_users()
+        logger.info(f"Found {len(users)} existing users in unified database")
         
-        # Initialize user context with persistent users
+        # Initialize user context with database users
         from app.services.user_context import user_context_manager
         user_context_manager.refresh_persistent_users()
         
-        logger.info("Digital Brain Integration initialized successfully")
+        logger.info("Unified Database System initialized successfully")
         
     except Exception as e:
-        logger.error(f"Failed to initialize Digital Brain Integration: {e}")
+        logger.error(f"Failed to initialize Unified Database System: {e}")
         # Don't fail startup, fall back to in-memory storage
         logger.warning("Falling back to in-memory storage")
 
@@ -75,10 +82,10 @@ async def shutdown_event():
     logger.info("Shutting down Aarogyadost API")
     
     try:
-        # Clear cache to free memory
-        from app.storage.persistent_storage import persistent_storage
-        persistent_storage.clear_cache()
-        logger.info("Cleared storage cache")
+        # Close database connections
+        from app.services.user_db_service import user_db_service
+        user_db_service.close()
+        logger.info("Closed database connections")
         
     except Exception as e:
         logger.error(f"Error during shutdown: {e}")
@@ -1126,58 +1133,125 @@ async def get_action_details(action_id: str):
 
 # Routine endpoints
 @app.get("/api/routines/daily")
-async def get_daily_routine():
+async def get_daily_routine(request: Request):
     await simulate_delay(200)
     
     from app.services.user_context import user_context_manager
     from app.services.digital_twin_db import digital_twin_db
+    from app.services.translation_service import translation_service
     
     current_user = user_context_manager.get_current_user()
+    
+    # Get language preference from request
+    language = getattr(request.state, 'language', 'en')
     
     # Try to get computed routine from database
     computed = digital_twin_db.get_computed_data(current_user.user_id)
     if computed and computed.get('daily_routine'):
-        return computed['daily_routine']
+        routine_data = computed['daily_routine']
+    elif user_context_manager.is_hardcoded_user_active():
+        routine_data = mock_data["daily_routine"]
+    else:
+        routine_data = []
     
-    # Fall back to mock data for hardcoded user
-    if user_context_manager.is_hardcoded_user_active():
-        return mock_data["daily_routine"]
+    # Translate the routine data if needed
+    if language != 'en' and routine_data:
+        translated_routine = []
+        for step in routine_data:
+            translated_step = {
+                "step": translation_service.translate_text(step["step"], language),
+                "products": []
+            }
+            
+            for product in step["products"]:
+                translated_product = {
+                    "name": translation_service.translate_text(product["name"], language),
+                    "description": translation_service.translate_text(product["description"], language),
+                    "image": product["image"]  # Keep image path unchanged
+                }
+                translated_step["products"].append(translated_product)
+            
+            translated_routine.append(translated_step)
+        
+        return translated_routine
     
-    return []
+    return routine_data
 
 @app.get("/api/routines/weekly")
-async def get_weekly_routine():
+async def get_weekly_routine(request: Request):
     await simulate_delay(200)
     
     from app.services.user_context import user_context_manager
     from app.services.digital_twin_db import digital_twin_db
+    from app.services.translation_service import translation_service
     
     current_user = user_context_manager.get_current_user()
+    
+    # Get language preference from request
+    language = getattr(request.state, 'language', 'en')
     
     # Try to get computed routine from database
     computed = digital_twin_db.get_computed_data(current_user.user_id)
     if computed and computed.get('weekly_routine'):
-        return computed['weekly_routine']
+        routine_data = computed['weekly_routine']
+    elif user_context_manager.is_hardcoded_user_active():
+        routine_data = mock_data["weekly_routine"]
+    else:
+        routine_data = []
     
-    # Fall back to mock data for hardcoded user
-    if user_context_manager.is_hardcoded_user_active():
-        return mock_data["weekly_routine"]
+    # Translate the routine data if needed
+    if language != 'en' and routine_data:
+        translated_routine = []
+        for step in routine_data:
+            translated_step = {
+                "step": translation_service.translate_text(step["step"], language),
+                "products": []
+            }
+            
+            for product in step["products"]:
+                translated_product = {
+                    "name": translation_service.translate_text(product["name"], language),
+                    "description": translation_service.translate_text(product["description"], language),
+                    "image": product["image"]  # Keep image path unchanged
+                }
+                translated_step["products"].append(translated_product)
+            
+            translated_routine.append(translated_step)
+        
+        return translated_routine
     
-    return []
+    return routine_data
 
 # Mock biological age endpoint (works without digital twin for frontend testing)
 @app.get("/api/biological-age/mock/{user_id}")
-async def get_mock_biological_age(user_id: str):
-    """Mock biological age endpoint for frontend testing - no digital twin required"""
+async def get_mock_biological_age(user_id: str, request: Request):
+    """Mock biological age endpoint for frontend testing - uses pre-computed translations"""
     await simulate_delay(300)
     
     from app.services.user_context import user_context_manager
     from app.services.digital_twin_db import digital_twin_db
+    from app.services.translation_precompute_service import translation_precompute_service
+    
+    # Get language from request state
+    language = getattr(request.state, 'language', 'en')
     
     # Try to get computed biological age from database
     computed = digital_twin_db.get_computed_data(user_id)
     if computed and computed.get('biological_age'):
         bio_age_data = computed['biological_age']
+        
+        # Get original content
+        original_insights = bio_age_data.get('factors', [])
+        original_recommendations = bio_age_data.get('recommendations', [])
+        
+        # Get translated content using pre-computed translations
+        insights = translation_precompute_service.get_translated_content(
+            user_id, 'insights', original_insights, language
+        )
+        recommendations = translation_precompute_service.get_translated_content(
+            user_id, 'recommendations', original_recommendations, language
+        )
+        
         return {
             "user_id": user_id,
             "chronological_age": bio_age_data.get('chronological_age', 30),
@@ -1185,12 +1259,39 @@ async def get_mock_biological_age(user_id: str):
             "age_difference": bio_age_data.get('age_difference'),
             "longevity_score": max(0, 100 - abs(bio_age_data.get('age_difference', 0)) * 5),
             "status": "younger" if bio_age_data.get('age_difference', 0) < 0 else "older" if bio_age_data.get('age_difference', 0) > 0 else "same",
-            "insights": bio_age_data.get('factors', []),
-            "recommendations": bio_age_data.get('recommendations', [])
+            "insights": insights,
+            "recommendations": recommendations
         }
     
     # Fall back to mock data for hardcoded user
     if user_context_manager.is_hardcoded_user_active() and user_id == "user_001_29f":
+        # Define English insights and recommendations
+        insights_en = [
+            "Your biological age is 3 years younger than your chronological age",
+            "Excellent cardiovascular fitness based on VO2 max",
+            "Low inflammation markers indicate healthy aging",
+            "Muscle mass and bone density are optimal for longevity"
+        ]
+        
+        recommendations_en = [
+            "Continue Zone 2 cardio training for cardiovascular health",
+            "Address Vitamin D deficiency for optimal longevity",
+            "Maintain current sleep and stress management practices"
+        ]
+        
+        # Ensure translations exist for this user (pre-compute if missing)
+        translation_precompute_service.ensure_user_translations_exist(
+            user_id, insights_en, recommendations_en
+        )
+        
+        # Get translated content using pre-computed translations
+        insights = translation_precompute_service.get_translated_content(
+            user_id, 'insights', insights_en, language
+        )
+        recommendations = translation_precompute_service.get_translated_content(
+            user_id, 'recommendations', recommendations_en, language
+        )
+        
         return {
             "user_id": user_id,
             "chronological_age": 32,
@@ -1198,21 +1299,22 @@ async def get_mock_biological_age(user_id: str):
             "age_difference": -3,
             "longevity_score": 87,
             "status": "excellent",
-            "insights": [
-                "Your biological age is 3 years younger than your chronological age",
-                "Excellent cardiovascular fitness based on VO2 max",
-                "Low inflammation markers indicate healthy aging",
-                "Muscle mass and bone density are optimal for longevity"
-            ],
-            "recommendations": [
-                "Continue Zone 2 cardio training for cardiovascular health",
-                "Address Vitamin D deficiency for optimal longevity",
-                "Maintain current sleep and stress management practices"
-            ]
+            "insights": insights,
+            "recommendations": recommendations
         }
     
-    # Return default for users without data
+    # Return default for users without data using template translations
     current_user = user_context_manager.get_current_user()
+    
+    # Use template translations for no-data messages
+    no_data_insights = translation_precompute_service.get_template_content(
+        ['no_data_insight_1', 'no_data_insight_2'], language
+    )
+    
+    no_data_recommendations = translation_precompute_service.get_template_content(
+        ['no_data_recommendation_1', 'no_data_recommendation_2'], language
+    )
+    
     return {
         "user_id": user_id,
         "chronological_age": current_user.demographics.age if current_user.demographics else 30,
@@ -1220,12 +1322,6 @@ async def get_mock_biological_age(user_id: str):
         "age_difference": None,
         "longevity_score": 0,
         "status": "no_data",
-        "insights": [
-            "No biological age data available for this user yet.",
-            "Upload health records and biomarker data to calculate biological age."
-        ],
-        "recommendations": [
-            "Start by uploading recent lab reports",
-            "Complete the health questionnaire for baseline assessment"
-        ]
+        "insights": no_data_insights,
+        "recommendations": no_data_recommendations
     }
