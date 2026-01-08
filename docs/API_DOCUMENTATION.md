@@ -1,4 +1,4 @@
-# Aarogyadost API Documentation v2.0
+# Aarogyadost API Documentation v2.1
 
 ## Base URLs
 ```
@@ -15,7 +15,167 @@ Production: https://api.arogyadost.in
 
 ---
 
-## 👥 User Selection API
+## 👥 User Management API (New)
+
+Full CRUD operations for user management with Digital Brain Integration.
+
+### Create User
+```http
+POST /api/users/
+```
+
+**Request Body:**
+```json
+{
+  "user_id": "new_user_123",
+  "display_name": "John Doe"
+}
+```
+
+**Response (201):**
+```json
+{
+  "user_info": {
+    "user_id": "new_user_123",
+    "display_name": "John Doe",
+    "created_at": "2025-01-08T10:30:00Z",
+    "updated_at": "2025-01-08T10:30:00Z",
+    "data_completeness": 0.0
+  },
+  "digital_twin_created": true,
+  "message": "User 'new_user_123' created successfully"
+}
+```
+
+### List All Users
+```http
+GET /api/users/
+```
+
+**Response:**
+```json
+{
+  "users": [
+    {
+      "user_id": "new_user_123",
+      "display_name": "John Doe",
+      "created_at": "2025-01-08T10:30:00Z",
+      "updated_at": "2025-01-08T10:30:00Z",
+      "data_completeness": 75.5
+    }
+  ],
+  "total_count": 1,
+  "message": "Retrieved 1 users successfully"
+}
+```
+
+### Select/Switch Active User
+```http
+PUT /api/users/select
+```
+
+**Request Body:**
+```json
+{
+  "user_id": "test_user_1_29f"
+}
+```
+
+**Response:**
+```json
+{
+  "selected_user": {
+    "user_id": "test_user_1_29f",
+    "display_name": "test_user_1_29f (29F)",
+    "created_at": "2025-01-08T10:30:00Z",
+    "updated_at": "2025-01-08T10:30:00Z",
+    "data_completeness": 100.0
+  },
+  "digital_twin_loaded": true,
+  "message": "User 'test_user_1_29f' selected successfully"
+}
+```
+
+### Get User by ID
+```http
+GET /api/users/{user_id}
+```
+
+**Response:**
+```json
+{
+  "user_id": "test_user_1_29f",
+  "display_name": "test_user_1_29f (29F)",
+  "created_at": "2025-01-08T10:30:00Z",
+  "updated_at": "2025-01-08T10:30:00Z",
+  "data_completeness": 100.0
+}
+```
+
+### Delete User
+```http
+DELETE /api/users/{user_id}
+```
+
+**Response:**
+```json
+{
+  "deleted": true,
+  "user_id": "new_user_123",
+  "message": "User 'new_user_123' deleted successfully"
+}
+```
+
+*Note: Cannot delete the hardcoded user.*
+
+### Update Display Name
+```http
+PUT /api/users/{user_id}/display-name
+```
+
+**Request Body:**
+```json
+{
+  "display_name": "Jane Doe"
+}
+```
+
+**Response:**
+```json
+{
+  "updated": true,
+  "user_id": "new_user_123",
+  "new_display_name": "Jane Doe",
+  "message": "Display name updated successfully"
+}
+```
+
+### Get User Statistics
+```http
+GET /api/users/stats/overview
+```
+
+**Response:**
+```json
+{
+  "total_users": 7,
+  "average_completeness": 85.5,
+  "completeness_distribution": {
+    "high": 3,
+    "medium": 2,
+    "low": 2
+  },
+  "storage_stats": {
+    "cache_enabled": true,
+    "cache_size": 5
+  },
+  "message": "User statistics retrieved successfully"
+}
+```
+
+---
+
+## 👥 User Selection API (Legacy)
 
 ### Get Available Users
 ```http
@@ -476,12 +636,157 @@ The UI provides:
 
 ---
 
-**Last Updated:** January 8, 2024 | **API Version:** 2.0 | **Status:** ✅ Complete
+---
 
+## 🗄️ Database API (New)
+
+Direct database access endpoints for user data.
+
+### Get All Users from Database
+```http
+GET /api/db/users
+```
+
+**Response:**
+```json
+{
+  "users": [...],
+  "count": 7
+}
+```
+
+### Get User from Database
+```http
+GET /api/db/users/{user_id}
+```
+
+### Get User Biomarkers by Category
+```http
+GET /api/db/users/{user_id}/biomarkers
+```
+
+**Response:**
+```json
+{
+  "user_id": "test_user_1_29f",
+  "biomarkers": {
+    "lipid_panel": [...],
+    "metabolic": [...],
+    "vitamins": [...]
+  },
+  "total_count": 25
+}
+```
+
+### Get User Medical History
+```http
+GET /api/db/users/{user_id}/medical-history
+```
+
+### Get Complete User Data
+```http
+GET /api/db/users/{user_id}/full
+```
+
+### Get User Routines (Auto-Computed)
+```http
+GET /api/db/users/{user_id}/routines
+```
+
+**Response:**
+```json
+{
+  "user_id": "test_user_1_29f",
+  "daily_routine": [...],
+  "weekly_routine": [...]
+}
+```
+
+### Get User Health Scores
+```http
+GET /api/db/users/{user_id}/health-scores
+```
+
+### Force Recompute Derived Data
+```http
+POST /api/db/users/{user_id}/recompute
+```
+
+**Response:**
+```json
+{
+  "user_id": "test_user_1_29f",
+  "recomputed": true,
+  "summary": {
+    "daily_routine": 5,
+    "weekly_routine": 3,
+    "health_scores": "computed"
+  }
+}
+```
 
 ---
 
-## 📊 Metrics API (New)
+## 🏥 Health Check API (New)
+
+Health check endpoints for monitoring system components.
+
+### Database Health
+```http
+GET /api/health/database
+```
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "service": "database",
+  "users_count": 7,
+  "cache_stats": {
+    "enabled": true,
+    "size": 5
+  },
+  "timestamp": "2025-01-08T10:30:00Z"
+}
+```
+
+### Storage Health
+```http
+GET /api/health/storage
+```
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "service": "storage",
+  "cache_enabled": true,
+  "cache_size": 5,
+  "timestamp": "2025-01-08T10:30:00Z"
+}
+```
+
+### Digital Brain Overall Health
+```http
+GET /api/health/digital-brain
+```
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "service": "digital_brain",
+  "components": {
+    "database": "healthy",
+    "storage": "healthy"
+  },
+  "timestamp": "2025-01-08T10:30:00Z"
+}
+```
+
+---
+
+## 📊 Metrics API
 
 ### Get Metric Details
 ```http
@@ -590,3 +895,7 @@ GET /api/biological-age/mock/{user_id}
 | test_user_3_31m | 31 | M | Medical history |
 | test_user_5_55f | 55 | F | Medical history |
 | test_user_6_65m | 65 | M | Medical history |
+
+---
+
+**Last Updated:** January 9, 2025 | **API Version:** 2.1 | **Status:** ✅ Complete
