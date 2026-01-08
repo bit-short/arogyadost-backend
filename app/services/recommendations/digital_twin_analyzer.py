@@ -18,23 +18,20 @@ class DigitalTwinAnalyzer:
     
     def load_user_data(self, user_id: str) -> DigitalTwin:
         """Load and aggregate all user data sources into a DigitalTwin object."""
+        # First try database (for OCR users and migrated data)
+        twin = self._load_from_database(user_id)
+        if twin and twin.latest_biomarkers:
+            return twin
+        
+        # Fall back to file-based loading
         try:
-            # Load demographics
             demographics = self._load_demographics(user_id)
-            
-            # Load biomarker data
             latest_biomarkers, biomarker_history = self._load_biomarker_data(user_id)
-            
-            # Load medical data
             conditions = self._load_conditions(user_id)
             medications = self._load_medications(user_id)
             supplements = self._load_supplements(user_id)
             family_history = self._load_family_history(user_id)
-            
-            # Load lifestyle data
             lifestyle = self._load_lifestyle(user_id)
-            
-            # Load goals
             goals = self._load_goals(user_id)
             
             return DigitalTwin(
@@ -49,8 +46,7 @@ class DigitalTwinAnalyzer:
                 lifestyle=lifestyle,
                 goals=goals
             )
-        except Exception as e:
-            # Return minimal digital twin with just user_id and basic demographics
+        except Exception:
             return DigitalTwin(
                 user_id=user_id,
                 demographics=Demographics(age=30, sex="unknown"),
@@ -60,6 +56,76 @@ class DigitalTwinAnalyzer:
                 family_history=[],
                 goals=[]
             )
+    
+    def _load_from_database(self, user_id: str) -> Optional[DigitalTwin]:
+        """Load user data from SQLite database."""
+        try:
+            from app.services.user_db_service import user_db_service
+            
+            user = user_db_service.get_user(user_id)
+            if not user:
+                return None
+            
+            # Demographics
+            demographics = Demographics(
+                age=user.get('age', 30),
+                sex=user.get('gender', 'unknown'),
+                height_cm=user.get('height_cm'),
+                weight_kg=user.get('weight_kg'),
+                bmi=user.get('bmi')
+            )
+            
+            # Biomarkers
+            biomarkers = user_db_service.get_user_biomarkers(user_id)
+            latest_biomarkers = None
+            if biomarkers:
+                categories = {}
+                for b in biomarkers:
+                    cat = b.get('category', 'general')
+                    if cat not in categories:
+                        categories[cat] = {}
+                    categories[cat][b['name']] = BiomarkerValue(
+                        value=b['value'],
+                        unit=b.get('unit', ''),
+                        status=b.get('status', 'normal'),
+                        reference_range=b.get('normal_range', '')
+                    )
+                latest_biomarkers = BiomarkerSnapshot(
+                    test_date=datetime.now(),
+                    lab_name="OCR Extracted",
+                    test_package="Full Panel",
+                    categories=categories
+                )
+            
+            # Medical history
+            history = user_db_service.get_user_medical_history(user_id)
+            conditions = [
+                MedicalCondition(name=c['name'], status='active', diagnosed_date=datetime.now())
+                for c in history.get('conditions', [])
+            ]
+            supplements = [
+                Supplement(name=s['name'], dosage=s.get('details', {}).get('dosage', ''))
+                for s in history.get('supplements', [])
+            ]
+            family_history = [
+                FamilyCondition(condition=f['name'], relation=f.get('details', {}).get('relation', 'unknown'))
+                for f in history.get('family_history', [])
+            ]
+            
+            return DigitalTwin(
+                user_id=user_id,
+                demographics=demographics,
+                latest_biomarkers=latest_biomarkers,
+                biomarker_history=[latest_biomarkers] if latest_biomarkers else [],
+                conditions=conditions,
+                medications=[],
+                supplements=supplements,
+                family_history=family_history,
+                lifestyle=None,
+                goals=[]
+            )
+        except Exception:
+            return None
     
     def get_latest_biomarkers(self, twin: DigitalTwin) -> Optional[Dict[str, Any]]:
         """Get the most recent biomarker test results."""
