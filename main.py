@@ -609,16 +609,8 @@ async def get_biomarker_details(biomarker_id: str):
 @app.get("/api/doctors")
 async def get_doctors():
     await simulate_delay(300)
-    
-    # Import user context manager
-    from app.services.user_context import user_context_manager
-    
-    # Return data only for hardcoded user, empty for others
-    if user_context_manager.is_hardcoded_user_active():
-        return mock_data["doctors"]
-    else:
-        # Return empty data for non-default users
-        return []
+    # Doctors list is generic reference data - return for all users
+    return mock_data["doctors"]
 
 @app.get("/api/doctors/{doctor_id}")
 async def get_doctor_details(doctor_id: int):
@@ -632,16 +624,8 @@ async def get_doctor_details(doctor_id: int):
 @app.get("/api/labs")
 async def get_labs():
     await simulate_delay(250)
-    
-    # Import user context manager
-    from app.services.user_context import user_context_manager
-    
-    # Return data only for hardcoded user, empty for others
-    if user_context_manager.is_hardcoded_user_active():
-        return mock_data["labs"]
-    else:
-        # Return empty data for non-default users
-        return []
+    # Labs list is generic reference data - return for all users
+    return mock_data["labs"]
 
 @app.get("/api/labs/{lab_id}")
 async def get_lab_details(lab_id: int):
@@ -1175,10 +1159,25 @@ async def get_mock_biological_age(user_id: str):
     """Mock biological age endpoint for frontend testing - no digital twin required"""
     await simulate_delay(300)
     
-    # Import user context manager
     from app.services.user_context import user_context_manager
+    from app.services.digital_twin_db import digital_twin_db
     
-    # Return data only for hardcoded user, empty for others
+    # Try to get computed biological age from database
+    computed = digital_twin_db.get_computed_data(user_id)
+    if computed and computed.get('biological_age'):
+        bio_age_data = computed['biological_age']
+        return {
+            "user_id": user_id,
+            "chronological_age": bio_age_data.get('chronological_age', 30),
+            "biological_age": bio_age_data.get('biological_age'),
+            "age_difference": bio_age_data.get('age_difference'),
+            "longevity_score": max(0, 100 - abs(bio_age_data.get('age_difference', 0)) * 5),
+            "status": "younger" if bio_age_data.get('age_difference', 0) < 0 else "older" if bio_age_data.get('age_difference', 0) > 0 else "same",
+            "insights": bio_age_data.get('factors', []),
+            "recommendations": bio_age_data.get('recommendations', [])
+        }
+    
+    # Fall back to mock data for hardcoded user
     if user_context_manager.is_hardcoded_user_active() and user_id == "user_001_29f":
         return {
             "user_id": user_id,
@@ -1199,24 +1198,22 @@ async def get_mock_biological_age(user_id: str):
                 "Maintain current sleep and stress management practices"
             ]
         }
-    else:
-        # Return empty/default data for non-default users
-        current_user = user_context_manager.get_current_user()
-        return {
-            "user_id": user_id,
-            "chronological_age": current_user.demographics.age if current_user.demographics else 30,
-            "biological_age": None,
-            "age_difference": None,
-            "longevity_score": 0,
-            "status": "no_data",
-            "insights": [
-                "No biological age data available for this user yet.",
-                "Upload health records and biomarker data to calculate biological age.",
-                "Complete health assessments to get personalized longevity insights."
-            ],
-            "recommendations": [
-                "Start by uploading recent lab reports",
-                "Connect wearable devices for continuous monitoring",
-                "Complete the health questionnaire for baseline assessment"
-            ]
-        }
+    
+    # Return default for users without data
+    current_user = user_context_manager.get_current_user()
+    return {
+        "user_id": user_id,
+        "chronological_age": current_user.demographics.age if current_user.demographics else 30,
+        "biological_age": None,
+        "age_difference": None,
+        "longevity_score": 0,
+        "status": "no_data",
+        "insights": [
+            "No biological age data available for this user yet.",
+            "Upload health records and biomarker data to calculate biological age."
+        ],
+        "recommendations": [
+            "Start by uploading recent lab reports",
+            "Complete the health questionnaire for baseline assessment"
+        ]
+    }
