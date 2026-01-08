@@ -477,3 +477,116 @@ The UI provides:
 ---
 
 **Last Updated:** January 8, 2024 | **API Version:** 2.0 | **Status:** ✅ Complete
+
+
+---
+
+## 📊 Metrics API (New)
+
+### Get Metric Details
+```http
+GET /api/metrics/{metric_id}
+```
+
+**Available Metrics:** `cholesterol`, `blood_sugar`, `vitamins`, `hormones`, `inflammation`
+
+**Response:**
+```json
+{
+  "id": "cholesterol",
+  "title": "Cholesterol Panel",
+  "subtitle": "Last 12 months trend",
+  "status": "attention",
+  "metrics": [
+    {"name": "Total", "value": "186", "normalRange": "< 200", "color": "#3B82F6"},
+    {"name": "LDL", "value": "107", "normalRange": "< 100", "color": "#F97316"},
+    {"name": "HDL", "value": "67", "normalRange": "> 40", "color": "#22C55E"}
+  ],
+  "chartData": [...],
+  "insights": [...],
+  "recommendations": [...]
+}
+```
+
+---
+
+## 🎯 Actions API (New)
+
+### Get Action Details
+```http
+GET /api/actions/{action_id}
+```
+
+**Response:**
+```json
+{
+  "id": "1",
+  "title": "Start Zone 2 cardio training",
+  "icon": "Activity",
+  "overview": "Zone 2 cardio training improves mitochondrial function...",
+  "benefits": ["Improves mitochondrial function", "Increases VO2 max", ...],
+  "howItHelps": "Your current VO2 max of 42 mL/kg/min...",
+  "nextSteps": ["Calculate your Zone 2 heart rate", ...],
+  "isTodo": true,
+  "todoItems": [
+    {"label": "Calculate your Zone 2 heart rate range", "checked": false}
+  ],
+  "personalizedSummary": {
+    "improving": [...],
+    "declining": [...]
+  }
+}
+```
+
+---
+
+## 📅 Routines API (New)
+
+### Get Daily Routine
+```http
+GET /api/routines/daily
+```
+
+**Response:** Array of daily routine items (supplements, exercises, etc.)
+*Note: Returns data only for hardcoded user, empty array for others.*
+
+### Get Weekly Routine
+```http
+GET /api/routines/weekly
+```
+
+**Response:** Array of weekly routine items
+*Note: Returns data only for hardcoded user, empty array for others.*
+
+---
+
+## 🧬 Mock Biological Age API (New)
+
+### Get Mock Biological Age
+```http
+GET /api/biological-age/mock/{user_id}
+```
+
+**Response:**
+```json
+{
+  "user_id": "user_001_29f",
+  "chronological_age": 32,
+  "biological_age": 29,
+  "age_difference": -3,
+  "longevity_score": 87
+}
+```
+*Note: Mock endpoint for frontend testing without digital twin.*
+
+---
+
+## 📝 Test Users Available
+
+| User ID | Age | Gender | Data Available |
+|---------|-----|--------|----------------|
+| hardcoded | 35 | M | Full mock data |
+| test_user_1_29f | 29 | F | Biomarkers, lifestyle, medical history |
+| test_user_3_31m | 31 | M | Medical history |
+| test_user_5_55f | 55 | F | Medical history |
+| test_user_6_65m | 65 | M | Medical history |
