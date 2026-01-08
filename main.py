@@ -318,25 +318,35 @@ def health_check_options():
 def api_options(path: str):
     return {"message": "OK"}
 
-# Health endpoints
+# Health endpoints - Legacy API with backward compatibility
 @app.get("/api/health/biomarkers")
 async def get_biomarkers():
     await simulate_delay(300)
+    
+    # Always return hardcoded data for backward compatibility
+    # This ensures existing frontend integrations continue to work
     return mock_data["health_categories"]
 
 @app.get("/api/health/recommendations")
 async def get_recommendations():
     await simulate_delay(200)
+    
+    # Always return hardcoded data for backward compatibility
     return mock_data["recommended_actions"]
 
 @app.get("/api/health/metrics")
 async def get_health_metrics():
     await simulate_delay(250)
+    
+    # Always return hardcoded data for backward compatibility
     return mock_data["health_metrics"]
 
 @app.get("/api/health/status")
 async def get_health_status():
     await simulate_delay(300)
+    
+    # Always return hardcoded data for backward compatibility
+    # Frontend can gradually migrate to new user-aware endpoints
     return {
         "overall_score": 84,
         "age": 35,
