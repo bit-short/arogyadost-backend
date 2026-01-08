@@ -5,7 +5,7 @@ Generates and stores translations for user content to avoid real-time translatio
 
 import logging
 from typing import Dict, List, Optional
-from app.services.translation_service import translation_service
+from app.utils.translation import translation_service
 from app.storage.translation_database import translation_db
 
 logger = logging.getLogger(__name__)

@@ -1,119 +1,108 @@
----
-inclusion: always
----
+# Technology Stack & Build System
 
-# Technology Stack
+## Core Technologies
 
-## Core Framework
+- **Framework**: FastAPI with async/await support
+- **Runtime**: Python 3.11 on Amazon Linux 2023
+- **Database**: SQLite with SQLAlchemy ORM and Alembic migrations
+- **AI Integration**: AWS Bedrock for LLM services (Titan, Claude models)
+- **Deployment**: AWS Elastic Beanstalk (ap-south-1 region)
+- **Instance**: t3.micro (Free Tier eligible)
 
-- **Backend**: FastAPI (Python 3.11) with async/await support
-- **Server**: Uvicorn with async support
-- **Validation**: Pydantic v2 for request/response models
-- **Type Hints**: Full type annotation coverage
+## Key Dependencies
 
-## Data & Storage
+- **FastAPI**: 0.104.1 - Web framework
+- **Pydantic**: 2.5.0 - Data validation and serialization
+- **SQLAlchemy**: 2.0.0+ - Database ORM
+- **Boto3**: 1.34.0+ - AWS SDK
+- **Uvicorn**: 0.24.0 - ASGI server
 
-- **Digital Twin**: In-memory storage with domain-based organization
-- **Temporal Data**: Timestamp-based health data tracking
-- **Future Database**: PostgreSQL-ready with SQLAlchemy 2.0+
-- **Document Storage**: S3 for medical document storage (configured)
+## Testing Stack
 
-## Infrastructure
+- **pytest**: 7.4.0+ - Test framework
+- **pytest-asyncio**: 0.23.0+ - Async test support
+- **Hypothesis**: 6.92.0+ - Property-based testing
+- **httpx**: 0.26.0+ - HTTP client for testing
+- **moto**: 4.2.0+ - AWS service mocking
 
-- **Cloud**: AWS (ap-south-1 Mumbai region)
-- **Deployment**: Elastic Beanstalk on Amazon Linux 2023
-- **Instance**: t3.micro (Free Tier)
-- **Storage**: S3 for medical document storage
-- **SSL**: Wildcard certificate (*.arogyadost.in)
+## Development Commands
 
-## Health Analytics
-
-- **Biological Age Engine**: Evidence-based multi-category age calculation
-- **Recommendation Engine**: Rule-based health recommendations system
-- **Digital Twin System**: Multi-domain health data management
-- **Biomarker Analysis**: Comprehensive health marker evaluation
-
-## Database & Queue (Configured, Not Yet Active)
-
-- **ORM**: SQLAlchemy 2.0+ with Alembic migrations
-- **Database**: SQLite (dev), PostgreSQL-ready
-- **Task Queue**: Celery with Redis backend
-- **Retry Logic**: Tenacity for resilient operations
-
-## Testing
-
-- **Framework**: pytest with pytest-asyncio
-- **Property Testing**: Hypothesis for robust validation and edge case discovery
-- **HTTP Testing**: httpx for async API tests
-- **AWS Mocking**: moto for S3 service tests
-- **Coverage**: pytest-cov for code coverage analysis
-
-## Common Commands
-
+### Local Development
 ```bash
-# Local development
+# Setup virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Start development server
 uvicorn main:app --reload
 
-# Testing
-pytest                                    # Run all tests
-pytest tests/unit                         # Unit tests only
-pytest tests/property                     # Property-based tests
-pytest tests/integration                  # Integration tests
-pytest -v                                 # Verbose output
-pytest --cov=app                          # With coverage
+# API will be available at http://localhost:8000
+```
 
-# Database migrations (when active)
-alembic revision --autogenerate -m "description"
+### Testing
+```bash
+# Run all tests
+python run_tests.py
+
+# Run specific test suites
+pytest tests/unit                 # Unit tests
+pytest tests/property             # Property-based tests
+pytest tests/integration          # Integration tests
+
+# Run with coverage
+pytest --cov=app tests/
+```
+
+### Database Operations
+```bash
+# Initialize database
+python -c "from app.database import init_db; init_db()"
+
+# Run migrations (when available)
 alembic upgrade head
 
-# API documentation
-# Swagger UI: http://localhost:8000/docs
-# ReDoc: http://localhost:8000/redoc
+# Create new migration
+alembic revision --autogenerate -m "description"
 ```
 
-## Code Organization
+### Validation & Health Checks
+```bash
+# Validate project structure
+python validate_project.py
 
-```
-app/
-├── models/              # Pydantic models and domain objects
-│   └── digital_twin.py  # Digital twin data structures
-├── routers/             # API endpoint handlers
-│   ├── digital_twin.py
-│   ├── biological_age.py
-│   └── recommendations.py
-├── services/            # Business logic and engines
-│   ├── biological_age/
-│   │   ├── calculator.py
-│   │   ├── engine.py
-│   │   └── biomarker_normalizer.py
-│   └── recommendations/
-│       ├── engine.py
-│       ├── digital_twin_analyzer.py
-│       ├── recommendation_builder.py
-│       ├── priority_scorer.py
-│       ├── biomarker_rules.py
-│       ├── condition_rules.py
-│       ├── demographic_rules.py
-│       └── temporal_rules.py
-└── storage/             # Data persistence layer
-    └── digital_twins.py
-
-tests/
-├── unit/                # Unit tests
-├── property/            # Property-based tests
-└── integration/         # Integration tests
-
-datasets/                # Test data and user datasets
-├── biomarkers/
-├── lifestyle/
-├── medical_history/
-├── interventions/
-└── ai_interactions/
+# Test specific functionality
+python test_functionality.py
+python test_user_selection_logic.py
+python test_recommendations.py
 ```
 
 ## Deployment
 
-- **Dev**: Push to `dev` branch → auto-deploy to api-dev.arogyadost.in
-- **Prod**: Push to `main` branch → auto-deploy to api.arogyadost.in
-- **CI/CD**: GitHub Actions workflows in `.github/`
+### Automatic CI/CD
+- Push to `dev` branch → Auto-deploys to development environment
+- Push to `main` branch → Auto-deploys to production environment
+
+### Manual Deployment
+```bash
+# Deploy to Elastic Beanstalk
+eb deploy
+
+# Check deployment status
+eb status
+```
+
+## Environment Configuration
+
+### Required Environment Variables
+- `DATABASE_URL`: Database connection string (defaults to SQLite)
+- `AWS_ACCESS_KEY_ID`: AWS credentials for Bedrock
+- `AWS_SECRET_ACCESS_KEY`: AWS credentials
+- `AWS_DEFAULT_REGION`: AWS region (us-east-1 for Bedrock)
+
+### Optional Configuration
+- `DIGITAL_BRAIN_DB_PATH`: Custom database path
+- `DIGITAL_BRAIN_CACHE_SIZE`: Cache size (default: 100)
+- `DIGITAL_BRAIN_ENABLE_CACHE`: Enable caching (default: true)

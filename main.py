@@ -1133,17 +1133,14 @@ async def get_action_details(action_id: str):
 
 # Routine endpoints
 @app.get("/api/routines/daily")
-async def get_daily_routine(request: Request):
+async def get_daily_routine(request: Request, db: Session = Depends(get_db)):
     await simulate_delay(200)
     
     from app.services.user_context import user_context_manager
     from app.services.digital_twin_db import digital_twin_db
-    from app.services.translation_service import translation_service
+    from app.utils.translation_helpers import get_translation_context
     
     current_user = user_context_manager.get_current_user()
-    
-    # Get language preference from request
-    language = getattr(request.state, 'language', 'en')
     
     # Try to get computed routine from database
     computed = digital_twin_db.get_computed_data(current_user.user_id)
@@ -1154,21 +1151,32 @@ async def get_daily_routine(request: Request):
     else:
         routine_data = []
     
-    # Translate the routine data if needed
-    if language != 'en' and routine_data:
+    # Get translation context
+    translation_ctx = get_translation_context(request, db)
+    
+    # Translate the routine data using database translations
+    if routine_data:
         translated_routine = []
         for step in routine_data:
-            translated_step = {
-                "step": translation_service.translate_text(step["step"], language),
-                "products": []
-            }
+            # Translate step
+            translated_step = translation_ctx.translate_dict(
+                data={"step": step["step"]},
+                content_type="daily_routine_step",
+                fields=["step"]
+            )
+            translated_step["products"] = []
             
+            # Translate products
             for product in step["products"]:
-                translated_product = {
-                    "name": translation_service.translate_text(product["name"], language),
-                    "description": translation_service.translate_text(product["description"], language),
-                    "image": product["image"]  # Keep image path unchanged
-                }
+                translated_product = translation_ctx.translate_dict(
+                    data={
+                        "name": product["name"],
+                        "description": product["description"],
+                        "image": product["image"]
+                    },
+                    content_type="daily_routine_product",
+                    fields=["name", "description"]
+                )
                 translated_step["products"].append(translated_product)
             
             translated_routine.append(translated_step)
@@ -1178,17 +1186,14 @@ async def get_daily_routine(request: Request):
     return routine_data
 
 @app.get("/api/routines/weekly")
-async def get_weekly_routine(request: Request):
+async def get_weekly_routine(request: Request, db: Session = Depends(get_db)):
     await simulate_delay(200)
     
     from app.services.user_context import user_context_manager
     from app.services.digital_twin_db import digital_twin_db
-    from app.services.translation_service import translation_service
+    from app.utils.translation_helpers import get_translation_context
     
     current_user = user_context_manager.get_current_user()
-    
-    # Get language preference from request
-    language = getattr(request.state, 'language', 'en')
     
     # Try to get computed routine from database
     computed = digital_twin_db.get_computed_data(current_user.user_id)
@@ -1199,22 +1204,39 @@ async def get_weekly_routine(request: Request):
     else:
         routine_data = []
     
-    # Translate the routine data if needed
-    if language != 'en' and routine_data:
+    # Get translation context
+    translation_ctx = get_translation_context(request, db)
+    
+    # Translate the routine data using database translations
+    if routine_data:
         translated_routine = []
         for step in routine_data:
-            translated_step = {
-                "step": translation_service.translate_text(step["step"], language),
-                "products": []
-            }
+            # Translate step
+            translated_step = translation_ctx.translate_dict(
+                data={"step": step["step"]},
+                content_type="weekly_routine_step",
+                fields=["step"]
+            )
+            translated_step["products"] = []
             
+            # Translate products
             for product in step["products"]:
-                translated_product = {
-                    "name": translation_service.translate_text(product["name"], language),
-                    "description": translation_service.translate_text(product["description"], language),
-                    "image": product["image"]  # Keep image path unchanged
-                }
+                translated_product = translation_ctx.translate_dict(
+                    data={
+                        "name": product["name"],
+                        "description": product["description"],
+                        "image": product["image"]
+                    },
+                    content_type="weekly_routine_product",
+                    fields=["name", "description"]
+                )
                 translated_step["products"].append(translated_product)
+            
+            translated_routine.append(translated_step)
+        
+        return translated_routine
+    
+    return routine_data
             
             translated_routine.append(translated_step)
         
