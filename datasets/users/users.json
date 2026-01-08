@@ -43,150 +43,101 @@
     "last_active": "2026-01-07T22:39:58Z"
   },
   {
-    "user_id": "test_user_2_29m",
+    "user_id": "ocr_user_001_29f",
     "demographics": {
       "age": 29,
-      "gender": "M",
+      "gender": "F",
       "location": {
-        "city": "Mumbai",
+        "city": "Bengaluru",
         "country": "India"
       }
     },
     "health_profile": {
-      "height_cm": 178,
-      "weight_kg": 75,
-      "bmi": 23.7,
-      "blood_type": "A+",
+      "height_cm": 165,
+      "weight_kg": 60,
+      "bmi": 22.0,
+      "blood_type": "O+",
       "biological_age": 28
     },
     "goals": [
       {
-        "goal_id": "g2_001",
-        "type": "fitness",
-        "target": "Improve VO2 max to 45 mL/kg/min",
-        "start_date": "2024-08-01T00:00:00Z",
-        "target_date": "2025-02-01T00:00:00Z",
+        "goal_id": "ocr_user_001_29f_goal_1",
+        "type": "health_optimization",
+        "target": "Optimize biomarkers based on lab results",
+        "start_date": "2026-01-08T18:19:38.386831",
+        "target_date": "2027-01-08T18:19:38.386838",
         "status": "active"
       }
     ],
     "preferences": {
       "units": "metric",
-      "notifications": false,
+      "notifications": true,
       "data_sharing": true
     },
-    "created_at": "2024-08-01T00:00:00Z",
-    "last_active": "2026-01-07T22:39:59Z"
+    "created_at": "2026-01-08T18:19:38.386841",
+    "last_active": "2026-01-08T18:19:38.386842",
+    "data_source": "ocr_extracted"
   },
   {
-    "user_id": "test_user_3_31m",
+    "user_id": "ocr_user_003_31m",
     "demographics": {
       "age": 31,
       "gender": "M",
       "location": {
-        "city": "Delhi",
+        "city": "Bengaluru",
         "country": "India"
       }
     },
     "health_profile": {
       "height_cm": 175,
-      "weight_kg": 82,
-      "bmi": 26.8,
-      "blood_type": "B+",
-      "biological_age": 33
+      "weight_kg": 75,
+      "bmi": 24.5,
+      "blood_type": "O+",
+      "biological_age": 30
     },
     "goals": [
       {
-        "goal_id": "g3_001",
-        "type": "weight_loss",
-        "target": "Reduce weight to 75 kg",
-        "start_date": "2024-06-15T00:00:00Z",
-        "target_date": "2024-12-15T00:00:00Z",
-        "status": "active"
-      },
-      {
-        "goal_id": "g3_002",
-        "type": "metabolic_health",
-        "target": "Improve HbA1c to <5.7%",
-        "start_date": "2024-06-15T00:00:00Z",
-        "target_date": "2024-12-15T00:00:00Z",
+        "goal_id": "ocr_user_003_31m_goal_1",
+        "type": "health_optimization",
+        "target": "Optimize biomarkers based on lab results",
+        "start_date": "2026-01-08T18:19:38.395989",
+        "target_date": "2027-01-08T18:19:38.395992",
         "status": "active"
       }
     ],
     "preferences": {
       "units": "metric",
       "notifications": true,
-      "data_sharing": false
+      "data_sharing": true
     },
-    "created_at": "2024-06-01T00:00:00Z",
-    "last_active": "2026-01-05T10:22:15Z"
+    "created_at": "2026-01-08T18:19:38.395995",
+    "last_active": "2026-01-08T18:19:38.395996",
+    "data_source": "ocr_extracted"
   },
   {
-    "user_id": "test_user_4_31m",
+    "user_id": "ocr_user_004_31m",
     "demographics": {
       "age": 31,
       "gender": "M",
       "location": {
-        "city": "Hyderabad",
+        "city": "Bengaluru",
         "country": "India"
       }
     },
     "health_profile": {
-      "height_cm": 172,
-      "weight_kg": 68,
-      "bmi": 23.0,
-      "blood_type": "AB+",
-      "biological_age": 29
-    },
-    "goals": [
-      {
-        "goal_id": "g4_001",
-        "type": "longevity",
-        "target": "Optimize all biomarkers for longevity",
-        "start_date": "2024-09-01T00:00:00Z",
-        "target_date": "2025-09-01T00:00:00Z",
-        "status": "active"
-      }
-    ],
-    "preferences": {
-      "units": "metric",
-      "notifications": true,
-      "data_sharing": true
-    },
-    "created_at": "2024-09-01T00:00:00Z",
-    "last_active": "2026-01-06T14:30:22Z"
-  },
-  {
-    "user_id": "test_user_5_55f",
-    "demographics": {
-      "age": 55,
-      "gender": "F",
-      "location": {
-        "city": "Chennai",
-        "country": "India"
-      }
-    },
-    "health_profile": {
-      "height_cm": 160,
-      "weight_kg": 65,
-      "bmi": 25.4,
+      "height_cm": 175,
+      "weight_kg": 75,
+      "bmi": 24.5,
       "blood_type": "O+",
-      "biological_age": 58
+      "biological_age": 30
     },
     "goals": [
       {
-        "goal_id": "g5_001",
-        "type": "hormonal_balance",
-        "target": "Manage postmenopausal symptoms",
-        "start_date": "2024-05-01T00:00:00Z",
-        "target_date": "2025-05-01T00:00:00Z",
-        "status": "active"
-      },
-      {
-        "goal_id": "g5_002",
-        "type": "bone_health",
-        "target": "Improve bone density markers",
-        "start_date": "2024-05-01T00:00:00Z",
-        "target_date": "2025-05-01T00:00:00Z",
+        "goal_id": "ocr_user_004_31m_goal_1",
+        "type": "health_optimization",
+        "target": "Optimize biomarkers based on lab results",
+        "start_date": "2026-01-08T18:19:38.405949",
+        "target_date": "2027-01-08T18:19:38.405952",
         "status": "active"
       }
     ],
@@ -195,50 +146,8 @@
       "notifications": true,
       "data_sharing": true
     },
-    "created_at": "2024-05-01T00:00:00Z",
-    "last_active": "2026-01-07T08:15:33Z"
-  },
-  {
-    "user_id": "test_user_6_65m",
-    "demographics": {
-      "age": 65,
-      "gender": "M",
-      "location": {
-        "city": "Pune",
-        "country": "India"
-      }
-    },
-    "health_profile": {
-      "height_cm": 170,
-      "weight_kg": 72,
-      "bmi": 24.9,
-      "blood_type": "A+",
-      "biological_age": 62
-    },
-    "goals": [
-      {
-        "goal_id": "g6_001",
-        "type": "cardiovascular_health",
-        "target": "Maintain healthy lipid profile",
-        "start_date": "2024-04-01T00:00:00Z",
-        "target_date": "2025-04-01T00:00:00Z",
-        "status": "active"
-      },
-      {
-        "goal_id": "g6_002",
-        "type": "longevity",
-        "target": "Reduce biological age by 5 years",
-        "start_date": "2024-04-01T00:00:00Z",
-        "target_date": "2026-04-01T00:00:00Z",
-        "status": "active"
-      }
-    ],
-    "preferences": {
-      "units": "metric",
-      "notifications": false,
-      "data_sharing": true
-    },
-    "created_at": "2024-04-01T00:00:00Z",
-    "last_active": "2026-01-06T19:45:12Z"
+    "created_at": "2026-01-08T18:19:38.405955",
+    "last_active": "2026-01-08T18:19:38.405956",
+    "data_source": "ocr_extracted"
   }
 ]

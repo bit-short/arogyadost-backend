@@ -1,0 +1,176 @@
+{
+  "glucose_fasting": {
+    "value": 78.43,
+    "unit": "mg/dL",
+    "normal_range": "70-100",
+    "status": "normal"
+  },
+  "total_cholesterol": {
+    "value": 247.0,
+    "unit": "mg/dL",
+    "normal_range": "0-200",
+    "status": "high"
+  },
+  "hdl": {
+    "value": 73.0,
+    "unit": "mg/dL",
+    "normal_range": "40-999",
+    "status": "normal"
+  },
+  "ldl": {
+    "value": 171.0,
+    "unit": "mg/dL",
+    "normal_range": "0-100",
+    "status": "high"
+  },
+  "triglycerides": {
+    "value": 85.0,
+    "unit": "mg/dL",
+    "normal_range": "0-150",
+    "status": "normal"
+  },
+  "vldl": {
+    "value": 16.98,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "hemoglobin": {
+    "value": 16.5,
+    "unit": "g/dL",
+    "normal_range": "12-15.5",
+    "status": "high"
+  },
+  "hematocrit": {
+    "value": 47.9,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "wbc": {
+    "value": 8.74,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "platelets": {
+    "value": 297.0,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "rbc": {
+    "value": 5.26,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "sgot": {
+    "value": 20.78,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "sgpt": {
+    "value": 19.67,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "bilirubin_total": {
+    "value": 0.78,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "alkaline_phosphatase": {
+    "value": 90.1,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "creatinine": {
+    "value": 0.8,
+    "unit": "mg/dL",
+    "normal_range": "0.55-1.02",
+    "status": "normal"
+  },
+  "urea": {
+    "value": 11.26,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "uric_acid": {
+    "value": 6.86,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "t3": {
+    "value": 99.0,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "t4": {
+    "value": 8.05,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "iron": {
+    "value": 82.32,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "tibc": {
+    "value": 395.12,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "transferrin_saturation": {
+    "value": 20.83,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "calcium": {
+    "value": 10.36,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "vitamin_d": {
+    "value": 37.94,
+    "unit": "ng/mL",
+    "normal_range": "30-999",
+    "status": "normal"
+  },
+  "vitamin_b12": {
+    "value": 204.0,
+    "unit": "pg/mL",
+    "normal_range": "200-900",
+    "status": "normal"
+  },
+  "tsh": {
+    "value": 3.906,
+    "unit": "\u00b5IU/mL",
+    "normal_range": "0.54-5.3",
+    "status": "normal"
+  },
+  "sodium": {
+    "value": 137.0,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  },
+  "chloride": {
+    "value": 102.0,
+    "unit": "",
+    "normal_range": "",
+    "status": "unknown"
+  }
+}

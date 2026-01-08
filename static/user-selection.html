@@ -111,6 +111,11 @@
             color: white;
         }
         
+        .badge-ocr {
+            background: #9C27B0;
+            color: white;
+        }
+        
         .badge-active {
             background: #4CAF50;
             color: white;
@@ -298,6 +303,7 @@
         
         function createUserCard(user) {
             const card = document.createElement('div');
+            const isOcrUser = user.user_id.startsWith('ocr_');
             card.className = `user-card ${user.is_hardcoded ? 'hardcoded' : ''} ${user.user_id === currentUserId ? 'active' : ''}`;
             card.onclick = () => selectUser(user.user_id);
             
@@ -309,11 +315,22 @@
                 { key: 'interventions', label: 'Interventions', available: user.data_availability.interventions }
             ];
             
+            // Determine badge type
+            let badgeClass = 'badge-dataset';
+            let badgeText = 'DATASET';
+            if (user.is_hardcoded) {
+                badgeClass = 'badge-hardcoded';
+                badgeText = 'HARDCODED';
+            } else if (isOcrUser) {
+                badgeClass = 'badge-ocr';
+                badgeText = 'OCR DATA';
+            }
+            
             card.innerHTML = `
                 <div class="user-header">
                     <div class="user-id">${user.display_name}</div>
-                    <div class="user-badge ${user.is_hardcoded ? 'badge-hardcoded' : 'badge-dataset'}">
-                        ${user.is_hardcoded ? 'HARDCODED' : 'DATASET'}
+                    <div class="user-badge ${badgeClass}">
+                        ${badgeText}
                     </div>
                     ${user.user_id === currentUserId ? '<div class="user-badge badge-active">ACTIVE</div>' : ''}
                 </div>
