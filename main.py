@@ -609,8 +609,14 @@ async def get_biomarker_details(biomarker_id: str):
 @app.get("/api/doctors")
 async def get_doctors():
     await simulate_delay(300)
-    # Doctors list is generic reference data - return for all users
-    return mock_data["doctors"]
+    
+    from app.services.user_context import user_context_manager
+    
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["doctors"]
+    else:
+        # Return same data for OCR users (generic reference data)
+        return mock_data["doctors"]
 
 @app.get("/api/doctors/{doctor_id}")
 async def get_doctor_details(doctor_id: int):
@@ -624,8 +630,14 @@ async def get_doctor_details(doctor_id: int):
 @app.get("/api/labs")
 async def get_labs():
     await simulate_delay(250)
-    # Labs list is generic reference data - return for all users
-    return mock_data["labs"]
+    
+    from app.services.user_context import user_context_manager
+    
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["labs"]
+    else:
+        # Return same data for OCR users (generic reference data)
+        return mock_data["labs"]
 
 @app.get("/api/labs/{lab_id}")
 async def get_lab_details(lab_id: int):
