@@ -37,7 +37,7 @@ class HealthDataComputer:
         return results
     
     def generate_daily_routine(self, user_id: str) -> List[Dict]:
-        """Generate personalized daily routine based on supplements and conditions."""
+        """Generate personalized daily routine matching frontend format."""
         supplements = self.db.query(MedicalHistory).filter(
             MedicalHistory.user_id == user_id,
             MedicalHistory.type == 'supplement'
@@ -46,77 +46,62 @@ class HealthDataComputer:
         routine = []
         
         # Morning supplements
-        morning_supps = []
+        morning_products = []
         for s in supplements:
             if s.name in ['Vitamin D3', 'Omega-3 Fish Oil', 'Plant Sterols']:
-                morning_supps.append({
+                dosage = s.details.get('dosage', '') if s.details else ''
+                morning_products.append({
                     'name': s.name,
-                    'dosage': s.details.get('dosage', '') if s.details else '',
-                    'notes': 'Take with breakfast'
+                    'description': f"{dosage} with breakfast" if dosage else "Take with breakfast",
+                    'image': '/src/assets/products/vitamins.jpg' if 'Vitamin' in s.name else '/src/assets/products/omega3.jpg'
                 })
         
-        if morning_supps:
+        if morning_products:
             routine.append({
-                'time': '08:00',
-                'step': 'Morning Supplements',
-                'items': morning_supps,
-                'icon': 'Pill'
+                'step': 'Morning Longevity Stack',
+                'products': morning_products
             })
         
         # Exercise
         routine.append({
-            'time': '07:00',
-            'step': 'Morning Exercise',
-            'items': [
-                {'name': 'Zone 2 Cardio', 'duration': '30 min', 'notes': 'Walking, cycling, or swimming'},
-                {'name': 'Stretching', 'duration': '10 min', 'notes': 'Full body stretch'}
-            ],
-            'icon': 'Activity'
-        })
-        
-        # Hydration
-        routine.append({
-            'time': 'Throughout day',
-            'step': 'Hydration',
-            'items': [{'name': 'Water', 'amount': '2.5-3L', 'notes': 'Spread throughout the day'}],
-            'icon': 'Droplet'
+            'step': 'Exercise & Movement',
+            'products': [
+                {'name': 'Zone 2 Cardio', 'description': '30-45min at 180-age heart rate', 'image': '/src/assets/products/walking.jpg'},
+                {'name': 'Stretching', 'description': '10min full body stretch', 'image': '/src/assets/products/walking.jpg'}
+            ]
         })
         
         # Evening supplements
-        evening_supps = []
+        evening_products = []
         for s in supplements:
             if s.name in ['Vitamin B12', 'Magnesium']:
-                evening_supps.append({
+                dosage = s.details.get('dosage', '') if s.details else ''
+                evening_products.append({
                     'name': s.name,
-                    'dosage': s.details.get('dosage', '') if s.details else '',
-                    'notes': 'Take with dinner'
+                    'description': f"{dosage} before bed" if dosage else "Take before bed",
+                    'image': '/src/assets/products/vitamins.jpg'
                 })
         
-        if evening_supps:
+        if evening_products:
             routine.append({
-                'time': '20:00',
-                'step': 'Evening Supplements',
-                'items': evening_supps,
-                'icon': 'Pill'
+                'step': 'Supplements',
+                'products': evening_products
             })
         
-        # Sleep
+        # Wellness
         routine.append({
-            'time': '22:30',
-            'step': 'Sleep Preparation',
-            'items': [
-                {'name': 'Screen off', 'notes': '1 hour before bed'},
-                {'name': 'Target sleep', 'duration': '7-8 hours'}
-            ],
-            'icon': 'Moon'
+            'step': 'Wellness',
+            'products': [
+                {'name': '8 Glasses of Water', 'description': 'Stay hydrated throughout the day', 'image': '/src/assets/products/water.jpg'},
+                {'name': '7-8 Hours Sleep', 'description': 'Maintain consistent sleep schedule', 'image': '/src/assets/products/meditation.jpg'}
+            ]
         })
         
-        # Save to DB
         self._save_computed_data(user_id, 'daily_routine', routine)
         return routine
     
     def generate_weekly_routine(self, user_id: str) -> List[Dict]:
-        """Generate personalized weekly routine."""
+        """Generate personalized weekly routine matching frontend format."""
         conditions = self.db.query(MedicalHistory).filter(
             MedicalHistory.user_id == user_id,
             MedicalHistory.type == 'condition'
@@ -125,53 +110,32 @@ class HealthDataComputer:
         
         routine = []
         
-        # Exercise schedule based on conditions
+        # Exercise based on conditions
+        exercise_products = []
         if 'Low HDL Cholesterol' in condition_names or 'Hypertriglyceridemia' in condition_names:
-            routine.append({
-                'day': 'Monday, Wednesday, Friday',
-                'activity': 'Zone 2 Cardio',
-                'duration': '45 min',
-                'notes': 'Improves HDL and reduces triglycerides',
-                'icon': 'Heart'
+            exercise_products.append({
+                'name': 'Zone 2 Cardio (3x/week)',
+                'description': '45min sessions to improve HDL and reduce triglycerides',
+                'image': '/src/assets/products/walking.jpg'
+            })
+        else:
+            exercise_products.append({
+                'name': '30-Minute Walk',
+                'description': '3x per week for cardiovascular health',
+                'image': '/src/assets/products/walking.jpg'
             })
         
-        routine.append({
-            'day': 'Tuesday, Thursday',
-            'activity': 'Strength Training',
-            'duration': '30-45 min',
-            'notes': 'Full body workout',
-            'icon': 'Dumbbell'
+        exercise_products.append({
+            'name': 'Strength Training',
+            'description': '2x per week for muscle maintenance',
+            'image': '/src/assets/products/walking.jpg'
         })
         
         routine.append({
-            'day': 'Saturday',
-            'activity': 'Active Recovery',
-            'duration': '30 min',
-            'notes': 'Yoga, walking, or light stretching',
-            'icon': 'Leaf'
+            'step': 'Exercise',
+            'products': exercise_products
         })
         
-        routine.append({
-            'day': 'Sunday',
-            'activity': 'Rest Day',
-            'duration': '-',
-            'notes': 'Focus on sleep and recovery',
-            'icon': 'Moon'
-        })
-        
-        # Weekly health tasks
-        routine.append({
-            'day': 'Weekly',
-            'activity': 'Health Monitoring',
-            'tasks': [
-                'Weigh yourself (same time each week)',
-                'Review supplement compliance',
-                'Track energy levels and sleep quality'
-            ],
-            'icon': 'ClipboardCheck'
-        })
-        
-        # Save to DB
         self._save_computed_data(user_id, 'weekly_routine', routine)
         return routine
     
