@@ -397,51 +397,90 @@ def health_check_options():
 def api_options(path: str):
     return {"message": "OK"}
 
-# Health endpoints - Legacy API with backward compatibility
+# Health endpoints - User-aware API with backward compatibility
 @app.get("/api/health/biomarkers")
 async def get_biomarkers():
     await simulate_delay(300)
     
-    # Always return hardcoded data for backward compatibility
-    # This ensures existing frontend integrations continue to work
-    return mock_data["health_categories"]
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["health_categories"]
+    else:
+        # Return empty data for non-default users
+        return []
 
 @app.get("/api/health/recommendations")
 async def get_recommendations():
     await simulate_delay(200)
     
-    # Always return hardcoded data for backward compatibility
-    return mock_data["recommended_actions"]
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["recommended_actions"]
+    else:
+        # Return empty data for non-default users
+        return []
 
 @app.get("/api/health/metrics")
 async def get_health_metrics():
     await simulate_delay(250)
     
-    # Always return hardcoded data for backward compatibility
-    return mock_data["health_metrics"]
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["health_metrics"]
+    else:
+        # Return empty data for non-default users
+        return []
 
 @app.get("/api/health/status")
 async def get_health_status():
     await simulate_delay(300)
     
-    # Always return hardcoded data for backward compatibility
-    # Frontend can gradually migrate to new user-aware endpoints
-    return {
-        "overall_score": 84,
-        "age": 35,
-        "biological_age": 32,
-        "longevity_score": 87,
-        "categories": mock_data["health_categories"],
-        "key_insights": [
-            "Your biological age is 3 years younger than chronological age - excellent progress!",
-            "VO2 Max of 42 mL/kg/min puts you in top 25% for your age group",
-            "Vitamin D deficiency needs immediate attention for optimal longevity",
-            "HDL cholesterol could be improved with Zone 2 cardio training",
-            "Excellent muscle mass and bone density for long-term health",
-            "Low inflammation markers indicate effective lifestyle interventions"
-        ],
-        "last_updated": "2024-12-22T12:00:00Z"
-    }
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        return {
+            "overall_score": 84,
+            "age": 35,
+            "biological_age": 32,
+            "longevity_score": 87,
+            "categories": mock_data["health_categories"],
+            "key_insights": [
+                "Your biological age is 3 years younger than chronological age - excellent progress!",
+                "VO2 Max of 42 mL/kg/min puts you in top 25% for your age group",
+                "Vitamin D deficiency needs immediate attention for optimal longevity",
+                "HDL cholesterol could be improved with Zone 2 cardio training",
+                "Excellent muscle mass and bone density for long-term health",
+                "Low inflammation markers indicate effective lifestyle interventions"
+            ],
+            "last_updated": "2024-12-22T12:00:00Z"
+        }
+    else:
+        # Return empty/default data for non-default users
+        current_user = user_context_manager.get_current_user()
+        return {
+            "overall_score": 0,
+            "age": current_user.demographics.age if current_user.demographics else 30,
+            "biological_age": None,
+            "longevity_score": 0,
+            "categories": [],
+            "key_insights": [
+                "No health data available for this user yet.",
+                "Start by uploading medical reports or connecting wearable devices.",
+                "Complete your health profile to get personalized insights."
+            ],
+            "last_updated": None
+        }
 
 # Biomarker details
 @app.get("/api/biomarkers/{biomarker_id}")
@@ -514,7 +553,16 @@ async def get_biomarker_details(biomarker_id: str):
 @app.get("/api/doctors")
 async def get_doctors():
     await simulate_delay(300)
-    return mock_data["doctors"]
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["doctors"]
+    else:
+        # Return empty data for non-default users
+        return []
 
 @app.get("/api/doctors/{doctor_id}")
 async def get_doctor_details(doctor_id: int):
@@ -528,7 +576,16 @@ async def get_doctor_details(doctor_id: int):
 @app.get("/api/labs")
 async def get_labs():
     await simulate_delay(250)
-    return mock_data["labs"]
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["labs"]
+    else:
+        # Return empty data for non-default users
+        return []
 
 @app.get("/api/labs/{lab_id}")
 async def get_lab_details(lab_id: int):
@@ -542,12 +599,21 @@ async def get_lab_details(lab_id: int):
 @app.get("/api/chat/threads")
 async def get_chat_threads():
     await simulate_delay(200)
-    return [
-        {"id": 1, "title": "Longevity Protocol Review", "last_message": "Your biological age assessment shows excellent progress", "timestamp": "2024-12-22T10:00:00Z"},
-        {"id": 2, "title": "VO2 Max Optimization", "last_message": "Zone 2 training plan for improving cardiovascular fitness", "timestamp": "2024-12-21T15:30:00Z"},
-        {"id": 3, "title": "Hormone Optimization", "last_message": "Testosterone levels are good, focus on sleep quality", "timestamp": "2024-12-20T09:15:00Z"},
-        {"id": 4, "title": "Supplement Stack Review", "last_message": "Vitamin D3, Omega-3, and Magnesium recommendations", "timestamp": "2024-12-19T14:20:00Z"}
-    ]
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        return [
+            {"id": 1, "title": "Longevity Protocol Review", "last_message": "Your biological age assessment shows excellent progress", "timestamp": "2024-12-22T10:00:00Z"},
+            {"id": 2, "title": "VO2 Max Optimization", "last_message": "Zone 2 training plan for improving cardiovascular fitness", "timestamp": "2024-12-21T15:30:00Z"},
+            {"id": 3, "title": "Hormone Optimization", "last_message": "Testosterone levels are good, focus on sleep quality", "timestamp": "2024-12-20T09:15:00Z"},
+            {"id": 4, "title": "Supplement Stack Review", "last_message": "Vitamin D3, Omega-3, and Magnesium recommendations", "timestamp": "2024-12-19T14:20:00Z"}
+        ]
+    else:
+        # Return empty data for non-default users
+        return []
 
 @app.post("/api/chat/message")
 async def send_chat_message(message: dict):
@@ -626,44 +692,89 @@ async def send_chat_message(message: dict):
 @app.get("/api/medical-files/categories")
 async def get_file_categories():
     await simulate_delay(150)
-    return mock_data["file_categories"]
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["file_categories"]
+    else:
+        # Return empty data for non-default users
+        return []
 
 @app.get("/api/medical-files/specialties")
 async def get_specialties():
     await simulate_delay(150)
-    return mock_data["specialties"]
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["specialties"]
+    else:
+        # Return empty data for non-default users
+        return []
 
 @app.get("/api/medical-files/by-specialty/{specialty}")
 async def get_files_by_specialty(specialty: str):
     await simulate_delay(250)
-    files = [f for f in mock_data["medical_files"] if f["specialty"].lower() == specialty.lower()]
-    files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
-    return files
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        files = [f for f in mock_data["medical_files"] if f["specialty"].lower() == specialty.lower()]
+        files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
+        return files
+    else:
+        # Return empty data for non-default users
+        return []
 
 @app.get("/api/medical-files/by-category/{category}")
 async def get_files_by_category(category: str):
     await simulate_delay(250)
-    files = [f for f in mock_data["medical_files"] if f["category"].lower().replace(" ", "_") == category.lower()]
-    files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
-    return files
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        files = [f for f in mock_data["medical_files"] if f["category"].lower().replace(" ", "_") == category.lower()]
+        files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
+        return files
+    else:
+        # Return empty data for non-default users
+        return []
 
 @app.get("/api/medical-files")
 async def get_medical_files(specialty: str = None, category: str = None, limit: int = 20):
     await simulate_delay(300)
-    files = mock_data["medical_files"]
     
-    # Filter by specialty if provided
-    if specialty:
-        files = [f for f in files if f["specialty"].lower() == specialty.lower()]
+    # Import user context manager
+    from app.services.user_context import user_context_manager
     
-    # Filter by category if provided  
-    if category:
-        files = [f for f in files if f["category"].lower() == category.lower()]
-    
-    # Sort by upload date (newest first)
-    files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
-    
-    return files[:limit]
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        files = mock_data["medical_files"]
+        
+        # Filter by specialty if provided
+        if specialty:
+            files = [f for f in files if f["specialty"].lower() == specialty.lower()]
+        
+        # Filter by category if provided  
+        if category:
+            files = [f for f in files if f["category"].lower() == category.lower()]
+        
+        # Sort by upload date (newest first)
+        files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
+        
+        return files[:limit]
+    else:
+        # Return empty data for non-default users
+        return []
 
 @app.get("/api/medical-files/{file_id}")
 async def get_medical_file_details(file_id: str):
@@ -901,34 +1012,79 @@ async def get_action_details(action_id: str):
 @app.get("/api/routines/daily")
 async def get_daily_routine():
     await simulate_delay(200)
-    return mock_data["daily_routine"]
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["daily_routine"]
+    else:
+        # Return empty data for non-default users
+        return []
 
 @app.get("/api/routines/weekly")
 async def get_weekly_routine():
     await simulate_delay(200)
-    return mock_data["weekly_routine"]
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active():
+        return mock_data["weekly_routine"]
+    else:
+        # Return empty data for non-default users
+        return []
 
 # Mock biological age endpoint (works without digital twin for frontend testing)
 @app.get("/api/biological-age/mock/{user_id}")
 async def get_mock_biological_age(user_id: str):
     """Mock biological age endpoint for frontend testing - no digital twin required"""
     await simulate_delay(300)
-    return {
-        "user_id": user_id,
-        "chronological_age": 32,
-        "biological_age": 29,
-        "age_difference": -3,
-        "longevity_score": 87,
-        "status": "excellent",
-        "insights": [
-            "Your biological age is 3 years younger than your chronological age",
-            "Excellent cardiovascular fitness based on VO2 max",
-            "Low inflammation markers indicate healthy aging",
-            "Muscle mass and bone density are optimal for longevity"
-        ],
-        "recommendations": [
-            "Continue Zone 2 cardio training for cardiovascular health",
-            "Address Vitamin D deficiency for optimal longevity",
-            "Maintain current sleep and stress management practices"
-        ]
-    }
+    
+    # Import user context manager
+    from app.services.user_context import user_context_manager
+    
+    # Return data only for hardcoded user, empty for others
+    if user_context_manager.is_hardcoded_user_active() and user_id == "user_001_29f":
+        return {
+            "user_id": user_id,
+            "chronological_age": 32,
+            "biological_age": 29,
+            "age_difference": -3,
+            "longevity_score": 87,
+            "status": "excellent",
+            "insights": [
+                "Your biological age is 3 years younger than your chronological age",
+                "Excellent cardiovascular fitness based on VO2 max",
+                "Low inflammation markers indicate healthy aging",
+                "Muscle mass and bone density are optimal for longevity"
+            ],
+            "recommendations": [
+                "Continue Zone 2 cardio training for cardiovascular health",
+                "Address Vitamin D deficiency for optimal longevity",
+                "Maintain current sleep and stress management practices"
+            ]
+        }
+    else:
+        # Return empty/default data for non-default users
+        current_user = user_context_manager.get_current_user()
+        return {
+            "user_id": user_id,
+            "chronological_age": current_user.demographics.age if current_user.demographics else 30,
+            "biological_age": None,
+            "age_difference": None,
+            "longevity_score": 0,
+            "status": "no_data",
+            "insights": [
+                "No biological age data available for this user yet.",
+                "Upload health records and biomarker data to calculate biological age.",
+                "Complete health assessments to get personalized longevity insights."
+            ],
+            "recommendations": [
+                "Start by uploading recent lab reports",
+                "Connect wearable devices for continuous monitoring",
+                "Complete the health questionnaire for baseline assessment"
+            ]
+        }
