@@ -1,385 +1,479 @@
-# Aarogyadost API Documentation
+# Aarogyadost API Documentation v2.0
 
-## Base URL
+## Base URLs
 ```
-Development: http://localhost:8000
-Production: TBD
+Local Development: http://localhost:8000
+Development: https://api-dev.arogyadost.in
+Production: https://api.arogyadost.in
 ```
 
 ## Interactive Documentation
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+- **Swagger UI (Local)**: http://localhost:8000/docs
+- **Swagger UI (Dev)**: https://api-dev.arogyadost.in/docs
+- **ReDoc (Local)**: http://localhost:8000/redoc
+- **ReDoc (Dev)**: https://api-dev.arogyadost.in/redoc
 
 ---
 
-## Health Endpoints
+## 👥 User Selection API
 
-### Get Health Biomarkers
-```
-GET /api/health/biomarkers
-```
-
-**Response:**
-```json
-[
-  {
-    "id": "metabolic",
-    "name": "Metabolic Health",
-    "status": "good",
-    "score": 82
-  }
-]
-```
-
-**Status values:** `excellent`, `good`, `attention`, `critical`
-
----
-
-### Get Health Recommendations
-```
-GET /api/health/recommendations
-```
-
-**Response:**
-```json
-[
-  {
-    "id": 1,
-    "title": "Add 30min morning walk",
-    "category": "fitness",
-    "priority": "high",
-    "reason": "Improve HDL cholesterol levels"
-  }
-]
-```
-
-**Categories:** `fitness`, `nutrition`, `lifestyle`  
-**Priority:** `high`, `medium`, `low`
-
----
-
-### Get Health Metrics
-```
-GET /api/health/metrics
-```
-
-**Response:**
-```json
-[
-  {
-    "id": "hba1c",
-    "name": "HbA1c",
-    "value": 5.8,
-    "unit": "%",
-    "status": "borderline",
-    "optimal": "< 5.7"
-  }
-]
-```
-
----
-
-### Get Overall Health Status
-```
-GET /api/health/status
+### Get Available Users
+```http
+GET /api/users/available
 ```
 
 **Response:**
 ```json
 {
-  "overall_score": 84,
-  "age": 35,
-  "biological_age": 32,
-  "longevity_score": 87,
-  "categories": [...],
-  "key_insights": [
-    "Your biological age is 3 years younger than chronological age"
+  "users": [
+    {
+      "user_id": "hardcoded",
+      "display_name": "Default (Hardcoded)",
+      "is_hardcoded": true,
+      "demographics": {
+        "age": 35,
+        "gender": "M",
+        "location": {"city": "Mumbai", "country": "India"}
+      },
+      "health_profile": {
+        "bmi": 24.5,
+        "biological_age": 32.0,
+        "blood_type": "O+"
+      },
+      "goals": [
+        {
+          "goal_id": "g1",
+          "type": "fitness",
+          "target": "Improve cardiovascular health",
+          "status": "active"
+        }
+      ],
+      "data_availability": {
+        "biomarkers": true,
+        "medical_history": true,
+        "lifestyle": true,
+        "ai_interactions": false,
+        "interventions": false,
+        "completeness_score": 85.0
+      }
+    },
+    {
+      "user_id": "test_user_1_29f",
+      "display_name": "test_user_1_29f (29F)",
+      "is_hardcoded": false,
+      "demographics": {
+        "age": 29,
+        "gender": "F"
+      },
+      "data_availability": {
+        "biomarkers": true,
+        "medical_history": true,
+        "lifestyle": true,
+        "ai_interactions": true,
+        "interventions": true,
+        "completeness_score": 100.0
+      }
+    }
   ],
-  "last_updated": "2024-12-22T12:00:00Z"
+  "total_count": 7,
+  "hardcoded_user_id": "hardcoded"
 }
 ```
 
----
-
-### Get Biomarker Details
-```
-GET /api/biomarkers/{biomarker_id}
-```
-
-**Path Parameters:**
-- `biomarker_id`: `metabolic`, `cardiovascular`, `hormonal`, `inflammation`
-
-**Response:**
-```json
-{
-  "id": "metabolic",
-  "name": "Metabolic Health",
-  "current_value": 82,
-  "trend": "stable",
-  "history": [78, 80, 82],
-  "key_markers": ["HbA1c: 5.8%", "Fasting Glucose: 92 mg/dL"],
-  "recommendations": ["Reduce refined carbs", "Add post-meal walks"]
-}
-```
-
-**Trend values:** `excellent`, `good`, `stable`, `needs_attention`, `declining`
-
----
-
-## Doctors & Labs
-
-### Get Doctors List
-```
-GET /api/doctors
-```
-
-**Response:**
-```json
-[
-  {
-    "id": 1,
-    "name": "Dr. Rajesh Sharma",
-    "specialty": "Preventive Medicine",
-    "rating": 4.9,
-    "location": "Delhi",
-    "experience": "15 years"
-  }
-]
-```
-
----
-
-### Get Doctor Details
-```
-GET /api/doctors/{doctor_id}
-```
-
-**Path Parameters:**
-- `doctor_id`: integer
-
-**Response:** Same as single doctor object above
-
-**Error Response (404):**
-```json
-{
-  "detail": "Doctor not found"
-}
-```
-
----
-
-### Get Labs List
-```
-GET /api/labs
-```
-
-**Response:**
-```json
-[
-  {
-    "id": 1,
-    "name": "SRL Diagnostics",
-    "location": "Multiple locations",
-    "rating": 4.6,
-    "tests": ["Complete Blood Count", "Lipid Profile", "HbA1c"]
-  }
-]
-```
-
----
-
-### Get Lab Details
-```
-GET /api/labs/{lab_id}
-```
-
-**Path Parameters:**
-- `lab_id`: integer
-
-**Response:** Same as single lab object above
-
----
-
-## Chat & AI Assistant
-
-### Get Chat Threads
-```
-GET /api/chat/threads
-```
-
-**Response:**
-```json
-[
-  {
-    "id": 1,
-    "title": "Lab Report Analysis",
-    "last_message": "Your HbA1c levels show pre-diabetic range",
-    "timestamp": "2024-12-22T10:00:00Z"
-  }
-]
-```
-
----
-
-### Send Chat Message
-```
-POST /api/chat/message
+### Select Active User
+```http
+POST /api/users/select
 ```
 
 **Request Body:**
 ```json
 {
-  "text": "What should I do about my vitamin D levels?"
+  "user_id": "test_user_1_29f"
 }
 ```
 
 **Response:**
 ```json
 {
-  "id": 123,
-  "message": "What should I do about my vitamin D levels?",
-  "response": "Your Vitamin D level at 28 ng/mL is deficient. I recommend 2000 IU daily supplementation and 15-20 minutes of morning sunlight exposure.",
-  "timestamp": "2024-12-22T12:00:00Z"
+  "message": "Successfully selected user: test_user_1_29f",
+  "selected_user": {
+    "user_id": "test_user_1_29f",
+    "display_name": "test_user_1_29f (29F)",
+    "is_hardcoded": false,
+    "demographics": {
+      "age": 29,
+      "gender": "F"
+    }
+  },
+  "is_hardcoded": false
 }
 ```
 
-**Smart Keywords:** The AI responds contextually to: `vitamin d`, `hba1c`, `diabetes`, `cholesterol`, `exercise`
+### Get Current User
+```http
+GET /api/users/current
+```
+
+**Response:**
+```json
+{
+  "active_user": {
+    "user_id": "test_user_1_29f",
+    "display_name": "test_user_1_29f (29F)",
+    "is_hardcoded": false,
+    "demographics": {
+      "age": 29,
+      "gender": "F"
+    },
+    "data_availability": {
+      "biomarkers": true,
+      "medical_history": true,
+      "lifestyle": true,
+      "ai_interactions": true,
+      "interventions": true,
+      "completeness_score": 100.0
+    }
+  },
+  "is_default": false
+}
+```
+
+### Get User by ID
+```http
+GET /api/users/{user_id}
+```
+
+### List User IDs
+```http
+GET /api/users/
+```
+
+**Response:**
+```json
+{
+  "user_ids": ["hardcoded", "test_user_1_29f", "test_user_2_29m", "test_user_3_31m", "test_user_4_31m", "test_user_5_55f", "test_user_6_65m"],
+  "current_user": "test_user_1_29f",
+  "total_count": 7
+}
+```
 
 ---
 
-## Medical Files
+## 🧬 Digital Twin API
 
-### Get File Categories
-```
-GET /api/medical-files/categories
-```
-
-### Get Specialties
-```
-GET /api/medical-files/specialties
+### Create Digital Twin
+```http
+POST /api/digital-twin/users/{user_id}/create
 ```
 
-### Get Files by Specialty
-```
-GET /api/medical-files/by-specialty/{specialty}
-```
-
-### Get Files by Category
-```
-GET /api/medical-files/by-category/{category}
-```
-
-### Get All Medical Files
-```
-GET /api/medical-files?specialty=Cardiology&category=Imaging&limit=20
+**Response:**
+```json
+{
+  "user_id": "user_123",
+  "status": "created",
+  "timestamp": "2024-01-08T03:30:00Z"
+}
 ```
 
----
-
-## Lab Reports
-
-### Upload Lab Report
-```
-POST /api/lab-reports/upload
+### Add Health Data
+```http
+POST /api/digital-twin/users/{user_id}/data
 ```
 
 **Request Body:**
 ```json
 {
-  "report_data": "base64_encoded_pdf_or_json",
-  "report_date": "2024-12-22",
-  "lab_name": "SRL Diagnostics"
+  "domain": "biomarkers",
+  "field": "cholesterol",
+  "value": 220,
+  "unit": "mg/dL",
+  "test_date": "2024-01-08T00:00:00Z"
 }
+```
+
+### Get User Profile
+```http
+GET /api/digital-twin/users/{user_id}/profile
 ```
 
 **Response:**
 ```json
 {
-  "id": 456,
-  "status": "processed",
+  "user_id": "user_123",
+  "demographics": {
+    "age": 29,
+    "sex": "female"
+  },
+  "latest_biomarkers": {
+    "cholesterol": {
+      "value": 220,
+      "unit": "mg/dL",
+      "status": "high",
+      "test_date": "2024-01-08T00:00:00Z"
+    }
+  },
+  "conditions": ["Dyslipidemia"],
+  "completeness": 75.5
+}
+```
+
+---
+
+## 🧠 Biological Age API
+
+### Predict Biological Age
+```http
+POST /api/biological-age/users/{user_id}/predict
+```
+
+**Response:**
+```json
+{
+  "user_id": "user_123",
+  "chronological_age": 29,
+  "biological_age": 27.3,
+  "age_difference": -1.7,
+  "confidence_score": 0.85,
+  "category_ages": {
+    "metabolic_age": 26.5,
+    "cardiovascular_age": 28.1,
+    "inflammatory_age": 27.8
+  },
   "insights": [
-    "HbA1c trending upward - monitor carb intake",
-    "Vitamin D deficiency detected - supplement needed"
+    "Your biological age is 1.7 years younger than your chronological age",
+    "Excellent metabolic health contributing to younger biological age"
+  ]
+}
+```
+
+---
+
+## 💊 Health Recommendations API
+
+### Get Personalized Recommendations
+```http
+GET /api/recommendations/{user_id}
+```
+
+**Response:**
+```json
+{
+  "user_id": "user_123",
+  "generated_at": "2024-01-08T03:30:00Z",
+  "summary": {
+    "total_recommendations": 6,
+    "high_priority_count": 2,
+    "medium_priority_count": 4,
+    "low_priority_count": 0,
+    "categories_covered": ["lipid_profile", "vitamins", "metabolic"]
+  },
+  "recommendations": [
+    {
+      "recommendation_id": "rec_001",
+      "test_name": "Lipid Profile Retest",
+      "test_category": "lipid_profile",
+      "rationale": "Cholesterol is high (220 mg/dL) - follow-up needed",
+      "priority": "high",
+      "priority_score": 0.85,
+      "suggested_timing": "within 1 month",
+      "related_biomarkers": ["cholesterol", "ldl", "hdl"],
+      "educational_context": "Regular lipid monitoring helps assess cardiovascular risk and treatment effectiveness"
+    }
   ],
-  "recommendations": [...],
-  "timestamp": "2024-12-22T12:00:00Z"
+  "grouped_by_category": {
+    "lipid_profile": [...],
+    "vitamins": [...],
+    "metabolic": [...]
+  }
 }
 ```
 
 ---
 
-## CORS Configuration
+## 💬 Health Chat Assistant API
 
-All origins are allowed in development. CORS headers included:
-- `Access-Control-Allow-Origin: *`
-- `Access-Control-Allow-Methods: *`
-- `Access-Control-Allow-Headers: *`
+### Create Chat Session
+```http
+POST /api/chat/sessions?user_id={user_id}&title=Health Discussion
+```
 
----
+### Send Message with Streaming
+```http
+POST /api/chat/sessions/{session_id}/messages?user_id={user_id}
+```
 
-## Error Responses
-
-### 404 Not Found
+**Request Body:**
 ```json
 {
-  "detail": "Resource not found"
+  "message": "What should I know about my cholesterol levels?",
+  "include_research": false
 }
 ```
 
-### 500 Internal Server Error
+**Response (Server-Sent Events):**
+```
+data: {"type": "session_info", "data": {"session_id": "session_abc123"}}
+data: {"type": "thinking", "data": "Analyzing your health data..."}
+data: {"type": "token", "data": "Based "}
+data: {"type": "token", "data": "on "}
+data: {"type": "complete", "data": "Based on your recent test results..."}
+data: {"type": "stream_end"}
+```
+
+### Send Simple Message (Non-Streaming)
+```http
+POST /api/chat/message?user_id={user_id}
+```
+
+**Request Body:**
 ```json
 {
-  "detail": "Internal server error"
+  "message": "Hello, I want to discuss my health",
+  "session_id": "session_abc123"
+}
+```
+
+**Response:**
+```json
+{
+  "session_id": "session_abc123",
+  "message": "Hello! I'm your health chat assistant. I have access to your health profile and can see you're managing Dyslipidemia. How can I help you with your health today?",
+  "timestamp": "2024-01-08T03:30:00Z"
 }
 ```
 
 ---
 
-## Response Times
+## ⚙️ Admin API
 
-All endpoints include simulated delays for realistic behavior:
-- Health endpoints: 200-400ms
-- Chat endpoints: 500ms
-- Lab upload: 1000ms
+### Get LLM Configuration
+```http
+GET /api/admin/llm/config
+```
 
----
+### Update LLM Configuration
+```http
+PUT /api/admin/llm/config
+```
 
-## Notes for Frontend
+**Request Body:**
+```json
+{
+  "model_id": "anthropic.claude-3-haiku-20240307-v1:0",
+  "temperature": 0.5,
+  "max_tokens": 1500
+}
+```
 
-1. **Base URL**: Use environment variable for base URL
-2. **Authentication**: Not implemented yet (coming soon)
-3. **Timestamps**: All timestamps in ISO 8601 format (UTC)
-4. **IDs**: Biomarker IDs are strings, Doctor/Lab IDs are integers
-5. **Status Colors**: 
-   - `excellent`: Green
-   - `good`: Light Green
-   - `attention`: Yellow/Orange
-   - `borderline`: Orange
-   - `critical`: Red
-   - `low`/`deficient`: Red
+### List Available Models
+```http
+GET /api/admin/llm/models
+```
 
----
-
-## Example Frontend Integration
-
-```javascript
-// Fetch health status
-const response = await fetch('http://localhost:8000/api/health/status');
-const data = await response.json();
-console.log(data.overall_score); // 84
-
-// Send chat message
-const chatResponse = await fetch('http://localhost:8000/api/chat/message', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ text: 'Tell me about my vitamin D levels' })
-});
-const chatData = await chatResponse.json();
-console.log(chatData.response);
+### Test LLM Connection
+```http
+POST /api/admin/llm/test?test_prompt=Hello, how are you?
 ```
 
 ---
 
-## Contact
+## 🚀 Getting Started
 
-For API issues or questions, contact the backend team.
+### 1. Start the Server
+```bash
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+### 1. Start the Server
+```bash
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+### 2. Select a Test User (Optional)
+```bash
+# Local
+curl -X POST "http://localhost:8000/api/users/select" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "test_user_1_29f"}'
+
+# Dev Environment
+curl -X POST "https://api-dev.arogyadost.in/api/users/select" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "test_user_1_29f"}'
+```
+
+### 3. Create a Digital Twin
+```bash
+# Local
+curl -X POST "http://localhost:8000/api/digital-twin/users/test_user_1_29f/create"
+
+# Dev Environment
+curl -X POST "https://api-dev.arogyadost.in/api/digital-twin/users/test_user_1_29f/create"
+```
+
+### 4. Add Health Data
+```bash
+# Local
+curl -X POST "http://localhost:8000/api/digital-twin/users/test_user_1_29f/data" \
+  -H "Content-Type: application/json" \
+  -d '{"domain": "biomarkers", "field": "cholesterol", "value": 220, "unit": "mg/dL"}'
+
+# Dev Environment  
+curl -X POST "https://api-dev.arogyadost.in/api/digital-twin/users/test_user_1_29f/data" \
+  -H "Content-Type: application/json" \
+  -d '{"domain": "biomarkers", "field": "cholesterol", "value": 220, "unit": "mg/dL"}'
+```
+
+### 5. Get Recommendations
+```bash
+# Local
+curl "http://localhost:8000/api/recommendations/test_user_1_29f"
+
+# Dev Environment
+curl "https://api-dev.arogyadost.in/api/recommendations/test_user_1_29f"
+```
+
+### 6. Start Chat Session
+```bash
+# Local
+curl -X POST "http://localhost:8000/api/chat/sessions?user_id=test_user_1_29f&title=Health Chat"
+
+# Dev Environment
+curl -X POST "https://api-dev.arogyadost.in/api/chat/sessions?user_id=test_user_1_29f&title=Health Chat"
+```
+
+---
+
+## 💰 AWS Bedrock Costs
+
+### Model Pricing (per 1K tokens)
+- **Titan Text Lite**: $0.0003 input / $0.0004 output (~$0.81/month for 100 conversations/day)
+- **Titan Text Express**: $0.0008 input / $0.0016 output
+- **Claude 3 Haiku**: $0.00025 input / $0.00125 output
+
+---
+
+## 🧪 Test Users Available
+
+- **hardcoded** - Default user with mock data (85% completeness)
+- **test_user_1_29f** - 29F with comprehensive medical data (100% completeness)
+- **test_user_2_29m** - 29M, fitness focused profile
+- **test_user_3_31m** - 31M, weight loss and metabolic health
+- **test_user_4_31m** - 31M, longevity optimization
+- **test_user_5_55f** - 55F, hormonal balance and bone health
+- **test_user_6_65m** - 65M, senior health profile
+
+### User Selection UI
+Access the interactive user selection interface at:
+- **Local**: http://localhost:8000/static/user-selection.html
+- **Dev**: https://api-dev.arogyadost.in/static/user-selection.html
+
+The UI provides:
+- Visual user cards with demographics and health data
+- Data availability indicators and completeness scores
+- One-click user switching for development testing
+- Active user highlighting and confirmation
+
+---
+
+**Last Updated:** January 8, 2024 | **API Version:** 2.0 | **Status:** ✅ Complete

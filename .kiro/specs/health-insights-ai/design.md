@@ -2,592 +2,433 @@
 
 ## Overview
 
-The Health Insights AI system provides intelligent analysis of health data, particularly blood reports, to generate biological age predictions, personalized recommendations, and actionable insights. The system integrates with the existing document processing pipeline and extends it with AI-powered analysis capabilities.
+The Health Insights AI system provides AI-powered analysis of blood reports and health data to generate biological age predictions, personalized recommendations, and actionable health insights. The system leverages the existing Digital Twin infrastructure to store and analyze user health data, applying evidence-based algorithms to calculate biological age and rule-based systems to generate personalized recommendations.
 
-The design follows a modular architecture where AI models are decoupled from the core application logic, allowing for independent model updates and A/B testing. The system processes biomarker data extracted from blood reports, applies machine learning models for predictions and risk assessment, and generates human-readable insights with recommendations.
+The system is built on FastAPI with async/await support, uses in-memory storage for the MVP phase, and is designed to be horizontally scalable. It integrates with the existing Digital Twin system to provide a comprehensive health analytics platform.
 
 ## Architecture
 
 ### High-Level Architecture
 
 ```mermaid
-graph TB
-    subgraph "Client Layer"
-        UI[Web/Mobile UI]
-    end
+graph TD
+    A[Client Application] --> B[FastAPI Router Layer]
+    B --> C[Biological Age Engine]
+    B --> D[Recommendation Engine]
+    B --> E[Digital Twin Storage]
     
-    subgraph "API Layer"
-        API[FastAPI Endpoints]
-        Auth[Authentication]
-    end
+    C --> F[Age Calculator]
+    C --> G[Biomarker Normalizer]
+    C --> E
     
-    subgraph "Service Layer"
-        InsightService[Insight Service]
-        BioAgeService[Biological Age Service]
-        RiskService[Risk Assessment Service]
-        RecommendationService[Recommendation Service]
-        TrendService[Trend Analysis Service]
-    end
+    D --> H[Digital Twin Analyzer]
+    D --> I[Recommendation Builder]
+    D --> J[Priority Scorer]
+    D --> K[Output Formatter]
     
-    subgraph "AI/ML Layer"
-        ModelRegistry[Model Registry]
-        BioAgeModel[Biological Age Model]
-        RiskModel[Risk Assessment Model]
-        InsightGenerator[Insight Generator]
-    end
+    I --> L[Biomarker Rules]
+    I --> M[Condition Rules]
+    I --> N[Demographic Rules]
+    I --> O[Temporal Rules]
     
-    subgraph "Data Layer"
-        DB[(PostgreSQL)]
-        Cache[(Redis Cache)]
-        S3[S3 Storage]
-    end
-    
-    UI --> API
-    API --> Auth
-    API --> InsightService
-    InsightService --> BioAgeService
-    InsightService --> RiskService
-    InsightService --> RecommendationService
-    InsightService --> TrendService
-    
-    BioAgeService --> ModelRegistry
-    RiskService --> ModelRegistry
-    ModelRegistry --> BioAgeModel
-    ModelRegistry --> RiskModel
-    ModelRegistry --> InsightGenerator
-    
-    InsightService --> DB
-    InsightService --> Cache
-    BioAgeService --> DB
-    RiskService --> DB
-    TrendService --> DB
-    
-    API --> S3
+    H --> E
+    J --> E
 ```
 
-### Design Principles
+### Component Layers
 
-1. **Separation of Concerns**: AI models are isolated from business logic
-2. **Extensibility**: New models and insights can be added without modifying core services
-3. **Performance**: Caching strategies for expensive AI computations
-4. **Versioning**: All AI models are versioned for reproducibility and rollback
-5. **Privacy**: Health data never leaves the system; models run on-premise or in secure cloud
+1. **API Layer**: FastAPI routers handling HTTP requests
+2. **Service Layer**: Business logic engines (Biological Age, Recommendations)
+3. **Storage Layer**: In-memory Digital Twin storage
+4. **Data Models**: Pydantic models for validation and serialization
+
+### Technology Stack
+
+- **Backend**: Python 3.11 with FastAPI
+- **Validation**: Pydantic v2
+- **Testing**: pytest with Hypothesis for property-based testing
+- **Storage**: In-memory (MVP), PostgreSQL-ready
+- **Deployment**: AWS Elastic Beanstalk
 
 ## Components and Interfaces
 
-### 1. Insight Service
+### 1. Biological Age Engine
 
-The main orchestrator that coordinates all AI-powered analysis.
+**Purpose**: Calculate biological age from biomarker data using evidence-based algorithms.
 
+**Key Classes**:
+- `BiologicalAgeEngine`: Main orchestrator
+- `BiologicalAgeCalculator`: Core calculation logic
+- `BiomarkerNormalizer`: Biomarker value normalization
+
+**Public Interface**:
 ```python
-class InsightService:
-    """
-    Orchestrates health insight generation from biomarker data.
-    """
-    
-    async def generate_insights(
-        self,
-        user_id: str,
-        document_id: str
-    ) -> HealthInsights:
+class BiologicalAgeEngine:
+    def predict_biological_age(self, digital_twin: DigitalTwin) -> Dict[str, Any]:
         """
-        Generate comprehensive health insights for a user's blood report.
+        Calculate biological age from digital twin data.
         
-        Args:
-            user_id: User identifier
-            document_id: Document containing biomarker data
-            
         Returns:
-            HealthInsights object containing all analysis results
+            {
+                'user_id': str,
+                'chronological_age': int,
+                'biological_age': float,
+                'age_delta': float,
+                'confidence_score': int (0-100),
+                'category_ages': {
+                    'metabolic': float,
+                    'cardiovascular': float,
+                    'inflammatory': float,
+                    'hormonal': float,
+                    'organ_function': float
+                }
+            }
         """
-        pass
     
-    async def get_cached_insights(
-        self,
-        user_id: str,
-        document_id: str
-    ) -> Optional[HealthInsights]:
+    def get_age_insights(self, digital_twin: DigitalTwin) -> Dict[str, Any]:
         """
-        Retrieve cached insights if available and not stale.
+        Generate detailed insights and recommendations.
+        
+        Returns:
+            {
+                'user_id': str,
+                'biological_age': float,
+                'chronological_age': int,
+                'age_delta': float,
+                'status': str,
+                'confidence': int,
+                'category_breakdown': Dict[str, float],
+                'recommendations': List[str],
+                'data_completeness': float
+            }
         """
-        pass
 ```
 
-### 2. Biological Age Service
+**Algorithm Details**:
 
-Calculates biological age from biomarker data.
-
-```python
-class BiologicalAgeService:
-    """
-    Calculates biological age using validated biomarker correlations.
-    """
-    
-    async def calculate_biological_age(
-        self,
-        biomarkers: List[BiomarkerData],
-        chronological_age: int
-    ) -> BiologicalAgeResult:
-        """
-        Calculate biological age from biomarker values.
-        
-        Args:
-            biomarkers: List of biomarker measurements
-            chronological_age: User's actual age in years
-            
-        Returns:
-            BiologicalAgeResult with prediction and confidence
-        """
-        pass
-    
-    def get_required_biomarkers(self) -> List[str]:
-        """
-        Return list of biomarker names required for calculation.
-        """
-        pass
-    
-    def check_sufficiency(
-        self,
-        biomarkers: List[BiomarkerData]
-    ) -> SufficiencyCheck:
-        """
-        Check if provided biomarkers are sufficient for calculation.
-        
-        Returns:
-            SufficiencyCheck indicating if sufficient and what's missing
-        """
-        pass
-```
-
-### 3. Risk Assessment Service
-
-Evaluates health risks based on biomarker patterns.
+The biological age calculation uses weighted category scoring:
 
 ```python
-class RiskAssessmentService:
-    """
-    Assesses health risks from biomarker data.
-    """
-    
-    async def assess_risks(
-        self,
-        biomarkers: List[BiomarkerData],
-        user_profile: UserProfile
-    ) -> List[RiskAssessment]:
-        """
-        Assess health risks for common conditions.
-        
-        Args:
-            biomarkers: Current biomarker measurements
-            user_profile: User demographics and history
-            
-        Returns:
-            List of risk assessments for various conditions
-        """
-        pass
-    
-    def calculate_condition_risk(
-        self,
-        condition: str,
-        biomarkers: List[BiomarkerData]
-    ) -> RiskLevel:
-        """
-        Calculate risk level for a specific condition.
-        """
-        pass
+CATEGORY_WEIGHTS = {
+    'metabolic': 0.25,      # HbA1c, glucose, insulin
+    'cardiovascular': 0.25, # Cholesterol, triglycerides, BP
+    'inflammatory': 0.20,   # CRP, inflammatory markers
+    'hormonal': 0.15,       # Testosterone, thyroid, cortisol
+    'organ_function': 0.15  # Kidney, liver function
+}
 ```
 
-### 4. Recommendation Service
+Each category calculates an age adjustment based on biomarker values:
+- **Metabolic**: Glucose > 100 mg/dL (+3 years), HbA1c > 5.7% (+4 years)
+- **Cardiovascular**: Total cholesterol > 240 mg/dL (+5 years), HDL < 40 mg/dL (+4 years)
+- **Hormonal**: Testosterone < 300 ng/dL (+3 years), TSH > 4.0 mIU/L (+2 years)
+- **Organ Function**: Creatinine > 1.2 mg/dL (+3 years), ALT > 40 U/L (+2 years)
 
-Generates personalized action recommendations.
+Final biological age = Σ(category_age × category_weight)
 
+### 2. Recommendation Engine
+
+**Purpose**: Generate personalized health recommendations using rule-based evaluation.
+
+**Key Classes**:
+- `RecommendationEngine`: Main orchestrator
+- `DigitalTwinAnalyzer`: Loads and analyzes user data
+- `RecommendationBuilder`: Applies rules to generate recommendations
+- `PriorityScorer`: Assigns priority levels
+- `OutputFormatter`: Formats final response
+
+**Rule Evaluators**:
+- `BiomarkerRules`: Evaluates lab results
+- `ConditionRules`: Evaluates medical conditions
+- `DemographicRules`: Age/gender-specific screening
+- `TemporalRules`: Time-based test scheduling
+
+**Public Interface**:
 ```python
-class RecommendationService:
-    """
-    Generates personalized health recommendations.
-    """
-    
-    async def generate_recommendations(
-        self,
-        biomarkers: List[BiomarkerData],
-        risks: List[RiskAssessment],
-        user_preferences: Optional[UserPreferences] = None
-    ) -> List[ActionRecommendation]:
+class RecommendationEngine:
+    def generate_recommendations(self, user_id: str) -> RecommendationResponse:
         """
-        Generate prioritized recommendations based on analysis.
+        Generate comprehensive health recommendations.
         
-        Args:
-            biomarkers: Current biomarker measurements
-            risks: Identified health risks
-            user_preferences: Optional user preferences for recommendations
-            
         Returns:
-            List of up to 5 prioritized recommendations
+            RecommendationResponse with:
+            - summary: counts and categories
+            - recommendations: list of Recommendation objects
+            - grouped_by_category: recommendations organized by type
         """
-        pass
-    
-    def prioritize_recommendations(
-        self,
-        recommendations: List[ActionRecommendation]
-    ) -> List[ActionRecommendation]:
-        """
-        Sort recommendations by health impact and urgency.
-        """
-        pass
 ```
 
-### 5. Trend Analysis Service
-
-Analyzes changes in biomarkers over time.
-
+**Recommendation Model**:
 ```python
-class TrendAnalysisService:
-    """
-    Analyzes biomarker trends across multiple reports.
-    """
-    
-    async def analyze_trends(
-        self,
-        user_id: str,
-        biomarker_name: str,
-        time_range: Optional[TimeRange] = None
-    ) -> BiomarkerTrend:
-        """
-        Analyze trend for a specific biomarker.
-        
-        Args:
-            user_id: User identifier
-            biomarker_name: Name of biomarker to analyze
-            time_range: Optional time range for analysis
-            
-        Returns:
-            BiomarkerTrend with direction, rate, and significance
-        """
-        pass
-    
-    async def get_all_trends(
-        self,
-        user_id: str
-    ) -> List[BiomarkerTrend]:
-        """
-        Get trends for all biomarkers with multiple measurements.
-        """
-        pass
+class Recommendation:
+    id: str
+    test_name: str
+    category: str  # blood_test, lifestyle, monitoring
+    priority: str  # high, medium, low
+    reason: str
+    frequency: str  # daily, weekly, monthly, quarterly, annually
+    estimated_cost: Optional[str]
+    preparation: Optional[str]
+    next_due_date: Optional[datetime]
+    metadata: Dict[str, Any]
 ```
 
-### 6. Model Registry
+### 3. Digital Twin Storage
 
-Manages AI model versions and deployment.
+**Purpose**: Store and manage structured health data across multiple domains.
 
+**Key Classes**:
+- `DigitalTwin`: Main data container
+- `HealthDomain`: Domain-specific data (biomarkers, medical_history, etc.)
+- `HealthField`: Individual field with temporal data points
+- `HealthDataPoint`: Single data point with timestamp and metadata
+
+**Public Interface**:
 ```python
-class ModelRegistry:
-    """
-    Manages AI model lifecycle and versioning.
-    """
+class DigitalTwin:
+    def set_value(self, domain: str, field: str, value: Any, 
+                  timestamp: Optional[datetime] = None,
+                  unit: Optional[str] = None,
+                  metadata: Dict[str, Any] = None):
+        """Add data to any domain/field"""
     
-    def get_model(
-        self,
-        model_type: str,
-        version: Optional[str] = None
-    ) -> AIModel:
-        """
-        Retrieve a specific model version.
-        
-        Args:
-            model_type: Type of model (biological_age, risk_assessment, etc.)
-            version: Specific version or None for latest
-            
-        Returns:
-            Loaded AI model ready for inference
-        """
-        pass
+    def get_value(self, domain: str, field: str, latest: bool = True) -> Union[HealthDataPoint, List[HealthDataPoint], None]:
+        """Get value from a specific domain/field"""
     
-    def register_model(
-        self,
-        model_type: str,
-        version: str,
-        model_path: str,
-        metadata: ModelMetadata
-    ) -> bool:
-        """
-        Register a new model version.
-        """
-        pass
+    def get_domain(self, domain: str) -> Optional[HealthDomain]:
+        """Retrieve entire domain"""
     
-    def get_active_experiments(self) -> List[ABTest]:
-        """
-        Get list of active A/B tests for model comparison.
-        """
-        pass
+    def get_overall_completeness(self) -> float:
+        """Calculate overall data completeness percentage"""
 ```
+
+### 4. API Routers
+
+**Biological Age Endpoints**:
+- `POST /api/biological-age/users/{user_id}/predict`: Predict biological age
+- `POST /api/biological-age/users/{user_id}/insights`: Get detailed insights
+- `GET /api/biological-age/users/available`: List users with data
+- `POST /api/biological-age/users/all/predict`: Batch prediction
+
+**Recommendation Endpoints**:
+- `GET /api/recommendations/{user_id}`: Get personalized recommendations
+- `GET /api/recommendations/{user_id}/summary`: Get summary only
+
+**Digital Twin Endpoints**:
+- `POST /api/digital-twin/users/{user_id}/create`: Create digital twin
+- `POST /api/digital-twin/users/{user_id}/data`: Add health data
+- `GET /api/digital-twin/users/{user_id}/data/{domain}/{field}`: Get specific data
+- `GET /api/digital-twin/users/{user_id}/completeness`: Get completeness metrics
 
 ## Data Models
 
-### HealthInsights
+### Digital Twin Structure
 
 ```python
-class HealthInsights(BaseModel):
-    """Complete health insights for a user."""
-    
-    user_id: str
-    document_id: str
-    generated_at: datetime
-    
-    biological_age: Optional[BiologicalAgeResult]
-    risk_assessments: List[RiskAssessment]
-    recommendations: List[ActionRecommendation]
-    trends: List[BiomarkerTrend]
-    key_findings: List[str]
-    
-    model_versions: Dict[str, str]  # Track which models generated insights
+DigitalTwin
+├── user_id: str
+├── created_at: datetime
+├── updated_at: datetime
+├── metadata: Dict[str, Any]
+└── domains: Dict[str, HealthDomain]
+    └── HealthDomain
+        ├── domain_name: str
+        └── fields: Dict[str, HealthField]
+            └── HealthField
+                ├── field_name: str
+                ├── field_type: str
+                ├── state: FieldState (populated/missing/not_applicable)
+                └── values: List[HealthDataPoint]
+                    └── HealthDataPoint
+                        ├── value: Any
+                        ├── timestamp: datetime
+                        ├── unit: Optional[str]
+                        └── metadata: Dict[str, Any]
 ```
 
-### BiologicalAgeResult
+### Biomarker Data Model
+
+Biomarkers are stored in the `biomarkers` domain with the following structure:
 
 ```python
-class BiologicalAgeResult(BaseModel):
-    """Result of biological age calculation."""
-    
-    biological_age: float
-    chronological_age: int
-    age_difference: float  # biological - chronological
-    confidence_score: float  # 0-1
-    
-    contributing_biomarkers: List[str]
-    missing_biomarkers: List[str]
-    
-    interpretation: str  # Human-readable explanation
+{
+    "hba1c": {
+        "value": 5.8,
+        "unit": "%",
+        "timestamp": "2024-01-15T10:30:00Z",
+        "metadata": {
+            "lab": "SRL Diagnostics",
+            "test_date": "2024-01-15"
+        }
+    },
+    "total_cholesterol": {
+        "value": 195,
+        "unit": "mg/dL",
+        "timestamp": "2024-01-15T10:30:00Z",
+        "metadata": {...}
+    }
+}
 ```
 
-### RiskAssessment
+### Biological Age Response Model
 
 ```python
-class RiskLevel(str, Enum):
-    LOW = "low"
-    MODERATE = "moderate"
-    HIGH = "high"
-
-
-class RiskAssessment(BaseModel):
-    """Risk assessment for a specific condition."""
-    
-    condition: str  # e.g., "cardiovascular_disease", "type_2_diabetes"
-    risk_level: RiskLevel
-    risk_score: float  # 0-1 continuous score
-    
-    contributing_factors: List[str]  # Biomarkers contributing to risk
-    protective_factors: List[str]  # Biomarkers reducing risk
-    
-    explanation: str  # Why this risk level was assigned
-    requires_medical_consultation: bool
+{
+    "user_id": "test_user_1",
+    "chronological_age": 35,
+    "biological_age": 32.5,
+    "age_delta": -2.5,
+    "confidence_score": 85,
+    "category_ages": {
+        "metabolic": 33.0,
+        "cardiovascular": 34.0,
+        "inflammatory": 31.0,
+        "hormonal": 32.0,
+        "organ_function": 30.0
+    },
+    "interpretation": "Your biological age is 2.5 years younger than your chronological age",
+    "confidence_level": "high"
+}
 ```
 
-### ActionRecommendation
+### Recommendation Response Model
 
 ```python
-class RecommendationType(str, Enum):
-    DIET = "diet"
-    EXERCISE = "exercise"
-    LIFESTYLE = "lifestyle"
-    MEDICAL_CONSULTATION = "medical_consultation"
-    SUPPLEMENT = "supplement"
-
-
-class ActionRecommendation(BaseModel):
-    """Personalized action recommendation."""
-    
-    id: str
-    title: str
-    description: str
-    category: RecommendationType
-    
-    priority: int  # 1-5, with 1 being highest
-    impact_score: float  # Expected health impact (0-1)
-    
-    rationale: str  # Why this recommendation based on user's data
-    related_biomarkers: List[str]
-    related_risks: List[str]
-    
-    actionable_steps: List[str]  # Specific steps to take
+{
+    "user_id": "test_user_1",
+    "generated_at": "2024-01-15T10:30:00Z",
+    "summary": {
+        "total_recommendations": 12,
+        "high_priority_count": 3,
+        "medium_priority_count": 6,
+        "low_priority_count": 3,
+        "categories_covered": ["blood_test", "lifestyle", "monitoring"]
+    },
+    "recommendations": [
+        {
+            "id": "rec_001",
+            "test_name": "HbA1c Test",
+            "category": "blood_test",
+            "priority": "high",
+            "reason": "HbA1c elevated at 5.8% - monitor glucose control",
+            "frequency": "quarterly",
+            "estimated_cost": "₹500",
+            "preparation": "Fasting not required",
+            "next_due_date": "2024-04-15"
+        }
+    ],
+    "grouped_by_category": {
+        "blood_test": [...],
+        "lifestyle": [...],
+        "monitoring": [...]
+    }
+}
 ```
 
-### BiomarkerTrend
-
-```python
-class TrendDirection(str, Enum):
-    IMPROVING = "improving"
-    STABLE = "stable"
-    DETERIORATING = "deteriorating"
-
-
-class BiomarkerTrend(BaseModel):
-    """Trend analysis for a biomarker over time."""
-    
-    biomarker_name: str
-    direction: TrendDirection
-    
-    rate_of_change: float  # Units per month
-    statistical_significance: float  # p-value
-    
-    data_points: List[TrendDataPoint]
-    
-    interpretation: str  # Human-readable trend explanation
-```
-
-### TrendDataPoint
-
-```python
-class TrendDataPoint(BaseModel):
-    """Single data point in a trend."""
-    
-    date: date
-    value: float
-    unit: str
-    document_id: str
-```
-
-### ModelMetadata
-
-```python
-class ModelMetadata(BaseModel):
-    """Metadata for AI model versions."""
-    
-    model_type: str
-    version: str
-    created_at: datetime
-    
-    training_data_info: str
-    performance_metrics: Dict[str, float]
-    
-    required_features: List[str]
-    output_schema: Dict[str, Any]
-    
-    is_active: bool
-    deployment_date: Optional[datetime]
-```
 
 ## Correctness Properties
 
+*A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
 
-A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.
+### Property 1: Minimum Data Requirement for Biological Age
 
-### Property 1: Biological Age Calculation Completeness
+*For any* User with a Digital Twin, biological age calculation should succeed if and only if the user has at least 5 Biomarker values. When insufficient data exists, the system should indicate which additional Biomarkers are needed.
 
-*For any* user with sufficient biomarker data, the biological age calculation result SHALL include biological age, chronological age, confidence score (0-1), contributing biomarkers, and missing biomarkers.
+**Validates: Requirements 1.1, 1.4**
 
-**Validates: Requirements 1.1, 1.3, 1.5**
+### Property 2: Biological Age Calculation Consistency
 
-### Property 2: Insufficient Data Handling
-
-*For any* biomarker dataset that is insufficient for biological age calculation, the system SHALL return a list of missing required biomarkers.
-
-**Validates: Requirements 1.4**
-
-### Property 3: Biological Age Bounds
-
-*For any* calculated biological age, the value SHALL be within reasonable bounds (0 to 150 years) and the confidence score SHALL be between 0 and 1 inclusive.
+*For any* User with sufficient Biomarker data, the biological age calculation should use the documented category weights (metabolic: 0.25, cardiovascular: 0.25, inflammatory: 0.20, hormonal: 0.15, organ_function: 0.15) and produce a weighted average of category ages.
 
 **Validates: Requirements 1.2**
 
-### Property 4: Abnormal Biomarker Flagging
+### Property 3: Response Completeness
 
-*For any* biomarker with a defined reference range, if the value is outside the range (value < reference_range_low OR value > reference_range_high), then is_abnormal SHALL be true.
+*For any* successful biological age prediction, the response should contain both biological_age and chronological_age fields, along with a confidence score between 0 and 1.
 
-**Validates: Requirements 2.3**
+**Validates: Requirements 1.3, 1.5**
 
-### Property 5: Analysis Summary Generation
+### Property 4: Biomarker Extraction Completeness
 
-*For any* completed biomarker analysis, the system SHALL generate a HealthInsights object containing risk assessments, recommendations, and key findings lists (may be empty but must be present).
+*For any* Blood_Report uploaded to the system, all Biomarker values present in the report should be extracted and stored in the Digital Twin.
 
-**Validates: Requirements 2.5**
+**Validates: Requirements 2.1**
+
+### Property 5: Reference Range Comparison
+
+*For any* extracted Biomarker value, the system should compare it against its Reference_Range and flag it as abnormal if the value falls outside the range.
+
+**Validates: Requirements 2.2, 2.3**
 
 ### Property 6: Pattern Detection for Multiple Abnormalities
 
-*For any* analysis with two or more abnormal biomarkers, the system SHALL attempt pattern identification and include findings in the key_findings list.
+*For any* User with 2 or more abnormal Biomarkers, the system should identify potential patterns or correlations between the abnormal values.
 
 **Validates: Requirements 2.4**
 
-### Property 7: Recommendation Generation from Abnormalities
+### Property 7: Recommendation Generation from Abnormal Biomarkers
 
-*For any* set of abnormal biomarkers, the system SHALL generate at least one recommendation that references at least one of those abnormal biomarkers in its related_biomarkers field.
+*For any* User with abnormal Biomarkers, the system should generate targeted Action_Recommendations that reference the specific abnormal values.
 
-**Validates: Requirements 3.1**
+**Validates: Requirements 3.1, 3.3**
 
-### Property 8: Recommendation Limit
+### Property 8: Recommendation Prioritization and Ordering
 
-*For any* recommendation generation, the returned list SHALL contain at most 5 recommendations.
+*For any* set of generated Action_Recommendations, they should be ordered by priority (high before medium before low) and limited to the top 5 most impactful actions.
 
-**Validates: Requirements 3.4**
+**Validates: Requirements 3.2, 3.4, 7.3**
 
-### Property 9: Recommendation Prioritization
+### Property 9: Recommendation Categorization
 
-*For any* list of recommendations, they SHALL be ordered by priority (ascending, where 1 is highest) and SHALL have valid category values from the RecommendationType enum.
+*For any* Action_Recommendation generated, it should have a category field with a value from the set {diet, exercise, lifestyle, medical consultation, blood_test, monitoring}.
 
-**Validates: Requirements 3.2, 3.5**
+**Validates: Requirements 3.5**
 
-### Property 10: Recommendation Completeness
+### Property 10: Trend Detection with Multiple Reports
 
-*For any* recommendation, it SHALL include title, description, category, priority, rationale, and actionable_steps (list may be empty but must be present).
-
-**Validates: Requirements 3.3**
-
-### Property 11: Trend Identification
-
-*For any* user with multiple blood reports containing the same biomarker, the system SHALL calculate a trend with direction, rate of change, and data points.
+*For any* User with 2 or more Blood_Reports, the system should identify trends in Biomarker values and calculate the rate of change per month for key Biomarkers.
 
 **Validates: Requirements 4.1, 4.4**
 
-### Property 12: Trend Direction Accuracy
+### Property 11: Improvement and Deterioration Detection
 
-*For any* biomarker trend where the most recent value is higher than the oldest value and the biomarker is "higher is better" (e.g., HDL cholesterol), the direction SHALL be "improving"; conversely, if "lower is better" (e.g., LDL cholesterol) and recent value is lower, direction SHALL be "improving".
+*For any* Biomarker with multiple values over time, if the value improves by 10% or more, the system should highlight the positive trend; if it deteriorates by 10% or more, the system should alert with high priority.
 
-**Validates: Requirements 4.2**
+**Validates: Requirements 4.2, 4.3**
 
-### Property 13: Deteriorating Trend Priority
+### Property 12: Risk Assessment Coverage
 
-*For any* biomarker with direction "deteriorating", there SHALL exist at least one recommendation related to that biomarker with priority <= 3 (high priority).
+*For any* User with Biomarker data, risk assessment should evaluate cardiovascular disease, diabetes, and metabolic syndrome, using at least 3 Biomarkers and their interactions.
 
-**Validates: Requirements 4.3**
+**Validates: Requirements 5.1, 5.4**
 
-### Property 14: Risk Assessment Completeness
+### Property 13: Risk Level Classification
 
-*For any* biomarker analysis, the system SHALL generate risk assessments for at least the following conditions: cardiovascular_disease, type_2_diabetes, metabolic_syndrome.
+*For any* identified health risk, the system should provide a risk level from the set {low, moderate, high}, and when high risk is detected, should include a medical consultation recommendation.
 
-**Validates: Requirements 5.1**
+**Validates: Requirements 5.2, 5.3**
 
-### Property 15: Risk Level Validity
+### Property 14: Risk Explanation Completeness
 
-*For any* risk assessment, the risk_level SHALL be one of LOW, MODERATE, or HIGH, and risk_score SHALL be between 0 and 1 inclusive.
+*For any* completed risk assessment, the explanation should reference which specific Biomarkers contribute to the risk.
 
-**Validates: Requirements 5.2**
+**Validates: Requirements 5.5**
 
-### Property 16: High Risk Medical Consultation
+### Property 15: Biomarker Explanation in Insights
 
-*For any* risk assessment with risk_level HIGH, there SHALL exist a recommendation with category MEDICAL_CONSULTATION that references the same condition.
-
-**Validates: Requirements 5.3**
-
-### Property 17: Multi-Biomarker Risk Assessment
-
-*For any* risk assessment, the contributing_factors list SHALL contain at least one biomarker name, demonstrating that multiple biomarkers are considered.
-
-**Validates: Requirements 5.4, 5.5**
-
-### Property 18: Data Deletion Completeness
-
-*For any* user data deletion request, after completion, querying for that user's health insights, biomarker data, and documents SHALL return empty results or not found errors.
-
-**Validates: Requirements 6.4**
-
-### Property 19: Biomarker Explanation in Insights
-
-*For any* insight or recommendation that references a biomarker in its related_biomarkers field, the system SHALL provide access to a biomarker explanation (either inline or via reference).
+*For any* Insight that references a Biomarker, the output should include an explanation of what the Biomarker measures.
 
 **Validates: Requirements 7.2**
 
-### Property 20: Model Version Tracking
+### Property 16: Insight Contextualization
 
-*For any* HealthInsights object, the model_versions dictionary SHALL contain entries for all models used (biological_age, risk_assessment, etc.) with their version strings.
+*For any* Insight that requires context, the system should provide relevant background information, and when insights contain more than 3 key points, they should be broken into digestible sections.
+
+**Validates: Requirements 7.4, 7.5**
+
+### Property 17: Model Versioning and Logging
+
+*For any* prediction made by the system, the logs should include the model version (in semantic versioning format) and confidence score.
 
 **Validates: Requirements 8.1, 8.3**
 
@@ -595,162 +436,255 @@ A property is a characteristic or behavior that should hold true across all vali
 
 ### Error Categories
 
-1. **Validation Errors**: Invalid input data (malformed biomarkers, missing required fields)
-2. **Insufficient Data Errors**: Not enough biomarkers for analysis
-3. **Model Errors**: AI model failures or unavailability
-4. **Data Access Errors**: Database or cache failures
-5. **Authentication Errors**: Unauthorized access attempts
+1. **Insufficient Data Errors**
+   - Missing required fields (age, minimum biomarkers)
+   - Response: HTTP 400 with specific missing fields listed
+   - Example: `{"error": "Insufficient data", "missing_fields": ["age", "hba1c"]}`
 
-### Error Response Format
+2. **Invalid Data Errors**
+   - Biomarker values outside physically possible ranges
+   - Invalid units or data types
+   - Response: HTTP 400 with validation details
+   - Example: `{"error": "Invalid biomarker value", "field": "hba1c", "value": -5, "reason": "Value must be positive"}`
 
-All errors follow a consistent format:
+3. **User Not Found Errors**
+   - Digital twin doesn't exist for user_id
+   - Response: HTTP 404
+   - Example: `{"error": "User not found", "user_id": "unknown_user"}`
+
+4. **Calculation Errors**
+   - Unexpected errors during biological age calculation
+   - Response: HTTP 500 with error tracking ID
+   - Example: `{"error": "Calculation failed", "tracking_id": "err_12345"}`
+
+### Error Handling Strategy
 
 ```python
-class ErrorResponse(BaseModel):
-    error_code: str
-    message: str
-    details: Optional[Dict[str, Any]]
-    timestamp: datetime
+try:
+    result = engine.predict_biological_age(digital_twin)
+except ValueError as e:
+    # Missing or invalid data
+    return JSONResponse(
+        status_code=400,
+        content={"error": str(e), "type": "validation_error"}
+    )
+except KeyError as e:
+    # User not found
+    return JSONResponse(
+        status_code=404,
+        content={"error": "User not found", "user_id": user_id}
+    )
+except Exception as e:
+    # Unexpected errors
+    logger.error(f"Unexpected error: {str(e)}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal server error", "tracking_id": generate_tracking_id()}
+    )
 ```
-
-### Specific Error Handling
-
-**Insufficient Biomarker Data**:
-- Return HTTP 422 with error code `INSUFFICIENT_DATA`
-- Include list of missing required biomarkers in details
-- Allow partial results where possible (e.g., risk assessment without biological age)
-
-**Model Unavailability**:
-- Return HTTP 503 with error code `MODEL_UNAVAILABLE`
-- Log error for monitoring
-- Attempt fallback to previous model version if available
-
-**Invalid Biomarker Values**:
-- Return HTTP 400 with error code `INVALID_BIOMARKER`
-- Specify which biomarker and what validation failed
-- Continue processing valid biomarkers
-
-**Authentication Failures**:
-- Return HTTP 401 for missing/invalid tokens
-- Return HTTP 403 for insufficient permissions
-- Never expose user data in error messages
 
 ### Graceful Degradation
 
-The system is designed to provide partial results when complete analysis is not possible:
+When partial data is available:
+- Calculate biological age with available categories
+- Reduce confidence score proportionally
+- Indicate which categories are missing
+- Provide recommendations for data collection
 
-1. If biological age cannot be calculated, still provide risk assessments and recommendations
-2. If one risk model fails, continue with other risk assessments
-3. If trend analysis fails, still provide current biomarker analysis
-4. Cache partial results to avoid recomputation
+Example:
+```python
+{
+    "biological_age": 35.2,
+    "confidence_score": 0.6,
+    "missing_categories": ["inflammatory", "hormonal"],
+    "recommendation": "Add CRP and TSH tests for more accurate assessment"
+}
+```
 
 ## Testing Strategy
 
 ### Dual Testing Approach
 
-The system will be validated using both unit tests and property-based tests:
+The system will use both unit tests and property-based tests to ensure comprehensive coverage:
 
 - **Unit tests**: Verify specific examples, edge cases, and error conditions
-- **Property tests**: Verify universal properties across all inputs
-- Both approaches are complementary and necessary for comprehensive coverage
+- **Property tests**: Verify universal properties across all inputs using Hypothesis
 
-### Property-Based Testing
+Both testing approaches are complementary and necessary for comprehensive coverage. Unit tests catch concrete bugs with specific examples, while property tests verify general correctness across many randomly generated inputs.
 
-We will use **Hypothesis** (Python's property-based testing library) to validate correctness properties.
+### Property-Based Testing Configuration
+
+**Library**: Hypothesis (Python property-based testing library)
 
 **Configuration**:
 - Minimum 100 iterations per property test
-- Each test tagged with format: `# Feature: health-insights-ai, Property {N}: {property_text}`
-- Custom generators for domain objects (BiomarkerData, UserProfile, etc.)
+- Each test tagged with feature name and property number
+- Tag format: `# Feature: health-insights-ai, Property N: [property text]`
 
-**Test Organization**:
-```
-tests/
-  property/
-    test_biological_age_props.py
-    test_risk_assessment_props.py
-    test_recommendations_props.py
-    test_trends_props.py
-    test_data_models_props.py
-```
-
-**Example Property Test Structure**:
-
+**Example Property Test**:
 ```python
-from hypothesis import given, settings
-from hypothesis import strategies as st
+from hypothesis import given, strategies as st
+import pytest
 
-@settings(max_examples=100)
-@given(biomarkers=st.lists(biomarker_strategy(), min_size=5))
-def test_biological_age_completeness(biomarkers):
+@given(
+    age=st.integers(min_value=18, max_value=100),
+    biomarker_count=st.integers(min_value=0, max_value=20)
+)
+def test_minimum_data_requirement(age, biomarker_count):
     """
-    Feature: health-insights-ai, Property 1: Biological Age Calculation Completeness
+    Feature: health-insights-ai, Property 1: Minimum Data Requirement for Biological Age
     
-    For any user with sufficient biomarker data, the biological age 
-    calculation result SHALL include all required fields.
+    For any User with a Digital Twin, biological age calculation should succeed 
+    if and only if the user has at least 5 Biomarker values.
     """
-    result = calculate_biological_age(biomarkers, chronological_age=30)
+    twin = create_digital_twin_with_biomarkers(age, biomarker_count)
+    engine = BiologicalAgeEngine()
     
-    assert result.biological_age is not None
-    assert result.chronological_age == 30
-    assert 0 <= result.confidence_score <= 1
-    assert isinstance(result.contributing_biomarkers, list)
-    assert isinstance(result.missing_biomarkers, list)
+    if biomarker_count >= 5:
+        # Should succeed
+        result = engine.predict_biological_age(twin)
+        assert result['biological_age'] is not None
+        assert result['confidence_score'] >= 0
+    else:
+        # Should fail with helpful error
+        with pytest.raises(ValueError) as exc_info:
+            engine.predict_biological_age(twin)
+        assert "additional biomarkers" in str(exc_info.value).lower()
 ```
 
-### Unit Testing
-
-Unit tests focus on:
-
-1. **Specific Examples**: Known biomarker values with expected outcomes
-2. **Edge Cases**: Empty lists, boundary values, extreme ages
-3. **Error Conditions**: Invalid inputs, missing data, model failures
-4. **Integration Points**: Service interactions, database operations
+### Unit Testing Strategy
 
 **Test Organization**:
 ```
 tests/
-  unit/
-    test_insight_service.py
-    test_biological_age_service.py
-    test_risk_assessment_service.py
-    test_recommendation_service.py
-    test_trend_analysis_service.py
-    test_model_registry.py
+├── unit/
+│   ├── biological_age/
+│   │   ├── test_calculator.py
+│   │   ├── test_engine.py
+│   │   └── test_normalizer.py
+│   └── recommendations/
+│       ├── test_engine.py
+│       ├── test_rules.py
+│       └── test_priority_scorer.py
+├── property/
+│   ├── biological_age/
+│   │   ├── test_properties.py
+│   │   └── test_generators.py
+│   └── recommendations/
+│       └── test_properties.py
+└── integration/
+    ├── test_api_endpoints.py
+    └── test_full_workflow.py
+```
+
+**Unit Test Examples**:
+
+1. **Specific Example Tests**:
+```python
+def test_biological_age_with_optimal_biomarkers():
+    """Test biological age calculation with optimal biomarker values"""
+    twin = DigitalTwin(user_id="test")
+    twin.set_value("demographics", "age", 35)
+    twin.set_value("biomarkers", "hba1c", 5.2, unit="%")
+    twin.set_value("biomarkers", "total_cholesterol", 180, unit="mg/dL")
+    twin.set_value("biomarkers", "hdl_cholesterol", 65, unit="mg/dL")
+    twin.set_value("biomarkers", "triglycerides", 90, unit="mg/dL")
+    twin.set_value("biomarkers", "creatinine", 0.9, unit="mg/dL")
+    
+    engine = BiologicalAgeEngine()
+    result = engine.predict_biological_age(twin)
+    
+    # With optimal values, biological age should be younger
+    assert result['biological_age'] < result['chronological_age']
+    assert result['confidence_score'] > 80
+```
+
+2. **Edge Case Tests**:
+```python
+def test_biological_age_with_extreme_values():
+    """Test handling of extreme biomarker values"""
+    twin = DigitalTwin(user_id="test")
+    twin.set_value("demographics", "age", 35)
+    twin.set_value("biomarkers", "hba1c", 12.0, unit="%")  # Very high
+    twin.set_value("biomarkers", "total_cholesterol", 350, unit="mg/dL")  # Very high
+    
+    engine = BiologicalAgeEngine()
+    result = engine.predict_biological_age(twin)
+    
+    # Should handle extreme values without crashing
+    assert result['biological_age'] > result['chronological_age']
+    assert result['biological_age'] < 150  # Reasonable upper bound
+```
+
+3. **Error Condition Tests**:
+```python
+def test_biological_age_without_age():
+    """Test error handling when age is missing"""
+    twin = DigitalTwin(user_id="test")
+    # No age set
+    twin.set_value("biomarkers", "hba1c", 5.8, unit="%")
+    
+    engine = BiologicalAgeEngine()
+    
+    with pytest.raises(ValueError) as exc_info:
+        engine.predict_biological_age(twin)
+    
+    assert "age" in str(exc_info.value).lower()
 ```
 
 ### Integration Testing
 
-Integration tests verify:
-- End-to-end flow from document upload to insight generation
-- Database persistence and retrieval
-- Cache behavior
-- Model registry integration
-- API endpoint responses
+Test complete workflows:
+```python
+async def test_full_biological_age_workflow():
+    """Test complete workflow from digital twin creation to biological age prediction"""
+    # 1. Create digital twin
+    response = await client.post("/api/digital-twin/users/test_user/create")
+    assert response.status_code == 200
+    
+    # 2. Add biomarker data
+    biomarkers = [
+        {"domain": "biomarkers", "field": "hba1c", "value": 5.8, "unit": "%"},
+        {"domain": "biomarkers", "field": "total_cholesterol", "value": 195, "unit": "mg/dL"},
+        # ... more biomarkers
+    ]
+    
+    for biomarker in biomarkers:
+        response = await client.post("/api/digital-twin/users/test_user/data", json=biomarker)
+        assert response.status_code == 200
+    
+    # 3. Predict biological age
+    response = await client.post("/api/biological-age/users/test_user/predict")
+    assert response.status_code == 200
+    
+    data = response.json()
+    assert "biological_age" in data
+    assert "confidence_score" in data
+    assert data['confidence_score'] > 0
+```
 
-### Performance Testing
+### Test Coverage Goals
 
-Key performance targets:
-- Biological age calculation: < 500ms
-- Full insight generation: < 2 seconds
-- Trend analysis: < 1 second
-- Cache hit rate: > 80% for repeated queries
+- **Unit Test Coverage**: > 80% line coverage
+- **Property Test Coverage**: All correctness properties implemented
+- **Integration Test Coverage**: All API endpoints tested
+- **Edge Case Coverage**: Boundary values, empty data, extreme values
 
-### Test Data Strategy
+### Running Tests
 
-**Synthetic Data Generation**:
-- Use Hypothesis strategies to generate valid biomarker data
-- Create realistic reference ranges based on medical literature
-- Generate edge cases automatically (very high/low values, missing data)
+```bash
+# Run all tests
+pytest
 
-**Real-World Test Data**:
-- Anonymized blood report samples for integration testing
-- Known good/bad examples for validation
-- Never use real user data in tests
+# Run unit tests only
+pytest tests/unit/
 
-### Continuous Testing
+# Run property-based tests only
+pytest tests/property/
 
-- All tests run on every commit
-- Property tests run with reduced iterations (50) in CI, full (100) locally
-- Performance tests run nightly
-- Integration tests run on staging environment before production deployment
+# Run with coverage
+pytest --cov=app --cov-report=html
+
+# Run specific property test with verbose output
+pytest tests/property/biological_age/test_properties.py::test_minimum_data_requirement -v
+```
