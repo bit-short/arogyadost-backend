@@ -176,28 +176,22 @@ pytest tests/integration          # Integration tests
 
 ## 📡 Available Endpoints
 
-### 👥 User Selection & Management
+### 👥 User Management (CRUD)
+- `POST /api/users/` - Create new user with digital twin
+- `GET /api/users/` - List all users
+- `PUT /api/users/select` - Select/switch active user
+- `GET /api/users/{user_id}` - Get user by ID
+- `DELETE /api/users/{user_id}` - Delete user
+- `PUT /api/users/{user_id}/display-name` - Update display name
+- `GET /api/users/stats/overview` - Get user statistics
+
+### 👥 User Selection (Legacy)
 - `GET /api/users/available` - List all available test users
 - `POST /api/users/select` - Select active test user
 - `GET /api/users/current` - Get currently active user
-- `GET /api/users/{user_id}` - Get specific user details
 - `GET /static/user-selection.html` - Interactive user selection UI
 
 ### 🧬 Digital Twin Management
-- `POST /api/digital-twin/users/{user_id}/create` - Create digital twin
-- `POST /api/digital-twin/users/{user_id}/data` - Add health data
-- `GET /api/digital-twin/users/{user_id}/data/{domain}/{field}` - Get specific data
-- `GET /api/digital-twin/users/{user_id}/domains/{domain}` - Get domain data
-- `GET /api/digital-twin/users/{user_id}/missing-fields` - Get missing fields
-- `GET /api/digital-twin/users/{user_id}/completeness` - Get data completeness
-- `GET /api/digital-twin/users/{user_id}/profile` - Get complete profile
-
-### Biological Age Prediction
-- `POST /api/biological-age/users/{user_id}/predict` - Predict biological age
-- `POST /api/biological-age/users/{user_id}/insights` - Get age insights
-- `GET /api/biological-age/users/available` - List available users
-- `POST /api/biological-age/users/all/predict` - Predict all users
-
 - `POST /api/digital-twin/users/{user_id}/create` - Create digital twin
 - `POST /api/digital-twin/users/{user_id}/data` - Add health data
 - `GET /api/digital-twin/users/{user_id}/data/{domain}/{field}` - Get specific data
@@ -230,6 +224,21 @@ pytest tests/integration          # Integration tests
 - `PUT /api/admin/llm/config` - Update LLM settings
 - `GET /api/admin/llm/models` - List available models
 - `POST /api/admin/llm/test` - Test LLM connection
+
+### 🗄️ Database API
+- `GET /api/db/users` - Get all users from database
+- `GET /api/db/users/{user_id}` - Get user from database
+- `GET /api/db/users/{user_id}/biomarkers` - Get biomarkers by category
+- `GET /api/db/users/{user_id}/medical-history` - Get medical history
+- `GET /api/db/users/{user_id}/full` - Get complete user data
+- `GET /api/db/users/{user_id}/routines` - Get auto-computed routines
+- `GET /api/db/users/{user_id}/health-scores` - Get computed health scores
+- `POST /api/db/users/{user_id}/recompute` - Force recompute derived data
+
+### 🏥 Health Check API
+- `GET /api/health/database` - Database connectivity check
+- `GET /api/health/storage` - Storage layer health
+- `GET /api/health/digital-brain` - Overall digital brain health
 
 ### 📊 Health Data (Legacy Mock Data)
 - `GET /api/health/biomarkers` - Get health categories and scores
