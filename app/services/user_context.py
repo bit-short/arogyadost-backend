@@ -153,14 +153,18 @@ class UserContextManager:
         ai_interactions_available = ai_interactions_file.exists()
         interventions_available = interventions_file.exists()
         
-        # Calculate completeness score
-        total_categories = 5
+        # Medical files are available if medical history exists (we generate them from medical history)
+        medical_files_available = medical_history_available
+        
+        # Calculate completeness score (including medical files)
+        total_categories = 6  # Added medical files as a category
         available_categories = sum([
             biomarkers_available,
             medical_history_available,
             lifestyle_available,
             ai_interactions_available,
-            interventions_available
+            interventions_available,
+            medical_files_available
         ])
         completeness_score = (available_categories / total_categories) * 100
         
@@ -197,6 +201,80 @@ class UserContextManager:
     def is_hardcoded_user_active(self) -> bool:
         """Check if the hardcoded user is currently active."""
         return self.active_user_id == "hardcoded"
+    
+    def get_user_medical_files(self) -> List[dict]:
+        """Get medical files for the currently active user."""
+        if self.active_user_id == "hardcoded":
+            # Return hardcoded mock data
+            from main import mock_data
+            return mock_data["medical_files"]
+        else:
+            # For test users, create sample medical files based on their medical history
+            medical_history_file = self.datasets_dir / "medical_history" / f"medical_history_{self.active_user_id}.json"
+            
+            if medical_history_file.exists():
+                try:
+                    with open(medical_history_file, 'r') as f:
+                        medical_history = json.load(f)
+                    
+                    # Generate sample medical files based on conditions and test results
+                    sample_files = []
+                    
+                    # Add files for each condition
+                    for i, condition in enumerate(medical_history.get("conditions", [])[:3]):  # Limit to 3 files
+                        file_id = f"file_{self.active_user_id}_{i+1:03d}"
+                        sample_files.append({
+                            "file_id": file_id,
+                            "filename": f"{condition['name'].replace(' ', '_').lower()}_report.pdf",
+                            "upload_date": condition["diagnosed_date"],
+                            "file_type": "pdf",
+                            "category": "Lab Report",
+                            "specialty": "Internal Medicine",
+                            "hospital": "Apollo Hospital",
+                            "doctor": "Dr. Sharma",
+                            "date": condition["diagnosed_date"][:10],
+                            "summary": f"Lab report showing {condition['name']} - {condition['notes']}",
+                            "key_findings": [
+                                condition['notes'],
+                                f"Severity: {condition['severity']}",
+                                f"Status: {condition['status']}"
+                            ],
+                            "tags": [condition['name'].lower().replace(' ', '_'), condition['severity'], "lab_report"],
+                            "ocr_confidence": 0.95,
+                            "file_size": "2.3 MB"
+                        })
+                    
+                    # Add a general health checkup file
+                    if len(sample_files) < 3:
+                        sample_files.append({
+                            "file_id": f"file_{self.active_user_id}_checkup",
+                            "filename": "annual_health_checkup_2024.pdf",
+                            "upload_date": "2024-07-26T00:00:00Z",
+                            "file_type": "pdf",
+                            "category": "Health Checkup",
+                            "specialty": "General Medicine",
+                            "hospital": "Max Healthcare",
+                            "doctor": "Dr. Patel",
+                            "date": "2024-07-26",
+                            "summary": "Comprehensive annual health checkup with blood work and physical examination",
+                            "key_findings": [
+                                "Overall health status: Good",
+                                "Blood pressure: Normal",
+                                "BMI: Within normal range"
+                            ],
+                            "tags": ["annual_checkup", "preventive_care", "general_health"],
+                            "ocr_confidence": 0.92,
+                            "file_size": "1.8 MB"
+                        })
+                    
+                    return sample_files
+                    
+                except Exception as e:
+                    print(f"Error loading medical history for {self.active_user_id}: {e}")
+                    return []
+            else:
+                # Return empty list if no medical history available
+                return []
 
 
 # Global instance for the application

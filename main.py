@@ -696,12 +696,21 @@ async def get_file_categories():
     # Import user context manager
     from app.services.user_context import user_context_manager
     
-    # Return data only for hardcoded user, empty for others
+    # Get medical files for the current user
+    files = user_context_manager.get_user_medical_files()
+    
+    if not files:
+        return []
+    
+    # Extract unique categories from user's files
+    categories = list(set(f["category"] for f in files))
+    
+    # If hardcoded user, return full mock data categories
     if user_context_manager.is_hardcoded_user_active():
         return mock_data["file_categories"]
     else:
-        # Return empty data for non-default users
-        return []
+        # For other users, return categories based on their files
+        return [{"name": cat, "count": len([f for f in files if f["category"] == cat])} for cat in categories]
 
 @app.get("/api/medical-files/specialties")
 async def get_specialties():
@@ -710,12 +719,21 @@ async def get_specialties():
     # Import user context manager
     from app.services.user_context import user_context_manager
     
-    # Return data only for hardcoded user, empty for others
+    # Get medical files for the current user
+    files = user_context_manager.get_user_medical_files()
+    
+    if not files:
+        return []
+    
+    # Extract unique specialties from user's files
+    specialties = list(set(f["specialty"] for f in files))
+    
+    # If hardcoded user, return full mock data specialties
     if user_context_manager.is_hardcoded_user_active():
         return mock_data["specialties"]
     else:
-        # Return empty data for non-default users
-        return []
+        # For other users, return specialties based on their files
+        return [{"name": spec, "count": len([f for f in files if f["specialty"] == spec])} for spec in specialties]
 
 @app.get("/api/medical-files/by-specialty/{specialty}")
 async def get_files_by_specialty(specialty: str):
@@ -724,14 +742,11 @@ async def get_files_by_specialty(specialty: str):
     # Import user context manager
     from app.services.user_context import user_context_manager
     
-    # Return data only for hardcoded user, empty for others
-    if user_context_manager.is_hardcoded_user_active():
-        files = [f for f in mock_data["medical_files"] if f["specialty"].lower() == specialty.lower()]
-        files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
-        return files
-    else:
-        # Return empty data for non-default users
-        return []
+    # Get medical files for the current user
+    files = user_context_manager.get_user_medical_files()
+    files = [f for f in files if f["specialty"].lower() == specialty.lower()]
+    files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
+    return files
 
 @app.get("/api/medical-files/by-category/{category}")
 async def get_files_by_category(category: str):
@@ -740,14 +755,11 @@ async def get_files_by_category(category: str):
     # Import user context manager
     from app.services.user_context import user_context_manager
     
-    # Return data only for hardcoded user, empty for others
-    if user_context_manager.is_hardcoded_user_active():
-        files = [f for f in mock_data["medical_files"] if f["category"].lower().replace(" ", "_") == category.lower()]
-        files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
-        return files
-    else:
-        # Return empty data for non-default users
-        return []
+    # Get medical files for the current user
+    files = user_context_manager.get_user_medical_files()
+    files = [f for f in files if f["category"].lower().replace(" ", "_") == category.lower()]
+    files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
+    return files
 
 @app.get("/api/medical-files")
 async def get_medical_files(specialty: str = None, category: str = None, limit: int = 20):
@@ -756,25 +768,21 @@ async def get_medical_files(specialty: str = None, category: str = None, limit: 
     # Import user context manager
     from app.services.user_context import user_context_manager
     
-    # Return data only for hardcoded user, empty for others
-    if user_context_manager.is_hardcoded_user_active():
-        files = mock_data["medical_files"]
-        
-        # Filter by specialty if provided
-        if specialty:
-            files = [f for f in files if f["specialty"].lower() == specialty.lower()]
-        
-        # Filter by category if provided  
-        if category:
-            files = [f for f in files if f["category"].lower() == category.lower()]
-        
-        # Sort by upload date (newest first)
-        files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
-        
-        return files[:limit]
-    else:
-        # Return empty data for non-default users
-        return []
+    # Get medical files for the current user
+    files = user_context_manager.get_user_medical_files()
+    
+    # Filter by specialty if provided
+    if specialty:
+        files = [f for f in files if f["specialty"].lower() == specialty.lower()]
+    
+    # Filter by category if provided  
+    if category:
+        files = [f for f in files if f["category"].lower() == category.lower()]
+    
+    # Sort by upload date (newest first)
+    files = sorted(files, key=lambda x: x["upload_date"], reverse=True)
+    
+    return files[:limit]
 
 @app.get("/api/medical-files/{file_id}")
 async def get_medical_file_details(file_id: str):
