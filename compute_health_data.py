@@ -1,12 +1,18 @@
 """
 Compute derived health data for OCR users.
-Generates conditions, supplements, goals, computed biomarkers, and biological age.
+Generates conditions, supplements, goals, computed biomarkers, routines, and biological age.
+Auto-triggers on data updates via digital twin.
 """
 
 from typing import Dict, List, Any, Optional
 from datetime import datetime
-from app.database import SessionLocal
+from app.database import SessionLocal, Base, engine
 from app.models.db_models import User, Biomarker, MedicalHistory, Goal
+from app.models.computed_models import ComputedData
+
+
+# Ensure computed_data table exists
+Base.metadata.create_all(bind=engine)
 
 
 class HealthDataComputer:
@@ -23,9 +29,210 @@ class HealthDataComputer:
             'conditions': self.detect_conditions(user_id),
             'supplements': self.recommend_supplements(user_id),
             'goals': self.generate_goals(user_id),
-            'biological_age': self.compute_biological_age(user_id)
+            'biological_age': self.compute_biological_age(user_id),
+            'daily_routine': self.generate_daily_routine(user_id),
+            'weekly_routine': self.generate_weekly_routine(user_id),
+            'health_scores': self.compute_health_scores(user_id)
         }
         return results
+    
+    def generate_daily_routine(self, user_id: str) -> List[Dict]:
+        """Generate personalized daily routine based on supplements and conditions."""
+        supplements = self.db.query(MedicalHistory).filter(
+            MedicalHistory.user_id == user_id,
+            MedicalHistory.type == 'supplement'
+        ).all()
+        
+        routine = []
+        
+        # Morning supplements
+        morning_supps = []
+        for s in supplements:
+            if s.name in ['Vitamin D3', 'Omega-3 Fish Oil', 'Plant Sterols']:
+                morning_supps.append({
+                    'name': s.name,
+                    'dosage': s.details.get('dosage', '') if s.details else '',
+                    'notes': 'Take with breakfast'
+                })
+        
+        if morning_supps:
+            routine.append({
+                'time': '08:00',
+                'step': 'Morning Supplements',
+                'items': morning_supps,
+                'icon': 'Pill'
+            })
+        
+        # Exercise
+        routine.append({
+            'time': '07:00',
+            'step': 'Morning Exercise',
+            'items': [
+                {'name': 'Zone 2 Cardio', 'duration': '30 min', 'notes': 'Walking, cycling, or swimming'},
+                {'name': 'Stretching', 'duration': '10 min', 'notes': 'Full body stretch'}
+            ],
+            'icon': 'Activity'
+        })
+        
+        # Hydration
+        routine.append({
+            'time': 'Throughout day',
+            'step': 'Hydration',
+            'items': [{'name': 'Water', 'amount': '2.5-3L', 'notes': 'Spread throughout the day'}],
+            'icon': 'Droplet'
+        })
+        
+        # Evening supplements
+        evening_supps = []
+        for s in supplements:
+            if s.name in ['Vitamin B12', 'Magnesium']:
+                evening_supps.append({
+                    'name': s.name,
+                    'dosage': s.details.get('dosage', '') if s.details else '',
+                    'notes': 'Take with dinner'
+                })
+        
+        if evening_supps:
+            routine.append({
+                'time': '20:00',
+                'step': 'Evening Supplements',
+                'items': evening_supps,
+                'icon': 'Pill'
+            })
+        
+        # Sleep
+        routine.append({
+            'time': '22:30',
+            'step': 'Sleep Preparation',
+            'items': [
+                {'name': 'Screen off', 'notes': '1 hour before bed'},
+                {'name': 'Target sleep', 'duration': '7-8 hours'}
+            ],
+            'icon': 'Moon'
+        })
+        
+        # Save to DB
+        self._save_computed_data(user_id, 'daily_routine', routine)
+        return routine
+    
+    def generate_weekly_routine(self, user_id: str) -> List[Dict]:
+        """Generate personalized weekly routine."""
+        conditions = self.db.query(MedicalHistory).filter(
+            MedicalHistory.user_id == user_id,
+            MedicalHistory.type == 'condition'
+        ).all()
+        condition_names = [c.name for c in conditions]
+        
+        routine = []
+        
+        # Exercise schedule based on conditions
+        if 'Low HDL Cholesterol' in condition_names or 'Hypertriglyceridemia' in condition_names:
+            routine.append({
+                'day': 'Monday, Wednesday, Friday',
+                'activity': 'Zone 2 Cardio',
+                'duration': '45 min',
+                'notes': 'Improves HDL and reduces triglycerides',
+                'icon': 'Heart'
+            })
+        
+        routine.append({
+            'day': 'Tuesday, Thursday',
+            'activity': 'Strength Training',
+            'duration': '30-45 min',
+            'notes': 'Full body workout',
+            'icon': 'Dumbbell'
+        })
+        
+        routine.append({
+            'day': 'Saturday',
+            'activity': 'Active Recovery',
+            'duration': '30 min',
+            'notes': 'Yoga, walking, or light stretching',
+            'icon': 'Leaf'
+        })
+        
+        routine.append({
+            'day': 'Sunday',
+            'activity': 'Rest Day',
+            'duration': '-',
+            'notes': 'Focus on sleep and recovery',
+            'icon': 'Moon'
+        })
+        
+        # Weekly health tasks
+        routine.append({
+            'day': 'Weekly',
+            'activity': 'Health Monitoring',
+            'tasks': [
+                'Weigh yourself (same time each week)',
+                'Review supplement compliance',
+                'Track energy levels and sleep quality'
+            ],
+            'icon': 'ClipboardCheck'
+        })
+        
+        # Save to DB
+        self._save_computed_data(user_id, 'weekly_routine', routine)
+        return routine
+    
+    def compute_health_scores(self, user_id: str) -> Dict[str, Any]:
+        """Compute health category scores."""
+        biomarkers = self.db.query(Biomarker).filter(Biomarker.user_id == user_id).all()
+        
+        categories = {
+            'metabolic': {'markers': ['hba1c', 'glucose_fasting', 'average_blood_glucose'], 'score': 0, 'count': 0},
+            'cardiovascular': {'markers': ['hdl', 'ldl', 'triglycerides', 'hdl_ldl_ratio', 'trig_hdl_ratio'], 'score': 0, 'count': 0},
+            'vitamins': {'markers': ['vitamin_d', 'vitamin_b12'], 'score': 0, 'count': 0},
+            'kidney': {'markers': ['creatinine', 'urea', 'egfr', 'uric_acid'], 'score': 0, 'count': 0},
+            'liver': {'markers': ['sgot', 'sgpt', 'bilirubin_total'], 'score': 0, 'count': 0},
+            'thyroid': {'markers': ['tsh', 't3', 't4'], 'score': 0, 'count': 0}
+        }
+        
+        for b in biomarkers:
+            for cat, data in categories.items():
+                if b.name in data['markers']:
+                    data['count'] += 1
+                    if b.status == 'normal' or b.status is None:
+                        data['score'] += 100
+                    elif b.status == 'low' or b.status == 'high':
+                        data['score'] += 50
+                    else:
+                        data['score'] += 25
+        
+        scores = {}
+        for cat, data in categories.items():
+            if data['count'] > 0:
+                scores[cat] = {
+                    'score': round(data['score'] / data['count']),
+                    'markers_count': data['count'],
+                    'status': 'optimal' if data['score'] / data['count'] >= 80 else 'attention' if data['score'] / data['count'] >= 60 else 'critical'
+                }
+        
+        overall = sum(s['score'] for s in scores.values()) / len(scores) if scores else 0
+        result = {'categories': scores, 'overall_score': round(overall)}
+        
+        # Save to DB
+        self._save_computed_data(user_id, 'health_scores', result)
+        return result
+    
+    def _save_computed_data(self, user_id: str, data_type: str, data: Any):
+        """Save or update computed data in database."""
+        existing = self.db.query(ComputedData).filter(
+            ComputedData.user_id == user_id,
+            ComputedData.data_type == data_type
+        ).first()
+        
+        if existing:
+            existing.data = data
+            existing.computed_at = datetime.utcnow()
+            existing.version += 1
+        else:
+            self.db.add(ComputedData(
+                user_id=user_id,
+                data_type=data_type,
+                data=data
+            ))
+        self.db.commit()
     
     def compute_biomarkers(self, user_id: str) -> List[Dict]:
         """Compute derived biomarkers (ratios, eGFR, etc.)."""

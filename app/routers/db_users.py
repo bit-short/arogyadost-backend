@@ -4,6 +4,7 @@ Database-backed API endpoints for user data.
 
 from fastapi import APIRouter, HTTPException
 from app.services.user_db_service import user_db_service
+from app.services.digital_twin_db import digital_twin_db
 
 router = APIRouter(prefix="/api/db", tags=["database"])
 
@@ -49,3 +50,40 @@ async def get_user_full_data(user_id: str):
     if not data:
         raise HTTPException(status_code=404, detail=f"User '{user_id}' not found")
     return data
+
+
+@router.get("/users/{user_id}/routines")
+async def get_user_routines(user_id: str):
+    """Get daily and weekly routines for user (auto-computed)."""
+    computed = digital_twin_db.get_computed_data(user_id)
+    if not computed:
+        # Trigger computation
+        digital_twin_db.compute_derived_data(user_id)
+        computed = digital_twin_db.get_computed_data(user_id)
+    
+    return {
+        "user_id": user_id,
+        "daily_routine": computed.get('daily_routine', []),
+        "weekly_routine": computed.get('weekly_routine', [])
+    }
+
+
+@router.get("/users/{user_id}/health-scores")
+async def get_user_health_scores(user_id: str):
+    """Get computed health scores for user."""
+    computed = digital_twin_db.get_computed_data(user_id)
+    if not computed or 'health_scores' not in computed:
+        digital_twin_db.compute_derived_data(user_id)
+        computed = digital_twin_db.get_computed_data(user_id)
+    
+    return {
+        "user_id": user_id,
+        "health_scores": computed.get('health_scores', {})
+    }
+
+
+@router.post("/users/{user_id}/recompute")
+async def recompute_user_data(user_id: str):
+    """Force recomputation of all derived data for user."""
+    result = digital_twin_db.compute_derived_data(user_id)
+    return {"user_id": user_id, "recomputed": True, "summary": {k: len(v) if isinstance(v, list) else 'computed' for k, v in result.items()}}

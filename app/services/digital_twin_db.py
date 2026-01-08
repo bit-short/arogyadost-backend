@@ -1,18 +1,21 @@
 """
 Digital Twin database integration using SQLite.
 Populates digital twins from the main database.
+Auto-computes derived data when twin is created/updated.
 """
 
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from app.models.digital_twin import DigitalTwin, FieldState
 from app.services.user_db_service import user_db_service
+from app.database import SessionLocal
+from app.models.computed_models import ComputedData
 
 
 class DigitalTwinDBService:
     """Create digital twins from SQLite database."""
     
-    def get_or_create_digital_twin(self, user_id: str) -> Optional[DigitalTwin]:
+    def get_or_create_digital_twin(self, user_id: str, auto_compute: bool = True) -> Optional[DigitalTwin]:
         """Get or create a digital twin from database data."""
         user = user_db_service.get_user(user_id)
         if not user:
@@ -51,7 +54,31 @@ class DigitalTwinDBService:
         for fam in history.get('family_history', []):
             twin.set_value('family_history', fam['name'], fam['details'])
         
+        # Auto-compute derived data
+        if auto_compute:
+            self.compute_derived_data(user_id)
+            computed = self.get_computed_data(user_id)
+            if computed:
+                twin.set_value('computed', 'daily_routine', computed.get('daily_routine'))
+                twin.set_value('computed', 'weekly_routine', computed.get('weekly_routine'))
+                twin.set_value('computed', 'health_scores', computed.get('health_scores'))
+        
         return twin
+    
+    def compute_derived_data(self, user_id: str) -> Dict[str, Any]:
+        """Trigger computation of all derived data for a user."""
+        from compute_health_data import HealthDataComputer
+        computer = HealthDataComputer()
+        return computer.compute_all_for_user(user_id)
+    
+    def get_computed_data(self, user_id: str) -> Dict[str, Any]:
+        """Get all computed data for a user from DB."""
+        db = SessionLocal()
+        try:
+            records = db.query(ComputedData).filter(ComputedData.user_id == user_id).all()
+            return {r.data_type: r.data for r in records}
+        finally:
+            db.close()
     
     def get_digital_twin_summary(self, user_id: str) -> Optional[Dict[str, Any]]:
         """Get a summary of the digital twin data."""
