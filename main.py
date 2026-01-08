@@ -1148,6 +1148,73 @@ async def get_daily_routine(request: Request, db: Session = Depends(get_db)):
         routine_data = computed['daily_routine']
     elif user_context_manager.is_hardcoded_user_active():
         routine_data = mock_data["daily_routine"]
+        
+        # Get pre-computed translations for hardcoded user
+        if language != 'en':
+            user_id = "user_001_29f"
+            translations = translation_db.get_user_translations(user_id, 'daily_routine', language)
+            
+            if translations:
+                # Apply translations to routine data
+                translated_routine = []
+                
+                for step in routine_data:
+                    step_name = step["step"]
+                    
+                    # Map step names to translation keys
+                    step_key_map = {
+                        "Morning Longevity Stack": "step_morning_stack",
+                        "Exercise & Movement": "step_exercise",
+                        "Supplements": "step_supplements", 
+                        "Wellness": "step_wellness"
+                    }
+                    
+                    translated_step = {
+                        "step": translations.get(step_key_map.get(step_name, ""), step_name),
+                        "products": []
+                    }
+                    
+                    for product in step["products"]:
+                        product_name = product["name"]
+                        product_desc = product["description"]
+                        
+                        # Map product names and descriptions to translation keys
+                        name_key_map = {
+                            "Vitamin D3 + K2": "product_vitamin_d3",
+                            "Omega-3 EPA/DHA": "product_omega3",
+                            "Zone 2 Cardio": "product_zone2_cardio",
+                            "Resistance Training": "product_resistance",
+                            "Magnesium Glycinate": "product_magnesium",
+                            "Omega-3 Fish Oil": "product_omega3_fish",
+                            "Probiotic": "product_probiotic",
+                            "8 Glasses of Water": "product_water",
+                            "10-Min Meditation": "product_meditation",
+                            "30-Minute Walk": "product_walk"
+                        }
+                        
+                        desc_key_map = {
+                            "2000 IU with breakfast for bone health": "desc_vitamin_d3",
+                            "2g daily for cardiovascular health": "desc_omega3",
+                            "45min at 180-age heart rate": "desc_zone2",
+                            "3x/week for muscle maintenance": "desc_resistance",
+                            "400mg before bed for sleep quality": "desc_magnesium",
+                            "Take 2 capsules daily": "desc_omega3_fish",
+                            "Take 1 capsule before bed": "desc_probiotic",
+                            "Stay hydrated throughout the day": "desc_water",
+                            "Practice mindfulness daily": "desc_meditation",
+                            "2 of 3 completed this week": "desc_walk"
+                        }
+                        
+                        translated_product = {
+                            "name": translations.get(name_key_map.get(product_name, ""), product_name),
+                            "description": translations.get(desc_key_map.get(product_desc, ""), product_desc),
+                            "image": product["image"]
+                        }
+                        translated_step["products"].append(translated_product)
+                    
+                    translated_routine.append(translated_step)
+                
+                return translated_routine
     else:
         routine_data = []
     
