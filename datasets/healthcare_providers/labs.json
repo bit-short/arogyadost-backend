@@ -1,0 +1,110 @@
+[
+  {
+    "id": "lab-001",
+    "name": "SRL Diagnostics",
+    "type": "sponsored",
+    "rating": 4.8,
+    "review_count": 324,
+    "distance": "0.5 km",
+    "address": "123 Medical Center Dr, Lajpat Nagar, New Delhi",
+    "next_available": "Today, 2:00 PM",
+    "specialties": [
+      "Blood Work",
+      "Lipid Panel",
+      "Vitamin Tests",
+      "Hormone Tests"
+    ],
+    "phone": "+91-11-4567-8901",
+    "email": "info@srldiagnostics.com",
+    "website": "https://www.srldiagnostics.in",
+    "operating_hours": "6:00 AM - 10:00 PM",
+    "tests_offered": [
+      "Complete Blood Count",
+      "Lipid Profile",
+      "Vitamin D",
+      "Thyroid Panel",
+      "HbA1c"
+    ],
+    "home_collection": true,
+    "online_reports": true
+  },
+  {
+    "id": "lab-002",
+    "name": "Dr. Lal PathLabs",
+    "type": "partner",
+    "rating": 4.6,
+    "review_count": 512,
+    "distance": "1.2 km",
+    "address": "456 Healthcare Blvd, Karol Bagh, New Delhi",
+    "next_available": "Tomorrow, 9:00 AM",
+    "specialties": [
+      "Full Panels",
+      "Hormone Tests",
+      "Genetic Testing",
+      "Cardiac Markers"
+    ],
+    "phone": "+91-11-4567-8902",
+    "email": "info@lalpathlabs.com",
+    "website": "https://www.lalpathlabs.com",
+    "operating_hours": "7:00 AM - 9:00 PM",
+    "tests_offered": [
+      "Comprehensive Metabolic Panel",
+      "Cardiac Risk Assessment",
+      "Genetic Screening"
+    ],
+    "home_collection": true,
+    "online_reports": true
+  },
+  {
+    "id": "lab-003",
+    "name": "Metropolis Healthcare",
+    "type": "partner",
+    "rating": 4.7,
+    "review_count": 189,
+    "distance": "1.8 km",
+    "address": "789 Wellness Way, Connaught Place, New Delhi",
+    "next_available": "Today, 4:30 PM",
+    "specialties": [
+      "Walk-in Available",
+      "Same Day Results",
+      "Specialized Tests"
+    ],
+    "phone": "+91-11-4567-8903",
+    "email": "info@metropolisindia.com",
+    "website": "https://www.metropolisindia.com",
+    "operating_hours": "24/7",
+    "tests_offered": [
+      "Urgent Blood Work",
+      "Emergency Panels",
+      "Specialized Biomarkers"
+    ],
+    "home_collection": true,
+    "online_reports": true
+  },
+  {
+    "id": "lab-004",
+    "name": "Thyrocare Technologies",
+    "type": "regular",
+    "rating": 4.4,
+    "review_count": 156,
+    "distance": "2.1 km",
+    "address": "321 Main Street, Rohini, New Delhi",
+    "next_available": "Wed, Dec 11, 10:00 AM",
+    "specialties": [
+      "Blood Work",
+      "Urinalysis",
+      "Preventive Health Packages"
+    ],
+    "phone": "+91-11-4567-8904",
+    "email": "info@thyrocare.com",
+    "website": "https://www.thyrocare.com",
+    "operating_hours": "8:00 AM - 6:00 PM",
+    "tests_offered": [
+      "Basic Health Package",
+      "Diabetes Panel",
+      "Kidney Function Tests"
+    ],
+    "home_collection": false,
+    "online_reports": true
+  }
+]

@@ -1,0 +1,124 @@
+[
+  {
+    "id": "dr-001",
+    "name": "Dr. Rajesh Sharma",
+    "specialty": "Longevity Medicine",
+    "rating": 4.9,
+    "review_count": 234,
+    "distance": "0.8 km",
+    "next_available": "Tomorrow, 10:00 AM",
+    "image_url": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face",
+    "is_partner": true,
+    "is_sponsored": false,
+    "phone": "+91-98765-43210",
+    "address": "Apollo Hospital, Sarita Vihar, New Delhi",
+    "languages": [
+      "English",
+      "Hindi"
+    ],
+    "consultation_fee": 1500,
+    "experience_years": 15,
+    "qualifications": [
+      "MBBS",
+      "MD Internal Medicine",
+      "Fellowship in Longevity Medicine"
+    ],
+    "available_slots": [
+      "10:00 AM",
+      "2:00 PM",
+      "4:00 PM"
+    ]
+  },
+  {
+    "id": "dr-002",
+    "name": "Dr. Priya Patel",
+    "specialty": "Preventive Cardiology",
+    "rating": 4.8,
+    "review_count": 189,
+    "distance": "1.2 km",
+    "next_available": "Wed, 2:30 PM",
+    "image_url": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop&crop=face",
+    "is_partner": true,
+    "is_sponsored": true,
+    "phone": "+91-98765-43211",
+    "address": "Max Hospital, Patparganj, New Delhi",
+    "languages": [
+      "English",
+      "Hindi",
+      "Gujarati"
+    ],
+    "consultation_fee": 1200,
+    "experience_years": 12,
+    "qualifications": [
+      "MBBS",
+      "MD Cardiology",
+      "DM Interventional Cardiology"
+    ],
+    "available_slots": [
+      "9:00 AM",
+      "2:30 PM",
+      "5:00 PM"
+    ]
+  },
+  {
+    "id": "dr-003",
+    "name": "Dr. Amit Kumar",
+    "specialty": "Endocrinology & Metabolism",
+    "rating": 4.7,
+    "review_count": 156,
+    "distance": "2.1 km",
+    "next_available": "Thu, 9:00 AM",
+    "image_url": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face",
+    "is_partner": false,
+    "is_sponsored": false,
+    "phone": "+91-98765-43212",
+    "address": "AIIMS, Ansari Nagar, New Delhi",
+    "languages": [
+      "English",
+      "Hindi"
+    ],
+    "consultation_fee": 800,
+    "experience_years": 18,
+    "qualifications": [
+      "MBBS",
+      "MD Medicine",
+      "DM Endocrinology"
+    ],
+    "available_slots": [
+      "9:00 AM",
+      "11:00 AM",
+      "3:00 PM"
+    ]
+  },
+  {
+    "id": "dr-004",
+    "name": "Dr. Sunita Reddy",
+    "specialty": "Functional Medicine",
+    "rating": 4.6,
+    "review_count": 98,
+    "distance": "3.4 km",
+    "next_available": "Fri, 11:00 AM",
+    "image_url": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=200&h=200&fit=crop&crop=face",
+    "is_partner": false,
+    "is_sponsored": false,
+    "phone": "+91-98765-43213",
+    "address": "Fortis Hospital, Vasant Kunj, New Delhi",
+    "languages": [
+      "English",
+      "Hindi",
+      "Telugu"
+    ],
+    "consultation_fee": 1000,
+    "experience_years": 10,
+    "qualifications": [
+      "MBBS",
+      "MD Medicine",
+      "Certified Functional Medicine Practitioner"
+    ],
+    "available_slots": [
+      "11:00 AM",
+      "1:00 PM",
+      "4:00 PM"
+    ]
+  }
+]

@@ -1,0 +1,83 @@
+[
+  {
+    "id": "apple-watch",
+    "name": "Apple Watch",
+    "icon": "Watch",
+    "description": "Sleep, Heart Rate, Steps",
+    "connected": true,
+    "device_type": "wearable",
+    "brand": "Apple",
+    "model": "Series 9",
+    "last_sync": "2024-01-08T10:30:00Z",
+    "data_types": [
+      "heart_rate",
+      "steps",
+      "sleep",
+      "workout"
+    ]
+  },
+  {
+    "id": "fitbit",
+    "name": "Fitbit",
+    "icon": "Activity",
+    "description": "Activity & Sleep Tracking",
+    "connected": false,
+    "device_type": "wearable",
+    "brand": "Fitbit",
+    "model": "Charge 5",
+    "last_sync": null,
+    "data_types": [
+      "steps",
+      "sleep",
+      "heart_rate",
+      "calories"
+    ]
+  },
+  {
+    "id": "bp-monitor",
+    "name": "Blood Pressure Monitor",
+    "icon": "Heart",
+    "description": "Omron, Withings, etc.",
+    "connected": false,
+    "device_type": "monitor",
+    "brand": "Omron",
+    "model": "HEM-7120",
+    "last_sync": null,
+    "data_types": [
+      "blood_pressure",
+      "pulse"
+    ]
+  },
+  {
+    "id": "smart-scale",
+    "name": "Smart Scale",
+    "icon": "Scale",
+    "description": "Weight & Body Composition",
+    "connected": true,
+    "device_type": "scale",
+    "brand": "Withings",
+    "model": "Body+",
+    "last_sync": "2024-01-07T08:00:00Z",
+    "data_types": [
+      "weight",
+      "body_fat",
+      "muscle_mass",
+      "bone_mass"
+    ]
+  },
+  {
+    "id": "glucose-monitor",
+    "name": "Glucose Monitor",
+    "icon": "Activity",
+    "description": "CGM & Blood Glucose",
+    "connected": false,
+    "device_type": "monitor",
+    "brand": "FreeStyle",
+    "model": "Libre 2",
+    "last_sync": null,
+    "data_types": [
+      "glucose",
+      "trends"
+    ]
+  }
+]

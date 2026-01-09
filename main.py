@@ -16,6 +16,7 @@ from app.routers.users import router as users_router
 from app.routers.user_management import router as user_management_router
 from app.routers.health import router as health_router
 from app.routers.db_users import router as db_users_router
+from app.routers.healthcare_providers import router as healthcare_providers_router
 from app.database import get_db
 
 # Initialize logging
@@ -46,6 +47,7 @@ app.include_router(users_router)
 app.include_router(user_management_router)  # Legacy user management router
 app.include_router(health_router)  # Health check router
 app.include_router(db_users_router)  # New unified database router
+app.include_router(healthcare_providers_router)  # Healthcare providers router
 
 
 @app.on_event("startup")

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "vitamins",
+    "name": "Vitamins",
+    "category": "supplements",
+    "image_path": "/src/assets/products/vitamins.jpg",
+    "alt_text": "Daily vitamins and supplements",
+    "description": "Essential daily vitamins for optimal health"
+  },
+  {
+    "id": "omega3",
+    "name": "Omega-3",
+    "category": "supplements",
+    "image_path": "/src/assets/products/omega3.jpg",
+    "alt_text": "Omega-3 fish oil supplements",
+    "description": "High-quality omega-3 fatty acids"
+  },
+  {
+    "id": "walking",
+    "name": "Walking",
+    "category": "exercise",
+    "image_path": "/src/assets/products/walking.jpg",
+    "alt_text": "Walking exercise activity",
+    "description": "Daily walking for cardiovascular health"
+  },
+  {
+    "id": "probiotic",
+    "name": "Probiotic",
+    "category": "supplements",
+    "image_path": "/src/assets/products/probiotic.jpg",
+    "alt_text": "Probiotic supplements for gut health",
+    "description": "Beneficial bacteria for digestive wellness"
+  },
+  {
+    "id": "water",
+    "name": "Water",
+    "category": "hydration",
+    "image_path": "/src/assets/products/water.jpg",
+    "alt_text": "Daily water intake",
+    "description": "Proper hydration for optimal health"
+  },
+  {
+    "id": "meditation",
+    "name": "Meditation",
+    "category": "wellness",
+    "image_path": "/src/assets/products/meditation.jpg",
+    "alt_text": "Meditation and mindfulness practice",
+    "description": "Daily meditation for mental wellness"
+  },
+  {
+    "id": "moisturizer",
+    "name": "Moisturizer",
+    "category": "skincare",
+    "image_path": "/src/assets/products/moisturizer.jpg",
+    "alt_text": "Daily moisturizer for skin health",
+    "description": "Skin hydration and protection"
+  },
+  {
+    "id": "spf",
+    "name": "SPF Sunscreen",
+    "category": "skincare",
+    "image_path": "/src/assets/products/spf.jpg",
+    "alt_text": "SPF sunscreen protection",
+    "description": "Daily sun protection for skin health"
+  }
+]
