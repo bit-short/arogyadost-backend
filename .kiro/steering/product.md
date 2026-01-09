@@ -1,23 +1,26 @@
----
-inclusion: always
----
+# Aarogyadost - AI-Powered Health Platform
 
-# Product Overview
-
-Aarogyadost is a healthcare application backend focused on longevity and preventive health optimization. The platform enables users to track health biomarkers, receive personalized recommendations, and manage medical documents.
+Aarogyadost is a comprehensive healthcare backend API focused on longevity and personalized health optimization. The platform combines digital twin technology, biological age prediction, and AI-powered health recommendations to provide users with actionable insights for improving their healthspan.
 
 ## Core Features
 
-- **Health Analytics**: Track biomarkers, metabolic health, cardiovascular fitness, hormonal balance, and inflammation markers
-- **Longevity Focus**: Biological age assessment, VO2 max tracking, and evidence-based longevity interventions
-- **Medical Document Management**: Upload, OCR processing, and extraction of lab reports and medical imaging
-- **Provider Network**: Directory of doctors and laboratories specializing in preventive and longevity medicine
-- **AI Chat Assistant**: Context-aware health guidance with file-specific recommendations
+- **Digital Twin System**: Multi-domain health data storage with temporal tracking across demographics, biomarkers, medical history, lifestyle, and genetics
+- **Biological Age Prediction**: Evidence-based age assessment using longevity research with category breakdown (metabolic, cardiovascular, inflammatory, hormonal, organ function)
+- **Health Recommendations Engine**: Rule-based system providing personalized recommendations based on biomarkers, conditions, demographics, and temporal patterns
+- **AI Health Chat Assistant**: LLM-powered conversations using AWS Bedrock with digital twin integration for personalized responses
+- **User Management**: Multi-user testing system with comprehensive test user profiles and data availability indicators
 
 ## Target Users
 
-Health-conscious individuals focused on preventive care, longevity optimization, and data-driven health decisions.
+- Healthcare providers seeking personalized patient insights
+- Individuals focused on longevity and health optimization
+- Researchers working with health data and biomarkers
+- Developers building health applications
 
-## Current Status
+## Key Value Propositions
 
-MVP with mock data deployed to AWS Elastic Beanstalk. Architecture supports future database integration for production data persistence.
+- Comprehensive health data integration and analysis
+- Evidence-based biological age calculation with actionable insights
+- Cost-effective AI integration (starting at $0.81/month via AWS Bedrock)
+- Real-time health recommendations based on actual user data
+- Scalable architecture supporting both development and production environments

@@ -1,0 +1,288 @@
+INFO:     Will watch for changes in these directories: ['/Users/hareesh/work/aarogyadost/temp/grants/arogyadost-backend']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [50662] using StatReload
+INFO:app.services.user_context:Loaded 4 dataset users
+INFO:app.services.user_context:Loaded 4 database users
+INFO:app.services.user_service:Initialized user service
+2026-01-09 01:24:44,260 - root - INFO - Logging configured successfully
+INFO:     Started server process [50750]
+INFO:     Waiting for application startup.
+2026-01-09 01:24:44,278 - main - INFO - Starting Aarogyadost API with Unified Database System
+2026-01-09 01:24:44,279 - main - INFO - Database tables initialized
+2026-01-09 01:24:44,279 - main - INFO - Found 4 existing users in unified database
+2026-01-09 01:24:44,283 - app.services.user_context - INFO - Loaded 4 database users
+2026-01-09 01:24:44,283 - app.services.user_context - INFO - Refreshed database users cache
+2026-01-09 01:24:44,283 - main - INFO - Unified Database System initialized successfully
+INFO:     Application startup complete.
+INFO:     127.0.0.1:64750 - "GET /health HTTP/1.1" 200 OK
+2026-01-09 01:25:01,260 - app.middleware.translation_middleware - INFO - Detected language: hi from header: hi
+INFO:     127.0.0.1:64788 - "GET /api/biological-age/mock/user_001_29f HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-01-09 01:26:29,679 - main - INFO - Shutting down Aarogyadost API
+2026-01-09 01:26:29,681 - main - INFO - Closed database connections
+2026-01-09 01:26:29,681 - main - INFO - Shutdown complete
+INFO:     Application shutdown complete.
+INFO:     Finished server process [50750]
+INFO:app.services.user_context:Loaded 4 dataset users
+INFO:app.services.user_context:Loaded 4 database users
+INFO:app.services.user_service:Initialized user service
+2026-01-09 01:26:30,608 - root - INFO - Logging configured successfully
+INFO:     Started server process [51369]
+INFO:     Waiting for application startup.
+2026-01-09 01:26:30,648 - main - INFO - Starting Aarogyadost API with Unified Database System
+2026-01-09 01:26:30,650 - main - INFO - Database tables initialized
+2026-01-09 01:26:30,651 - main - INFO - Found 4 existing users in unified database
+2026-01-09 01:26:30,656 - app.services.user_context - INFO - Loaded 4 database users
+2026-01-09 01:26:30,656 - app.services.user_context - INFO - Refreshed database users cache
+2026-01-09 01:26:30,656 - main - INFO - Unified Database System initialized successfully
+INFO:     Application startup complete.
+INFO:     127.0.0.1:65210 - "GET /api/biological-age/mock/user_001_29f HTTP/1.1" 200 OK
+2026-01-09 01:26:44,470 - app.middleware.translation_middleware - INFO - Detected language: hi from header: hi
+2026-01-09 01:26:45,116 - app.services.translation_service - INFO - Translated 'Your biological age is 3 years younger than your c...' from en to hi
+2026-01-09 01:26:45,282 - app.services.translation_service - INFO - Translated 'Excellent cardiovascular fitness based on VO2 max...' from en to hi
+2026-01-09 01:26:45,359 - app.services.translation_service - INFO - Translated 'Low inflammation markers indicate healthy aging...' from en to hi
+2026-01-09 01:26:45,443 - app.services.translation_service - INFO - Translated 'Muscle mass and bone density are optimal for longe...' from en to hi
+2026-01-09 01:26:45,522 - app.services.translation_service - INFO - Translated 'Continue Zone 2 cardio training for cardiovascular...' from en to hi
+2026-01-09 01:26:45,600 - app.services.translation_service - INFO - Translated 'Address Vitamin D deficiency for optimal longevity...' from en to hi
+2026-01-09 01:26:45,672 - app.services.translation_service - INFO - Translated 'Maintain current sleep and stress management pract...' from en to hi
+INFO:     127.0.0.1:65243 - "GET /api/biological-age/mock/user_001_29f HTTP/1.1" 200 OK
+2026-01-09 01:26:53,293 - app.middleware.translation_middleware - INFO - Detected language: ta from header: ta
+2026-01-09 01:26:53,742 - app.services.translation_service - INFO - Translated 'Your biological age is 3 years younger than your c...' from en to ta
+2026-01-09 01:26:53,856 - app.services.translation_service - INFO - Translated 'Excellent cardiovascular fitness based on VO2 max...' from en to ta
+2026-01-09 01:26:53,939 - app.services.translation_service - INFO - Translated 'Low inflammation markers indicate healthy aging...' from en to ta
+2026-01-09 01:26:54,026 - app.services.translation_service - INFO - Translated 'Muscle mass and bone density are optimal for longe...' from en to ta
+2026-01-09 01:26:54,242 - app.services.translation_service - INFO - Translated 'Continue Zone 2 cardio training for cardiovascular...' from en to ta
+2026-01-09 01:26:54,328 - app.services.translation_service - INFO - Translated 'Address Vitamin D deficiency for optimal longevity...' from en to ta
+2026-01-09 01:26:54,413 - app.services.translation_service - INFO - Translated 'Maintain current sleep and stress management pract...' from en to ta
+INFO:     127.0.0.1:65286 - "GET /api/biological-age/mock/user_001_29f HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'app/storage/translation_database.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-01-09 01:34:12,258 - main - INFO - Shutting down Aarogyadost API
+2026-01-09 01:34:12,286 - main - INFO - Closed database connections
+2026-01-09 01:34:12,287 - main - INFO - Shutdown complete
+INFO:     Application shutdown complete.
+INFO:     Finished server process [51369]
+INFO:app.services.user_context:Loaded 4 dataset users
+INFO:app.services.user_context:Loaded 4 database users
+INFO:app.services.user_service:Initialized user service
+2026-01-09 01:34:13,646 - root - INFO - Logging configured successfully
+INFO:     Started server process [54698]
+INFO:     Waiting for application startup.
+2026-01-09 01:34:13,686 - main - INFO - Starting Aarogyadost API with Unified Database System
+2026-01-09 01:34:13,686 - main - INFO - Database tables initialized
+2026-01-09 01:34:13,687 - main - INFO - Found 4 existing users in unified database
+2026-01-09 01:34:13,691 - app.services.user_context - INFO - Loaded 4 database users
+2026-01-09 01:34:13,691 - app.services.user_context - INFO - Refreshed database users cache
+2026-01-09 01:34:13,691 - main - INFO - Unified Database System initialized successfully
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'app/services/translation_precompute_service.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-01-09 01:34:36,857 - main - INFO - Shutting down Aarogyadost API
+2026-01-09 01:34:36,859 - main - INFO - Closed database connections
+2026-01-09 01:34:36,859 - main - INFO - Shutdown complete
+INFO:     Application shutdown complete.
+INFO:     Finished server process [54698]
+INFO:app.services.user_context:Loaded 4 dataset users
+INFO:app.services.user_context:Loaded 4 database users
+INFO:app.services.user_service:Initialized user service
+2026-01-09 01:34:37,916 - root - INFO - Logging configured successfully
+INFO:     Started server process [54733]
+INFO:     Waiting for application startup.
+2026-01-09 01:34:37,943 - main - INFO - Starting Aarogyadost API with Unified Database System
+2026-01-09 01:34:37,944 - main - INFO - Database tables initialized
+2026-01-09 01:34:37,944 - main - INFO - Found 4 existing users in unified database
+2026-01-09 01:34:37,949 - app.services.user_context - INFO - Loaded 4 database users
+2026-01-09 01:34:37,949 - app.services.user_context - INFO - Refreshed database users cache
+2026-01-09 01:34:37,949 - main - INFO - Unified Database System initialized successfully
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-01-09 01:35:04,501 - main - INFO - Shutting down Aarogyadost API
+2026-01-09 01:35:04,503 - main - INFO - Closed database connections
+2026-01-09 01:35:04,506 - main - INFO - Shutdown complete
+INFO:     Application shutdown complete.
+INFO:     Finished server process [54733]
+INFO:app.services.user_context:Loaded 4 dataset users
+INFO:app.services.user_context:Loaded 4 database users
+INFO:app.services.user_service:Initialized user service
+2026-01-09 01:35:05,589 - root - INFO - Logging configured successfully
+INFO:     Started server process [54769]
+INFO:     Waiting for application startup.
+2026-01-09 01:35:05,627 - main - INFO - Starting Aarogyadost API with Unified Database System
+2026-01-09 01:35:05,628 - main - INFO - Database tables initialized
+2026-01-09 01:35:05,628 - main - INFO - Found 4 existing users in unified database
+2026-01-09 01:35:05,636 - app.services.user_context - INFO - Loaded 4 database users
+2026-01-09 01:35:05,636 - app.services.user_context - INFO - Refreshed database users cache
+2026-01-09 01:35:05,636 - main - INFO - Unified Database System initialized successfully
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'precompute_initial_translations.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-01-09 01:35:21,813 - main - INFO - Shutting down Aarogyadost API
+2026-01-09 01:35:21,814 - main - INFO - Closed database connections
+2026-01-09 01:35:21,814 - main - INFO - Shutdown complete
+INFO:     Application shutdown complete.
+INFO:     Finished server process [54769]
+INFO:app.services.user_context:Loaded 4 dataset users
+INFO:app.services.user_context:Loaded 4 database users
+INFO:app.services.user_service:Initialized user service
+2026-01-09 01:35:22,596 - root - INFO - Logging configured successfully
+INFO:     Started server process [54802]
+INFO:     Waiting for application startup.
+2026-01-09 01:35:22,619 - main - INFO - Starting Aarogyadost API with Unified Database System
+2026-01-09 01:35:22,620 - main - INFO - Database tables initialized
+2026-01-09 01:35:22,621 - main - INFO - Found 4 existing users in unified database
+2026-01-09 01:35:22,625 - app.services.user_context - INFO - Loaded 4 database users
+2026-01-09 01:35:22,625 - app.services.user_context - INFO - Refreshed database users cache
+2026-01-09 01:35:22,625 - main - INFO - Unified Database System initialized successfully
+INFO:     Application startup complete.
+2026-01-09 02:10:39,952 - app.middleware.translation_middleware - INFO - Detected language: hi from header: hi
+2026-01-09 02:10:40,293 - app.storage.translation_database - INFO - Translation database initialized at translations.db
+2026-01-09 02:10:40,294 - app.storage.translation_database - INFO - Template translations initialized
+INFO:     127.0.0.1:63822 - "GET /api/biological-age/mock/user_001_29f HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63991 - "GET /api/biological-age/mock/user_001_29f HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-01-09 02:15:21,366 - main - INFO - Shutting down Aarogyadost API
+2026-01-09 02:15:21,377 - main - INFO - Closed database connections
+2026-01-09 02:15:21,377 - main - INFO - Shutdown complete
+INFO:     Application shutdown complete.
+INFO:     Finished server process [54802]
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'precompute_routine_translations.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001f42ce080 (most recent call first):
+  <no Python frame>

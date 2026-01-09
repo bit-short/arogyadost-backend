@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.orm import Session
 import json
 import asyncio
 import logging
@@ -15,6 +16,7 @@ from app.routers.users import router as users_router
 from app.routers.user_management import router as user_management_router
 from app.routers.health import router as health_router
 from app.routers.db_users import router as db_users_router
+from app.database import get_db
 
 # Initialize logging
 from app.config.logging import setup_logging
@@ -1138,11 +1140,11 @@ async def get_daily_routine(request: Request):
     
     from app.services.user_context import user_context_manager
     from app.services.digital_twin_db import digital_twin_db
-    from app.services.translation_service import translation_service
+    from app.utils.translation_helpers import get_translation_context
     
     current_user = user_context_manager.get_current_user()
     
-    # Get language preference from request
+    # Get language from request state (set by translation middleware)
     language = getattr(request.state, 'language', 'en')
     
     # Try to get computed routine from database
@@ -1151,30 +1153,81 @@ async def get_daily_routine(request: Request):
         routine_data = computed['daily_routine']
     elif user_context_manager.is_hardcoded_user_active():
         routine_data = mock_data["daily_routine"]
+        
+        # Get pre-computed translations for hardcoded user
+        if language != 'en':
+            from app.storage.translation_database import translation_db
+            user_id = "user_001_29f"
+            translations = translation_db.get_user_translations(user_id, 'daily_routine', language)
+            
+            if translations:
+                # Apply translations to routine data
+                translated_routine = []
+                
+                for step in routine_data:
+                    step_name = step["step"]
+                    
+                    # Map step names to translation keys
+                    step_key_map = {
+                        "Morning Longevity Stack": "step_morning_stack",
+                        "Exercise & Movement": "step_exercise",
+                        "Supplements": "step_supplements", 
+                        "Wellness": "step_wellness"
+                    }
+                    
+                    translated_step = {
+                        "step": translations.get(step_key_map.get(step_name, ""), step_name),
+                        "products": []
+                    }
+                    
+                    for product in step["products"]:
+                        product_name = product["name"]
+                        product_desc = product["description"]
+                        
+                        # Map product names and descriptions to translation keys
+                        name_key_map = {
+                            "Vitamin D3 + K2": "product_vitamin_d3",
+                            "Omega-3 EPA/DHA": "product_omega3",
+                            "Zone 2 Cardio": "product_zone2_cardio",
+                            "Resistance Training": "product_resistance",
+                            "Magnesium Glycinate": "product_magnesium",
+                            "Omega-3 Fish Oil": "product_omega3_fish",
+                            "Probiotic": "product_probiotic",
+                            "8 Glasses of Water": "product_water",
+                            "10-Min Meditation": "product_meditation",
+                            "30-Minute Walk": "product_walk"
+                        }
+                        
+                        desc_key_map = {
+                            "2000 IU with breakfast for bone health": "desc_vitamin_d3",
+                            "2g daily for cardiovascular health": "desc_omega3",
+                            "45min at 180-age heart rate": "desc_zone2",
+                            "3x/week for muscle maintenance": "desc_resistance",
+                            "400mg before bed for sleep quality": "desc_magnesium",
+                            "Take 2 capsules daily": "desc_omega3_fish",
+                            "Take 1 capsule before bed": "desc_probiotic",
+                            "Stay hydrated throughout the day": "desc_water",
+                            "Practice mindfulness daily": "desc_meditation",
+                            "2 of 3 completed this week": "desc_walk"
+                        }
+                        
+                        translated_product = {
+                            "name": translations.get(name_key_map.get(product_name, ""), product_name),
+                            "description": translations.get(desc_key_map.get(product_desc, ""), product_desc),
+                            "image": product["image"]
+                        }
+                        translated_step["products"].append(translated_product)
+                    
+                    translated_routine.append(translated_step)
+                
+                return translated_routine
     else:
         routine_data = []
     
-    # Translate the routine data if needed
-    if language != 'en' and routine_data:
-        translated_routine = []
-        for step in routine_data:
-            translated_step = {
-                "step": translation_service.translate_text(step["step"], language),
-                "products": []
-            }
-            
-            for product in step["products"]:
-                translated_product = {
-                    "name": translation_service.translate_text(product["name"], language),
-                    "description": translation_service.translate_text(product["description"], language),
-                    "image": product["image"]  # Keep image path unchanged
-                }
-                translated_step["products"].append(translated_product)
-            
-            translated_routine.append(translated_step)
-        
-        return translated_routine
+    # Get translation context (simplified for now)
+    # translation_ctx = get_translation_context(request, db)
     
+    # For now, return routine data without complex translation until db is fixed
     return routine_data
 
 @app.get("/api/routines/weekly")
@@ -1183,12 +1236,8 @@ async def get_weekly_routine(request: Request):
     
     from app.services.user_context import user_context_manager
     from app.services.digital_twin_db import digital_twin_db
-    from app.services.translation_service import translation_service
     
     current_user = user_context_manager.get_current_user()
-    
-    # Get language preference from request
-    language = getattr(request.state, 'language', 'en')
     
     # Try to get computed routine from database
     computed = digital_twin_db.get_computed_data(current_user.user_id)
@@ -1199,27 +1248,7 @@ async def get_weekly_routine(request: Request):
     else:
         routine_data = []
     
-    # Translate the routine data if needed
-    if language != 'en' and routine_data:
-        translated_routine = []
-        for step in routine_data:
-            translated_step = {
-                "step": translation_service.translate_text(step["step"], language),
-                "products": []
-            }
-            
-            for product in step["products"]:
-                translated_product = {
-                    "name": translation_service.translate_text(product["name"], language),
-                    "description": translation_service.translate_text(product["description"], language),
-                    "image": product["image"]  # Keep image path unchanged
-                }
-                translated_step["products"].append(translated_product)
-            
-            translated_routine.append(translated_step)
-        
-        return translated_routine
-    
+    # For now, return routine data without translation until db is fixed
     return routine_data
 
 # Mock biological age endpoint (works without digital twin for frontend testing)
@@ -1274,54 +1303,44 @@ async def get_mock_biological_age(user_id: str, request: Request):
         ]
         
         recommendations_en = [
-            "Continue Zone 2 cardio training for cardiovascular health",
-            "Address Vitamin D deficiency for optimal longevity",
-            "Maintain current sleep and stress management practices"
+            "Continue Zone 2 cardio training 3x/week",
+            "Maintain current strength training routine",
+            "Consider adding cold exposure therapy",
+            "Monitor HRV for recovery optimization"
         ]
         
-        # Ensure translations exist for this user (pre-compute if missing)
-        translation_precompute_service.ensure_user_translations_exist(
-            user_id, insights_en, recommendations_en
-        )
-        
-        # Get translated content using pre-computed translations
-        insights = translation_precompute_service.get_translated_content(
-            user_id, 'insights', insights_en, language
-        )
-        recommendations = translation_precompute_service.get_translated_content(
-            user_id, 'recommendations', recommendations_en, language
-        )
+        # Get pre-computed translations if available
+        if language != 'en':
+            insights = translation_precompute_service.get_translated_content(
+                user_id, 'insights', insights_en, language
+            ) or insights_en
+            
+            recommendations = translation_precompute_service.get_translated_content(
+                user_id, 'recommendations', recommendations_en, language
+            ) or recommendations_en
+        else:
+            insights = insights_en
+            recommendations = recommendations_en
         
         return {
             "user_id": user_id,
-            "chronological_age": 32,
-            "biological_age": 29,
+            "chronological_age": 29,
+            "biological_age": 26,
             "age_difference": -3,
             "longevity_score": 87,
-            "status": "excellent",
+            "status": "younger",
             "insights": insights,
             "recommendations": recommendations
         }
     
-    # Return default for users without data using template translations
-    current_user = user_context_manager.get_current_user()
-    
-    # Use template translations for no-data messages
-    no_data_insights = translation_precompute_service.get_template_content(
-        ['no_data_insight_1', 'no_data_insight_2'], language
-    )
-    
-    no_data_recommendations = translation_precompute_service.get_template_content(
-        ['no_data_recommendation_1', 'no_data_recommendation_2'], language
-    )
-    
+    # Default response for other users
     return {
         "user_id": user_id,
-        "chronological_age": current_user.demographics.age if current_user.demographics else 30,
+        "chronological_age": 30,
         "biological_age": None,
         "age_difference": None,
         "longevity_score": 0,
-        "status": "no_data",
-        "insights": no_data_insights,
-        "recommendations": no_data_recommendations
+        "status": "unknown",
+        "insights": ["No biological age data available for this user."],
+        "recommendations": ["Complete health assessments to calculate biological age."]
     }

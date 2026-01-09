@@ -1,60 +1,132 @@
----
-inclusion: always
----
+# Project Structure & Organization
 
-# Project Structure
-
-## Directory Organization
+## Root Level Structure
 
 ```
-/
-├── app/                      # Application code
-│   ├── api/                  # API route handlers (future)
-│   ├── models/               # Pydantic models for requests/responses
-│   ├── services/             # Business logic (S3, upload handling)
-│   ├── workers/              # Celery task workers (future)
-│   ├── config.py             # Environment configuration
-│   └── database.py           # SQLAlchemy models and session management
-├── tests/                    # Test suite
-│   ├── unit/                 # Unit tests
-│   ├── property/             # Property-based tests (Hypothesis)
-│   ├── test_data/            # Sample medical documents for testing
-│   └── conftest.py           # Pytest fixtures and configuration
-├── migrations/               # Alembic database migrations
-├── docs/                     # Project documentation
-├── .ebextensions/            # AWS Elastic Beanstalk configuration
-├── main.py                   # FastAPI application entry point
-├── cors_config.py            # CORS configuration
-└── requirements.txt          # Python dependencies
+├── main.py                 # FastAPI application entry point
+├── requirements.txt        # Python dependencies
+├── Dockerfile             # Container configuration
+├── Procfile               # Heroku/deployment process file
+├── .ebextensions/         # AWS Elastic Beanstalk configuration
+├── apprunner.yaml         # AWS App Runner configuration
+└── cors_config.py         # CORS configuration
 ```
 
-## Key Files
+## Application Structure (`app/`)
 
-- **main.py**: FastAPI app with all endpoint definitions and mock data
-- **app/config.py**: Settings loaded from environment variables via Pydantic
-- **app/database.py**: SQLAlchemy models (Document, Biomarker, OCRProcessingLog)
-- **cors_config.py**: Centralized CORS setup for cross-origin requests
-- **Dockerfile**: Container definition for deployment
-- **Procfile**: Process configuration for Elastic Beanstalk
+### Core Application
+```
+app/
+├── __init__.py            # App package initialization
+├── database.py            # Database configuration and session management
+├── routers/               # API route handlers (FastAPI routers)
+├── models/                # Pydantic models and data structures
+├── services/              # Business logic and service layer
+├── storage/               # Data persistence layer
+├── config/                # Configuration modules
+├── middleware/            # Custom middleware (translation, etc.)
+└── utils/                 # Reusable utility functions and services
+```
 
-## Architectural Patterns
+### API Routes (`app/routers/`)
+- **digital_twin.py** - Digital twin CRUD operations
+- **biological_age.py** - Age prediction endpoints
+- **recommendations.py** - Health recommendations API
+- **chat.py** - AI chat assistant endpoints
+- **users.py** - User selection and management
+- **admin.py** - Admin and configuration endpoints
+- **health.py** - Health check endpoints
+- **db_users.py** - Database user operations
 
-### Current (MVP)
-- Mock data embedded in `main.py` for rapid prototyping
-- Stateless API design with no database dependencies
-- Async endpoints with simulated delays for realistic UX
+### Data Models (`app/models/`)
+- **digital_twin.py** - Core digital twin domain model
+- **user_profile.py** - User selection models
+- **user_management.py** - User CRUD models
+- **computed_models.py** - Computed health data models
+- **db_models.py** - SQLAlchemy database models
 
-### Future (Production-Ready)
-- Database-backed persistence with SQLAlchemy models
-- Celery workers for async OCR processing
-- S3 integration for document storage
-- Separate route modules in `app/api/`
+### Business Logic (`app/services/`)
+```
+services/
+├── biological_age/       # Age calculation engine
+│   ├── calculator.py     # Core calculation logic
+│   ├── engine.py         # Main prediction engine
+│   └── biomarker_normalizer.py
+├── recommendations/      # Recommendation engine
+│   ├── engine.py         # Main recommendation engine
+│   ├── biomarker_rules.py
+│   ├── condition_rules.py
+│   └── priority_scorer.py
+├── chat/                 # AI chat system
+│   ├── chat_service.py   # Main chat orchestration
+│   ├── aws_bedrock_llm.py # AWS Bedrock integration
+│   ├── context_builder.py # Chat context management
+│   └── session_manager.py # Session persistence
+└── user_*.py            # User-related services
+```
 
-## Code Conventions
+### Utilities (`app/utils/`)
+- **translation.py** - AWS Translate service for multilingual support
 
-- **Models**: Pydantic models in `app/models/` for API contracts
-- **Services**: Business logic isolated in `app/services/`
-- **Database**: SQLAlchemy models use UUID primary keys, soft deletes via relationships
-- **Async**: All endpoints use `async def` for non-blocking I/O
-- **Testing**: Property-based tests for validation logic, unit tests for services
-- **Configuration**: Environment-based settings, never hardcode credentials
+## Data & Configuration
+
+### Datasets (`datasets/`)
+```
+datasets/
+├── users/               # User profile data
+├── biomarkers/          # Biomarker test data
+├── medical_history/     # Medical history data
+├── lifestyle/           # Lifestyle data
+├── interventions/       # Health interventions
+└── ai_interactions/     # Chat history data
+```
+
+### Configuration (`config/`)
+- **llm_config.json** - LLM model configuration
+
+### Static Assets (`static/`)
+- **user-selection.html** - Interactive user selection UI
+
+## Testing Structure (`tests/`)
+
+```
+tests/
+├── unit/                # Unit tests for individual components
+├── property/            # Property-based tests (Hypothesis)
+├── integration/         # Integration tests
+└── test_data/           # Test datasets and fixtures
+```
+
+## Architecture Patterns
+
+### Layered Architecture
+1. **Router Layer** - FastAPI route handlers, request/response validation
+2. **Service Layer** - Business logic, orchestration between components
+3. **Storage Layer** - Data persistence, database operations
+4. **Model Layer** - Data structures, validation, domain models
+
+### Key Design Patterns
+- **Repository Pattern** - Data access abstraction in storage layer
+- **Service Pattern** - Business logic encapsulation
+- **Factory Pattern** - Digital twin creation and management
+- **Strategy Pattern** - Multiple recommendation rule types
+- **Observer Pattern** - Health data change notifications
+
+### Naming Conventions
+- **Files**: snake_case (e.g., `user_service.py`)
+- **Classes**: PascalCase (e.g., `DigitalTwin`, `BiologicalAgeEngine`)
+- **Functions/Variables**: snake_case (e.g., `get_user_data`, `user_id`)
+- **Constants**: UPPER_SNAKE_CASE (e.g., `DATABASE_URL`)
+- **API Endpoints**: kebab-case (e.g., `/api/digital-twin`)
+
+### File Organization Rules
+- One main class per file in services and models
+- Group related functionality in subdirectories
+- Keep router files focused on single domain
+- Separate database models from Pydantic models
+- Use `__init__.py` files for package exports
+
+### Import Conventions
+- Absolute imports from app root (e.g., `from app.models.digital_twin import DigitalTwin`)
+- Group imports: standard library, third-party, local
+- Use specific imports over wildcard imports

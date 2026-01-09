@@ -1,0 +1,14 @@
+{
+  "session_id": "7589f26f-9d78-4f5a-afcb-c315c02a6a76",
+  "messages": [
+    {
+      "message_id": "44a10487-b0c6-4314-8a5e-8e9d7f963829",
+      "session_id": "7589f26f-9d78-4f5a-afcb-c315c02a6a76",
+      "role": "user",
+      "content": "Hello",
+      "timestamp": "2026-01-09T00:57:15.907643",
+      "metadata": {}
+    }
+  ],
+  "last_updated": "2026-01-09T00:57:15.908204"
+}

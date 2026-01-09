@@ -5,7 +5,7 @@ Extracts language preference from Accept-Language header
 
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
-from app.services.translation_service import translation_service
+from app.utils.translation import translation_service
 import logging
 
 logger = logging.getLogger(__name__)
