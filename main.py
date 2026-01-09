@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.orm import Session
 import json
 import asyncio
 import logging
@@ -15,6 +16,7 @@ from app.routers.users import router as users_router
 from app.routers.user_management import router as user_management_router
 from app.routers.health import router as health_router
 from app.routers.db_users import router as db_users_router
+from app.database import get_db
 
 # Initialize logging
 from app.config.logging import setup_logging
@@ -1133,7 +1135,7 @@ async def get_action_details(action_id: str):
 
 # Routine endpoints
 @app.get("/api/routines/daily")
-async def get_daily_routine(request: Request, db: Session = Depends(get_db)):
+async def get_daily_routine(request: Request):
     await simulate_delay(200)
     
     from app.services.user_context import user_context_manager
@@ -1141,6 +1143,9 @@ async def get_daily_routine(request: Request, db: Session = Depends(get_db)):
     from app.utils.translation_helpers import get_translation_context
     
     current_user = user_context_manager.get_current_user()
+    
+    # Get language from request state (set by translation middleware)
+    language = getattr(request.state, 'language', 'en')
     
     # Try to get computed routine from database
     computed = digital_twin_db.get_computed_data(current_user.user_id)
@@ -1151,6 +1156,7 @@ async def get_daily_routine(request: Request, db: Session = Depends(get_db)):
         
         # Get pre-computed translations for hardcoded user
         if language != 'en':
+            from app.storage.translation_database import translation_db
             user_id = "user_001_29f"
             translations = translation_db.get_user_translations(user_id, 'daily_routine', language)
             
@@ -1218,47 +1224,18 @@ async def get_daily_routine(request: Request, db: Session = Depends(get_db)):
     else:
         routine_data = []
     
-    # Get translation context
-    translation_ctx = get_translation_context(request, db)
+    # Get translation context (simplified for now)
+    # translation_ctx = get_translation_context(request, db)
     
-    # Translate the routine data using database translations
-    if routine_data:
-        translated_routine = []
-        for step in routine_data:
-            # Translate step
-            translated_step = translation_ctx.translate_dict(
-                data={"step": step["step"]},
-                content_type="daily_routine_step",
-                fields=["step"]
-            )
-            translated_step["products"] = []
-            
-            # Translate products
-            for product in step["products"]:
-                translated_product = translation_ctx.translate_dict(
-                    data={
-                        "name": product["name"],
-                        "description": product["description"],
-                        "image": product["image"]
-                    },
-                    content_type="daily_routine_product",
-                    fields=["name", "description"]
-                )
-                translated_step["products"].append(translated_product)
-            
-            translated_routine.append(translated_step)
-        
-        return translated_routine
-    
+    # For now, return routine data without complex translation until db is fixed
     return routine_data
 
 @app.get("/api/routines/weekly")
-async def get_weekly_routine(request: Request, db: Session = Depends(get_db)):
+async def get_weekly_routine(request: Request):
     await simulate_delay(200)
     
     from app.services.user_context import user_context_manager
     from app.services.digital_twin_db import digital_twin_db
-    from app.utils.translation_helpers import get_translation_context
     
     current_user = user_context_manager.get_current_user()
     
@@ -1271,44 +1248,7 @@ async def get_weekly_routine(request: Request, db: Session = Depends(get_db)):
     else:
         routine_data = []
     
-    # Get translation context
-    translation_ctx = get_translation_context(request, db)
-    
-    # Translate the routine data using database translations
-    if routine_data:
-        translated_routine = []
-        for step in routine_data:
-            # Translate step
-            translated_step = translation_ctx.translate_dict(
-                data={"step": step["step"]},
-                content_type="weekly_routine_step",
-                fields=["step"]
-            )
-            translated_step["products"] = []
-            
-            # Translate products
-            for product in step["products"]:
-                translated_product = translation_ctx.translate_dict(
-                    data={
-                        "name": product["name"],
-                        "description": product["description"],
-                        "image": product["image"]
-                    },
-                    content_type="weekly_routine_product",
-                    fields=["name", "description"]
-                )
-                translated_step["products"].append(translated_product)
-            
-            translated_routine.append(translated_step)
-        
-        return translated_routine
-    
-    return routine_data
-            
-            translated_routine.append(translated_step)
-        
-        return translated_routine
-    
+    # For now, return routine data without translation until db is fixed
     return routine_data
 
 # Mock biological age endpoint (works without digital twin for frontend testing)
@@ -1363,54 +1303,44 @@ async def get_mock_biological_age(user_id: str, request: Request):
         ]
         
         recommendations_en = [
-            "Continue Zone 2 cardio training for cardiovascular health",
-            "Address Vitamin D deficiency for optimal longevity",
-            "Maintain current sleep and stress management practices"
+            "Continue Zone 2 cardio training 3x/week",
+            "Maintain current strength training routine",
+            "Consider adding cold exposure therapy",
+            "Monitor HRV for recovery optimization"
         ]
         
-        # Ensure translations exist for this user (pre-compute if missing)
-        translation_precompute_service.ensure_user_translations_exist(
-            user_id, insights_en, recommendations_en
-        )
-        
-        # Get translated content using pre-computed translations
-        insights = translation_precompute_service.get_translated_content(
-            user_id, 'insights', insights_en, language
-        )
-        recommendations = translation_precompute_service.get_translated_content(
-            user_id, 'recommendations', recommendations_en, language
-        )
+        # Get pre-computed translations if available
+        if language != 'en':
+            insights = translation_precompute_service.get_translated_content(
+                user_id, 'insights', insights_en, language
+            ) or insights_en
+            
+            recommendations = translation_precompute_service.get_translated_content(
+                user_id, 'recommendations', recommendations_en, language
+            ) or recommendations_en
+        else:
+            insights = insights_en
+            recommendations = recommendations_en
         
         return {
             "user_id": user_id,
-            "chronological_age": 32,
-            "biological_age": 29,
+            "chronological_age": 29,
+            "biological_age": 26,
             "age_difference": -3,
             "longevity_score": 87,
-            "status": "excellent",
+            "status": "younger",
             "insights": insights,
             "recommendations": recommendations
         }
     
-    # Return default for users without data using template translations
-    current_user = user_context_manager.get_current_user()
-    
-    # Use template translations for no-data messages
-    no_data_insights = translation_precompute_service.get_template_content(
-        ['no_data_insight_1', 'no_data_insight_2'], language
-    )
-    
-    no_data_recommendations = translation_precompute_service.get_template_content(
-        ['no_data_recommendation_1', 'no_data_recommendation_2'], language
-    )
-    
+    # Default response for other users
     return {
         "user_id": user_id,
-        "chronological_age": current_user.demographics.age if current_user.demographics else 30,
+        "chronological_age": 30,
         "biological_age": None,
         "age_difference": None,
         "longevity_score": 0,
-        "status": "no_data",
-        "insights": no_data_insights,
-        "recommendations": no_data_recommendations
+        "status": "unknown",
+        "insights": ["No biological age data available for this user."],
+        "recommendations": ["Complete health assessments to calculate biological age."]
     }
